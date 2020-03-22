@@ -73,7 +73,6 @@ size_t CGScriptFunctionRegistrySize;
 
 int NCORES;
 bool FULL = false;
-bool showlicense;
 
 QAtomicInt GlobalError;
 
@@ -107,9 +106,6 @@ MainWindow::checkNewVersion ()
   CG_ERR_RESULT ioresult = CG_ERR_OK;
 
   newversion = false;
-
-  if (WinStore)
-    return;
 
   urlstr =
 #ifdef Q_OS_LINUX
@@ -211,7 +207,6 @@ MainWindow::MainWindow (QWidget * parent):
   int rc, dbversion;
 
   sqlitebuff = nullptr;
-  showlicense = false;
   GlobalError = CG_ERR_OK;
   ResourceMutex = new QMutex (QMutex::NonRecursive);
 
@@ -412,7 +407,6 @@ MainWindow::MainWindow (QWidget * parent):
   dbfile.setFile (appsettings.sqlitefile);
   if (dbfile.exists () == false)
   {
-    if (!WinStore) showlicense = true;
     if (!QDir (QDir::homePath () % QDir::separator()  % QStringLiteral (".config") % QDir::separator()  % APPDIR).exists ())
       QDir ().mkpath (QDir::homePath () % QDir::separator()  % QStringLiteral (".config") % QDir::separator()  % APPDIR);
 
@@ -582,12 +576,9 @@ MainWindow::MainWindow (QWidget * parent):
     splash = new SplashDialog (this);
     correctWidgetFonts (splash);
     splash->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, splash->size(), qApp->desktop()->availableGeometry()));
-    if (!WinStore)
-    {
-      splash->show ();
-      QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
-      if (!showlicense) delay (3);
-    }
+    splash->show ();
+    QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+    delay (3);
   }
 
   // increase run counter
@@ -694,7 +685,7 @@ MainWindow::MainWindow (QWidget * parent):
   connect (usignals, SIGNAL(sigAbrt ()), this, SLOT (closing ()));
 #endif
 
-  if (!Application_Settings->options.showsplashscreen || WinStore)
+  if (!Application_Settings->options.showsplashscreen)
     setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(), qApp->desktop()->availableGeometry()));
   else
     showMaximized();
@@ -1378,19 +1369,6 @@ MainWindow::resizeEvent (QResizeEvent * event)
   if (tickerVisible)
     ticker->setGeometry (0, height () - (TICKER_HEIGHT + 2),
                          width (), TICKER_HEIGHT);
-
-#ifndef Q_OS_MAC
-  if (showlicense)
-  {
-    if (windowState () == Qt::WindowMaximized && infodlg != nullptr)
-    {
-      infodlg->licensedlg->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, infodlg->licensedlg->size(), qApp->desktop()->availableGeometry()));
-      infodlg->licensedlg->show ();
-      infodlg->licensedlg->raise ();
-      infodlg->licensedlg->activateWindow ();
-    }
-  }
-#endif // Q_OS_MAC
 }
 
 // focus

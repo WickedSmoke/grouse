@@ -82,16 +82,6 @@ void
 LicenseDialog::hideEvent(QHideEvent * event)
 {
   Q_UNUSED (event);
-#ifndef Q_OS_MAC
-  if (showlicense)
-  {
-    showlicense = false;
-    MainWindow *mainwindow;
-    mainwindow = (qobject_cast <MainWindow *> (this->parentWidget ()->parentWidget ()));
-    mainwindow->datamanagerdlg->show ();
-    delay (1);
-  }
-#endif
 }
 
 /// slots

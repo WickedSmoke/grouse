@@ -126,12 +126,6 @@ OptionsDialog::OptionsDialog (QWidget * parent):
   ui->tickerTableWidget->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
   ui->InstallationPathEdit->setText (installationPath);
 
-  if (WinStore)
-  {
-    ui->newVersionCheckBox->setEnabled (false);
-    ui->newVersionButton->setEnabled (false);
-  }
-
   lineColorDialog = new appColorDialog;
   lineColorDialog->setModal (true);
   linepixmap = new QPixmap (16, 16);

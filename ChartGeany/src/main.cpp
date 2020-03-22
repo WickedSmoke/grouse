@@ -72,7 +72,6 @@ void CGMessageHandler (QtMsgType type, const QMessageLogContext &context,
 #include "mainwindow.h"
 
 QString installationPath;
-bool WinStore;
 
 int
 main (int argc, char *argv[])
@@ -80,7 +79,6 @@ main (int argc, char *argv[])
   const QString argv0(argv[0]);
   QFileInfo fi(argv0);
   installationPath = fi.absolutePath();
-  WinStore = false;
 
 #if defined (Q_OS_LINUX)
   install_signal_handlers ();
@@ -98,9 +96,6 @@ main (int argc, char *argv[])
     path +=  QByteArray ("/pcc/bin;/pcc/libexec;%path%");
 
   qputenv ("PATH", path);
-
-  if (installationPath.startsWith (QStringLiteral ("C:/Program Files/WindowsApps/")))
-    WinStore = true;
 #endif
 
   TA_RetCode retCode;
