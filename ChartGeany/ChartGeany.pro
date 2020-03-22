@@ -267,10 +267,12 @@ SOURCES += \
 # application headers, common for all Qt versions, platforms and compilers
 HEADERS  += \
         include/appColorDialog.h \
+        include/appdata.h \
         include/addportfoliodialog.h \
         include/addpricedialog.h \
         include/addtransactiondialog.h \
         include/chartapp.h \
+        include/common.h \
         include/compile.h \
         include/databrowserdialog.h \
         include/datamanagerdialog.h \
@@ -531,62 +533,8 @@ SOURCES += \
 
 # 3rdparty headers common for all Qt versions, platforms and compilers
 HEADERS  += \
-        include/appColorDialog.h \
-        include/addportfoliodialog.h \
-        include/addpricedialog.h \
-        include/addtransactiondialog.h \
-        include/appdata.h \
-        include/chartapp.h \
         include/cgscript.h \
         cgscript/include/top.h \
-        include/common.h \
-        include/compile.h \
-        include/databrowserdialog.h \
-        include/datamanagerdialog.h \
-        include/debug.h \
-        include/debugdialog.h \
-        include/defs.h \
-        include/downloaddatadialog.h \
-        include/dynparamsdialog.h \
-        include/editorwidget.h \
-        include/feedav.h \
-        include/feediex.h \
-        include/feedyahoo.h \
-        include/function_dataset.h \
-        include/highlighter.h \
-        include/infodialog.h \
-        include/licensedialog.h \
-        include/lineobjectdialog.h \
-        include/loadcsvdialog.h \
-        include/mainwindow.h \
-        include/manualdialog.h \
-        include/modulemanagerdialog.h \
-        include/netservice.h \
-        include/optionsdialog.h \
-        include/priceupdater.h \
-        include/priceworker.h \
-        include/progressdialog.h \
-        include/portfoliomanagerdialog.h \
-        include/portfolio.h \
-        include/qtachart_core.h \
-        include/qtachart_data.h \
-        include/qtachart_draw.h \
-        include/qtachart_eventfilters.h \
-        include/qtachart_functions.h \
-        include/qtachart.h \
-        include/qtachart_help.h \
-        include/qtachart_object.h \
-        include/qtachart_objects.h \
-        include/qtachart_properties.h \
-        include/qtcgraphicsitem.h \
-        include/qtcgraphicsscene.h \
-        include/splashdialog.h \
-        include/stockticker.h \
-        include/symbollistdialog.h \
-        include/templatemanagerdialog.h \
-        include/textobjectdialog.h \
-        include/unix_signals.h \
-        include/waitdialog.h
 
 #
 # standard codeeditor
