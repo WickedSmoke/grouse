@@ -150,9 +150,6 @@ main (int argc, char *argv[])
   ChartApp::setOrganizationName (APPNAME);
   ChartApp App (argc1, argv1);
 
-  AppProxyStyle *appstyle = new AppProxyStyle;
-  App.setStyle(appstyle);
-
 #ifdef DEBUG
 #if QT_VERSION > QT_VERSION_CHECK(5, 4, 0)
   QFile file ("Application.log");

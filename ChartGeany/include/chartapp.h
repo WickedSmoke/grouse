@@ -44,27 +44,4 @@ private:
 };
 
 
-#include <QProxyStyle>
-
-class AppProxyStyle : public QProxyStyle
-{
-  Q_OBJECT
-
-public:
-  explicit AppProxyStyle (QStyle * style = 0): QProxyStyle (style)
-  {
-    setBaseStyle (QApplication::style ());
-  };
-  ~AppProxyStyle () {};
-  virtual int
-  styleHint(StyleHint hint, const QStyleOption *option = 0,
-            const QWidget *widget = 0, QStyleHintReturn *returnData = 0) const
-  {
-    if (hint == QStyle::SH_ComboBox_Popup)
-      return 0;
-    return QProxyStyle::styleHint(hint, option, widget, returnData);
-  }
-};
-
-
 #endif // CHARTAPP_H
