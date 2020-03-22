@@ -217,7 +217,7 @@ ModuleManagerDialog::attachModule (void *data, QString modid)
     }
     else
     {
-      showMessage (errorMessage (result));
+      showMessage (errorMessage (result), this);
       debugdialog->appendText ("Compilation output for module " % name % ":");
       debugdialog->appendText (messages);
       return NULL;
@@ -322,13 +322,13 @@ ModuleManagerDialog::addButton_clicked ()
 
   if (wid == NULL)
   {
-    showMessage ("Open a chart first please.");
+    showMessage ("Open a chart first please.", this);
     return;
   }
 
   if (wid->objectName () != QLatin1String ("Chart"))
   {
-    showMessage ("Current tab is not a chart");
+    showMessage ("Current tab is not a chart", this);
     return;
   }
 
@@ -337,7 +337,7 @@ ModuleManagerDialog::addButton_clicked ()
 
   if (core->events_enabled == false)
   {
-    showMessage ("Chart not in chart view");
+    showMessage ("Chart not in chart view", this);
     return;
   }
 
@@ -389,7 +389,7 @@ ModuleManagerDialog::importButton_clicked ()
       if (rc != SQLITE_OK)
       {
         setGlobalError(CG_ERR_WRITE_FILE, __FILE__, __LINE__);
-        showMessage ("Module import failed.");
+        showMessage ("Module import failed.", this);
         goto importButton_clicked_end;
       }
       reloadModules ();
@@ -413,7 +413,7 @@ importButton_clicked_end:
   if (localError != CG_ERR_OK)
   {
     setGlobalError(localError, __FILE__, __LINE__);
-    showMessage (errorMessage (localError));
+    showMessage (errorMessage (localError), this);
   }
 
   ui->tableWidget->clearSelection ();
@@ -443,7 +443,7 @@ ModuleManagerDialog::exportButton_clicked ()
 
   if (name == "")
   {
-    showMessage ("Select a module first please.");
+    showMessage ("Select a module first please.", this);
     return;
   }
 
@@ -476,7 +476,7 @@ ModuleManagerDialog::exportButton_clicked ()
   QString encstr = crypto.encryptToString (SQL);
   modscript.write(encstr.toUtf8 ());
   modscript.close();
-  showMessage ("Export complete.");
+  showMessage ("Export complete.", this);
   ui->tableWidget->clearSelection ();
 }
 
@@ -495,11 +495,11 @@ ModuleManagerDialog::deleteButton_clicked ()
 
   if (id == "")
   {
-    showMessage ("Select a module first please.");
+    showMessage ("Select a module first please.", this);
     return;
   }
 
-  if (showOkCancel ("Delete selected module ? ") == false)
+  if (showOkCancel ("Delete selected module?", this) == false)
     return;
 
   SQL = "DELETE FROM modules WHERE id = '" % id % "';";
@@ -507,7 +507,7 @@ ModuleManagerDialog::deleteButton_clicked ()
   if (rc != SQLITE_OK)
   {
     setGlobalError(CG_ERR_TRANSACTION, __FILE__, __LINE__);
-    showMessage (errorMessage (CG_ERR_TRANSACTION));
+    showMessage (errorMessage (CG_ERR_TRANSACTION), this);
     return;
   }
 
@@ -531,7 +531,7 @@ ModuleManagerDialog::runButton_clicked ()
 
   if (id == "")
   {
-    showMessage ("Select a module first please.");
+    showMessage ("Select a module first please.", this);
     return;
   }
 
@@ -540,7 +540,7 @@ ModuleManagerDialog::runButton_clicked ()
   {
     if (!module.unload ())
     {
-      showMessage ("Cannot unload module");
+      showMessage ("Cannot unload module", this);
       return;
     }
   }

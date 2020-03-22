@@ -72,11 +72,11 @@ dbman (int dbversion, AppSettings appsettings);
 
 // show a message box
 extern void
-showMessage (QString message);
+showMessage (const QString& message, QWidget* parent = nullptr);
 
 // show an Ok/Cancel question box
 extern bool
-showOkCancel (QString message);
+showOkCancel (const QString& message, QWidget* parent = nullptr);
 
 // show download message box
 extern bool

@@ -125,7 +125,7 @@ TemplateManagerDialog::loadtemplate (void *chart)
   savemode = false;
   result = loaddir ();
   if (result != CG_ERR_OK)
-    showMessage (errorMessage (result));
+    showMessage (errorMessage (result), this);
 
   referencechart = chart;
   show ();
@@ -144,7 +144,7 @@ TemplateManagerDialog::savetemplate (void *chart)
 
   result = loaddir ();
   if (result != CG_ERR_OK)
-    showMessage (errorMessage (result));
+    showMessage (errorMessage (result), this);
 
   referencechart = chart;
   show ();
@@ -862,7 +862,7 @@ TemplateManagerDialog::ok_clicked ()
     if (ui->saveasEdit->text ().size () == 0)
       return;
 
-    if (showOkCancel (QStringLiteral ("Save template?")) == false)
+    if (showOkCancel("Save template?", this) == false)
       return;
 
     maxrow = ui->tableWidget->rowCount ();
@@ -881,7 +881,7 @@ TemplateManagerDialog::ok_clicked ()
       result = newtemplate ();
       if (result != CG_ERR_OK)
       {
-        showMessage (errorMessage (result));
+        showMessage (errorMessage (result), this);
         return;
       }
     }
@@ -890,13 +890,13 @@ TemplateManagerDialog::ok_clicked ()
       result = updatetemplate (tablename);
       if (result != CG_ERR_OK)
       {
-        showMessage (errorMessage (result));
+        showMessage (errorMessage (result), this);
         return;
       }
     }
 
     loaddir ();
-    showMessage (QStringLiteral ("Template saved."));
+    showMessage (QStringLiteral ("Template saved."), this);
 
     return;
   }
@@ -907,7 +907,7 @@ TemplateManagerDialog::ok_clicked ()
   result = attachtemplate (selectedtable);
   if (result != CG_ERR_OK)
   {
-    showMessage (errorMessage (result));
+    showMessage (errorMessage (result), this);
     return;
   }
 
@@ -931,11 +931,11 @@ TemplateManagerDialog::del_clicked ()
 
   if (selectedtable == QLatin1String (""))
   {
-    showMessage ("Select a template first please.");
+    showMessage ("Select a template first please.", this);
     return;
   }
 
-  if (showOkCancel ("Delete selected template?") == false)
+  if (showOkCancel("Delete selected template?", this) == false)
     goto del_clicked_end;
 
   for (int row = 0; row < maxrow; row ++)
@@ -945,7 +945,7 @@ TemplateManagerDialog::del_clicked ()
                                ui->tableWidget->item (row, 2)->text ());
       if (result != CG_ERR_OK)
       {
-        showMessage (errorMessage (result));
+        showMessage (errorMessage (result), this);
         return;
       }
     }
@@ -1041,13 +1041,13 @@ TemplateManagerDialog::importButton_clicked (void)
     header = sqlScript[0].split ("--", QString::KeepEmptyParts);
     if (header.size () < 2)
     {
-      showMessage ("Invalid template script.");
+      showMessage ("Invalid template script.", this);
       goto importButton_clicked_end;
     }
 
     if (header[1].trimmed () != "1|1")
     {
-      showMessage ("Invalid template script.");
+      showMessage ("Invalid template script.", this);
       goto importButton_clicked_end;
     }
     templatename = header[2].trimmed ();
@@ -1104,7 +1104,7 @@ TemplateManagerDialog::importButton_clicked (void)
       goto importButton_clicked_end;
     }
     loaddir ();
-    showMessage ("Import complete.");
+    showMessage ("Import complete.", this);
   }
   else
     localError = CG_ERR_OPEN_FILE;
@@ -1115,7 +1115,7 @@ importButton_clicked_end:
   if (localError != CG_ERR_OK)
   {
     setGlobalError(localError, __FILE__, __LINE__);
-    showMessage (errorMessage (localError));
+    showMessage (errorMessage (localError), this);
   }
 
   ui->tableWidget->clearSelection ();
@@ -1136,13 +1136,13 @@ TemplateManagerDialog::exportButton_clicked (void)
 
   if (selected == -1)
   {
-    showMessage ("Select a template first please.");
+    showMessage ("Select a template first please.", this);
     return;
   }
 
   if (ui->tableWidget->item (selected, 3)->text ().contains (QStringLiteral ("-- 0|0 -- No template script")))
   {
-    showMessage ("This is a template created by an old version. Please delete it, recreate it and try again.");
+    showMessage ("This is a template created by an old version. Please delete it, recreate it and try again.", this);
     ui->tableWidget->clearSelection ();
     return;
   }
@@ -1166,6 +1166,6 @@ TemplateManagerDialog::exportButton_clicked (void)
   encstr = crypto.encryptToString (ui->tableWidget->item (selected, 3)->text ());
   tmplscript.write(encstr.toUtf8 ());
   tmplscript.close();
-  showMessage ("Export complete.");
+  showMessage ("Export complete.", this);
   ui->tableWidget->clearSelection ();
 }

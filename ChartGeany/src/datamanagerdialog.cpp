@@ -205,7 +205,7 @@ DataManagerDialog::reloadSymbols ()
   if (rc != SQLITE_OK)
   {
     setGlobalError(CG_ERR_DBACCESS, __FILE__, __LINE__);
-    showMessage (errorMessage (CG_ERR_DBACCESS));
+    showMessage (errorMessage (CG_ERR_DBACCESS), this);
     this->hide ();
     return;
   }
@@ -361,14 +361,14 @@ DataManagerDialog::trashButton_clicked ()
 
   if (selected_tables.size () == 0)
   {
-    showMessage ("Select symbols first please.");
+    showMessage ("Select symbols first please.", this);
     return;
   }
 
-  if (showOkCancel ("Delete selected entries ? ") == false)
+  if (showOkCancel ("Delete selected entries?", this) == false)
     return;
 
-  if (showOkCancel ("Entries depended on other entries (eg: entries for adjusted prices) will be deleted too. Are you sure ? ") == false)
+  if (showOkCancel ("Entries depended on other entries (eg: entries for adjusted prices) will be deleted too. Are you sure?", this) == false)
     return;
 
   correctWidgetFonts (qobject_cast <QDialog *> (waitdlg.data ()));
@@ -398,7 +398,7 @@ DataManagerDialog::trashButton_clicked ()
   {
     waitdlg->hide ();
     setGlobalError(CG_ERR_DELETE_DATA, __FILE__, __LINE__);
-    showMessage (errorMessage (CG_ERR_DELETE_DATA));
+    showMessage (errorMessage (CG_ERR_DELETE_DATA), this);
   }
 
   refreshButton_clicked ();
@@ -449,12 +449,12 @@ DataManagerDialog::updateButton_clicked ()
   if (feed.size () == 0)
   {
     if (!updateBeforeOpen)
-      showMessage ("Select symbols first please.");
+      showMessage ("Select symbols first please.", this);
     return;
   }
 
   if (!updateBeforeOpen)
-    if (showOkCancel ("Update selected entries ? ") == false)
+    if (showOkCancel ("Update selected entries?", this) == false)
       return;
 
   GlobalProgressBar = progressdialog->getProgressBar ();
@@ -481,7 +481,7 @@ DataManagerDialog::updateButton_clicked ()
         if (maxrow == 1)
         {
           progressdialog->hide ();
-          showMessage (errorMessage (result));
+          showMessage (errorMessage (result), this);
           return;
         }
       }
@@ -497,7 +497,7 @@ DataManagerDialog::updateButton_clicked ()
         if (maxrow == 1)
         {
           progressdialog->hide ();
-          showMessage (errorMessage (result));
+          showMessage (errorMessage (result), this);
           return;
         }
       }
@@ -513,7 +513,7 @@ DataManagerDialog::updateButton_clicked ()
         if (maxrow == 1)
         {
           progressdialog->hide ();
-          showMessage (errorMessage (result));
+          showMessage (errorMessage (result), this);
           return;
         }
       }
@@ -556,7 +556,7 @@ DataManagerDialog::updateButton_clicked ()
         if (maxrow == 1)
         {
           progressdialog->hide ();
-          showMessage (errorMessage (result));
+          showMessage (errorMessage (result), this);
           return;
         }
       }
@@ -595,7 +595,7 @@ DataManagerDialog::updateButton_clicked ()
         if (maxrow == 1)
         {
           progressdialog->hide ();
-          showMessage (errorMessage (result));
+          showMessage (errorMessage (result), this);
           return;
         }
       }
@@ -604,7 +604,7 @@ DataManagerDialog::updateButton_clicked ()
     if (progressdialog->getCancelRequestFlag ())
     {
       progressdialog->hide ();
-      showMessage (QStringLiteral ("Update canceled. "));
+      showMessage (QStringLiteral ("Update canceled."), this);
       refreshButton_clicked ();
       return;
     }
@@ -613,7 +613,8 @@ DataManagerDialog::updateButton_clicked ()
   progressdialog->hide ();
   if (!updateBeforeOpen)
     showMessage (QStringLiteral ("Update completed with ") +
-                 QString::number (errcounter) % QStringLiteral (" errors."));
+                 QString::number (errcounter) % QStringLiteral (" errors."),
+                 this);
   refreshButton_clicked ();
 }
 
@@ -642,7 +643,7 @@ DataManagerDialog::browserButton_clicked ()
 
   if (selected == 0)
   {
-    showMessage ("Select a symbol first please.");
+    showMessage ("Select a symbol first please.", this);
     return;
   }
 
@@ -711,7 +712,7 @@ DataManagerDialog::fillTableDataVector (QString base, QString adjusted)
   if (rc != SQLITE_OK)
   {
     setGlobalError(CG_ERR_DBACCESS, __FILE__, __LINE__);
-    showMessage (errorMessage (CG_ERR_DBACCESS));
+    showMessage (errorMessage (CG_ERR_DBACCESS), this);
     return CG_ERR_DBACCESS;
   }
 
@@ -740,7 +741,7 @@ DataManagerDialog::chartButton_clicked ()
   maxrow = tablename.size ();
   if (maxrow == 0)
   {
-    showMessage ("Select symbols first please.");
+    showMessage ("Select symbols first please.", this);
     return;
   }
 

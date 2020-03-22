@@ -93,7 +93,7 @@ PortfolioManagerDialog::PortfolioManagerDialog (QWidget * parent):
   if (rc != SQLITE_OK)
   {
     setGlobalError(CG_ERR_DBACCESS, __FILE__, __LINE__);
-    showMessage (errorMessage (CG_ERR_DBACCESS));
+    showMessage (errorMessage (CG_ERR_DBACCESS), this);
     this->hide ();
   }
 
@@ -102,7 +102,7 @@ PortfolioManagerDialog::PortfolioManagerDialog (QWidget * parent):
   if (rc != SQLITE_OK)
   {
     setGlobalError(CG_ERR_DBACCESS, __FILE__, __LINE__);
-    showMessage (errorMessage (CG_ERR_DBACCESS));
+    showMessage (errorMessage (CG_ERR_DBACCESS), this);
     this->hide ();
   }
 }
@@ -315,7 +315,7 @@ PortfolioManagerDialog::openButton_clicked ()
 
   if (pf_id == -1)
   {
-    showMessage ("Select a portfolio first please.");
+    showMessage ("Select a portfolio first please.", this);
     return;
   }
 
@@ -345,7 +345,7 @@ PortfolioManagerDialog::editButton_clicked ()
 
   if (pf_id == -1)
   {
-    showMessage ("Select a portfolio first please.");
+    showMessage ("Select a portfolio first please.", this);
     return;
   }
 
@@ -368,11 +368,11 @@ PortfolioManagerDialog::deleteButton_clicked ()
 
   if (pf_id == -1)
   {
-    showMessage ("Select a portfolio first please.");
+    showMessage ("Select a portfolio first please.", this);
     return;
   }
 
-  if (showOkCancel ("Delete selected portfolio ? ") == false)
+  if (showOkCancel ("Delete selected portfolio?", this) == false)
     return;
 
   viewname = "pftrans_" % QString::number (pf_id);
@@ -398,7 +398,7 @@ PortfolioManagerDialog::deleteButton_clicked ()
   if (rc != SQLITE_OK)
   {
     setGlobalError(CG_ERR_TRANSACTION, __FILE__, __LINE__);
-    showMessage (errorMessage (CG_ERR_TRANSACTION));
+    showMessage (errorMessage (CG_ERR_TRANSACTION), this);
     return;
   }
 

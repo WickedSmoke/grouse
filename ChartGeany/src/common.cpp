@@ -109,30 +109,11 @@ updatedb (QString &SQL)
 
 // show message box
 void
-showMessage (QString message)
+showMessage (const QString& message, QWidget* parent)
 {
-  QMessageBox *msgBox;
-  QFont fnt;
-
-  msgBox = new QMessageBox;
-  appRestoreOverrideCursor (msgBox);
-  fnt = msgBox->font ();
-  fnt.setPixelSize (14);
-  fnt.setFamily (DEFAULT_FONT_FAMILY);
-  fnt.setWeight (QFont::DemiBold);
-
-  msgBox->setWindowTitle (QStringLiteral ("Message"));
-  msgBox->setWindowIcon (QIcon (QString (":/png/images/icons/PNG/cglogo.png")));
-  msgBox->setFont (fnt);
-  msgBox->setIcon (QMessageBox::Information);
-  msgBox->setText(message % QStringLiteral ("           "));
-  msgBox->setStandardButtons(QMessageBox::Close);
-  msgBox->setDefaultButton(QMessageBox::Close);
-  msgBox->setStyleSheet (QStringLiteral ("background: transparent; background-color:white;"));
-  correctWidgetFonts (msgBox);
-  msgBox->exec ();
-
-  delete msgBox;
+  QMessageBox::question(parent, QStringLiteral("Message"),
+                        message % QStringLiteral("           "),
+                        QMessageBox::Ok);
 }
 
 // show download message box
@@ -171,35 +152,14 @@ showDownloadMessage ()
 
 // show Ok/Cancel message box
 bool
-showOkCancel (QString message)
+showOkCancel (const QString& message, QWidget* parent)
 {
-  QMessageBox *msgBox;
-  QFont fnt;
-  bool result = false;
-
-  msgBox = new QMessageBox;
-  appRestoreOverrideCursor (msgBox);
-  fnt = msgBox->font ();
-  fnt.setPixelSize (14);
-  fnt.setFamily (DEFAULT_FONT_FAMILY);
-  fnt.setWeight (QFont::DemiBold);
-
-  msgBox->setWindowTitle (QStringLiteral ("Question"));
-  msgBox->setWindowIcon (QIcon (QString (":/png/images/icons/PNG/cglogo.png")));
-  msgBox->setFont (fnt);
-  msgBox->setIcon (QMessageBox::Question);
-  msgBox->setText(message);
-  msgBox->setStandardButtons(QMessageBox::Ok|QMessageBox::Cancel);
-  msgBox->setDefaultButton(QMessageBox::Cancel);
-  msgBox->setStyleSheet (QStringLiteral ("background: transparent; background-color:white;"));
-  correctWidgetFonts (msgBox);
-  msgBox->exec ();
-
-  if (msgBox->clickedButton() == msgBox->button (QMessageBox::Ok))
-    result = true;
-
-  delete msgBox;
-  return result;
+  QMessageBox::StandardButton btn;
+  btn = QMessageBox::question(parent, QStringLiteral("Question"),
+                            message,
+                            QMessageBox::Ok | QMessageBox::Cancel,
+                            QMessageBox::Cancel);
+  return( btn == QMessageBox::Ok );
 }
 
 // error messages

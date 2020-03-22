@@ -480,7 +480,7 @@ OptionsDialog::loadOptions (void)
   result = loadAppOptions (&Application_Settings->options);
   if (result != CG_ERR_OK)
   {
-    showMessage (errorMessage (result));
+    showMessage (errorMessage (result), this);
     this->hide ();
     return;
   }
@@ -488,7 +488,7 @@ OptionsDialog::loadOptions (void)
   result = loadTickerSymbols (symbol, feed);
   if (result != CG_ERR_OK)
   {
-    showMessage (errorMessage (result));
+    showMessage (errorMessage (result), this);
     this->hide ();
     return;
   }
@@ -795,7 +795,7 @@ OptionsDialog::saveOptions ()
   result = saveAppOptions (&Application_Settings->options);
   if (result != CG_ERR_OK)
   {
-    showMessage (errorMessage (result));
+    showMessage (errorMessage (result), this);
     this->hide ();
     return;
   }
@@ -810,7 +810,7 @@ OptionsDialog::saveOptions ()
   result = saveTickerSymbols (symbol, feed);
   if (result != CG_ERR_OK)
   {
-    showMessage (errorMessage (result));
+    showMessage (errorMessage (result), this);
     this->hide ();
     return;
   }
@@ -852,7 +852,7 @@ OptionsDialog::newVersionBtn_clicked ()
       QDesktopServices::openUrl (QUrl (APPWEBPAGE));
   }
   else
-    showMessage ("You run the current version for your platform.");
+    showMessage ("You run the current version for your platform.", this);
 }
 
 void
@@ -886,7 +886,7 @@ OptionsDialog::symboladd_accepted ()
 
   if (duplicate == true)
   {
-    showMessage ("Symbol already in ticker.");
+    showMessage ("Symbol already in ticker.", this);
     ui->symbolEdit->setText ("");
     this->setEnabled (true);
     return;
@@ -899,7 +899,7 @@ OptionsDialog::symboladd_accepted ()
     valid = ifeed.validSymbol (smbl);
     if (valid == false)
     {
-      showMessage ("Invalid symbol.");
+      showMessage ("Invalid symbol.", this);
       ui->symbolEdit->setText ("");
       this->setEnabled (true);
       return;
@@ -907,7 +907,7 @@ OptionsDialog::symboladd_accepted ()
 
     exists = ifeed.symbolExistence (smbl, name, market);
     if (exists == false)
-      add = showOkCancel ("Symbol does not exist. Add anyway?");
+      add = showOkCancel ("Symbol does not exist. Add anyway?", this);
   }
   else
   {
@@ -915,14 +915,14 @@ OptionsDialog::symboladd_accepted ()
     valid = yfeed.validSymbol (smbl);
     if (valid == false)
     {
-      showMessage ("Invalid symbol.");
+      showMessage ("Invalid symbol.", this);
       ui->addButton->setEnabled (true);
       return;
     }
 
     exists = yfeed.symbolExistence (smbl, name, market, currency);
     if (exists == false)
-      add = showOkCancel ("Symbol does not exist. Add anyway?");
+      add = showOkCancel ("Symbol does not exist. Add anyway?", this);
   }
 
   if (add)
@@ -966,11 +966,11 @@ OptionsDialog::minusBtn_clicked ()
 
   if (selected_symbols.size () == 0)
   {
-    showMessage ("Select symbols first please.");
+    showMessage ("Select symbols first please.", this);
     return;
   }
 
-  if (showOkCancel ("Delete selected symbols ? ") == false)
+  if (showOkCancel ("Delete selected symbols?", this) == false)
     return;
 
   foreach (const QString smbl, selected_symbols)

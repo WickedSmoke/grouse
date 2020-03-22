@@ -788,7 +788,7 @@ MainWindow::addChart (TableDataVector & datavector)
   {
     result = CG_ERR_NOMEM;
     setGlobalError(result, __FILE__, __LINE__);
-    showMessage (errorMessage (result));
+    showMessage (errorMessage (result), this);
     return result;
   }
 
@@ -796,7 +796,7 @@ MainWindow::addChart (TableDataVector & datavector)
   {
     result = tachart->getClassError ();
     setGlobalError(result, __FILE__, __LINE__);
-    showMessage (errorMessage (result));
+    showMessage (errorMessage (result), this);
     if (tachart != nullptr)
       delete tachart;
     return result;
@@ -809,7 +809,7 @@ MainWindow::addChart (TableDataVector & datavector)
     {
       result = tachart->getClassError ();
       setGlobalError(result, __FILE__, __LINE__);
-      showMessage (errorMessage (result));
+      showMessage (errorMessage (result), this);
       delete tachart;
       return result;
     }
@@ -828,7 +828,7 @@ MainWindow::addChart (TableDataVector & datavector)
     delete tachart;
     result = CG_ERR_ACCESS_DATA;
     setGlobalError(result, __FILE__, __LINE__);
-    showMessage (QStringLiteral ("Symbol ") % datavector[0].symbol % ": " % errorMessage (result));
+    showMessage (QStringLiteral ("Symbol ") % datavector[0].symbol % ": " % errorMessage (result), this);
     return result;
   }
 
@@ -880,7 +880,7 @@ MainWindow::addPortfolio (int pf_id, QString title, QString currency, QString fe
   {
     result = CG_ERR_NOMEM;
     setGlobalError(result, __FILE__, __LINE__);
-    showMessage (errorMessage (result));
+    showMessage (errorMessage (result), this);
     return result;
   }
 
@@ -1083,13 +1083,13 @@ MainWindow::screenshotButton_clicked ()
 
   if (ui->tabWidget->count () == 0)
   {
-    showMessage ("Open a chart first please.");
+    showMessage ("Open a chart first please.", this);
     return;
   }
 
   if (ui->tabWidget->widget(ui->tabWidget->currentIndex ())->objectName () != QLatin1String ("Chart"))
   {
-    showMessage ("Screenshots available only for charts.");
+    showMessage ("Screenshots available only for charts.", this);
     return;
   }
 
@@ -1108,7 +1108,7 @@ MainWindow::screenshotButton_clicked ()
     fileName += ".png";
 
   screenshot.save(fileName, "PNG");
-  showMessage ("Screenshot saved.");
+  showMessage ("Screenshot saved.", this);
 
 screenshotButton_clicked_end:
   chart->restoreBottomText ();
@@ -1120,7 +1120,8 @@ screenshotButton_clicked_end:
 void
 MainWindow::exitButton_clicked ()
 {
-  if( showOkCancel(QString("Quit %1?").arg(QApplication::applicationName())) )
+  if( showOkCancel(QString("Quit %1?").arg(QApplication::applicationName()),
+                   this) )
       close();
 }
 
@@ -1177,13 +1178,13 @@ MainWindow::tickerButton_clicked ()
     {
       if (lsymbol.size () == 0)
       {
-        showMessage ("No symbols found in ticker");
+        showMessage ("No symbols found in ticker", this);
         return;
       }
     }
     else
     {
-      showMessage (errorMessage (result));
+      showMessage (errorMessage (result), this);
       return;
     }
   }
@@ -1213,7 +1214,7 @@ MainWindow::tickerButton_clicked ()
     {
       tickerVisible = false;
       ticker->setVisible (false);
-      showMessage (errorMessage (GlobalError.fetchAndAddAcquire (0)));
+      showMessage (errorMessage (GlobalError.fetchAndAddAcquire (0)), this);
       delete ticker;
       ticker = nullptr;
       ui->tickerButton->setEnabled (true);
