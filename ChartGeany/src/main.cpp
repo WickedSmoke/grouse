@@ -163,7 +163,6 @@ main (int argc, char *argv[])
 
   QLocale::setDefault(QLocale (QLocale::English, QLocale::UnitedStates));
   unique_ptr <MainWindow> ApplicationMain (new MainWindow);
-  QObject::connect(&App, SIGNAL(aboutToQuit()), ApplicationMain.get (), SLOT(closing()));
 
 #ifdef Q_OS_WIN32
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
@@ -173,7 +172,6 @@ main (int argc, char *argv[])
 #endif // Q_OS_WIN32
 
   appSetOverrideCursor (ApplicationMain.get (), QCursor(Qt::ArrowCursor));
-  ApplicationMain.get ()->show ();
   int retcode = App.exec ();
 
   // delete ApplicationMain;

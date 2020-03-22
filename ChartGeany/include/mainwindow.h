@@ -100,10 +100,10 @@ private slots:
   void exitButton_clicked (void);
   void closeTab_clicked (int);
   void currentTab_changed (int);
-  void closing (void);
   // void commitData(QSessionManager& manager);
 
 protected:
+  void closeEvent(QCloseEvent *event);
   virtual void resizeEvent (QResizeEvent * event);
   virtual void focusInEvent (QFocusEvent * event);
   virtual void showEvent (QShowEvent * event);

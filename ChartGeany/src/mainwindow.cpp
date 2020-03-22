@@ -680,15 +680,22 @@ MainWindow::MainWindow (QWidget * parent):
   // connect to unix signals
 #ifndef Q_OS_WIN
   UnixSignals *usignals = new UnixSignals (this);
-  connect (usignals, SIGNAL(sigTerm ()), this, SLOT (closing ()));
-  connect (usignals, SIGNAL(sigHup ()), this, SLOT (closing ()));
-  connect (usignals, SIGNAL(sigAbrt ()), this, SLOT (closing ()));
+  connect(usignals, SIGNAL(sigTerm()), this, SLOT(close()));
+  connect(usignals, SIGNAL(sigHup()),  this, SLOT(close()));
+  connect(usignals, SIGNAL(sigAbrt()), this, SLOT(close()));
 #endif
 
-  if (!Application_Settings->options.showsplashscreen)
-    setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(), qApp->desktop()->availableGeometry()));
+  QSettings pref(APPDIR, APPNAME);
+  QSize size = pref.value("main-window-size", QSize()).toSize();
+  if (size.isValid())
+  {
+    resize(size);
+    show();
+  }
   else
+  {
     showMaximized();
+  }
 }
 
 // destructor
@@ -743,29 +750,11 @@ MainWindow::~MainWindow ()
   delete ui;
 }
 
-// shutdown application
-void
-MainWindow::closing (void)
-{
-  static bool closed = false;
-
-  if (closed == false)
-    closed = true;
-  else
-    return;
-
-  waitdlg->show ();
-  delay (2);
-
-  qApp->exit (0);
-}
-
 /*
 void
 MainWindow::commitData(QSessionManager &manager)
 {
   Q_UNUSED (manager);
-  closing ();
 }
 */
 
@@ -1131,13 +1120,8 @@ screenshotButton_clicked_end:
 void
 MainWindow::exitButton_clicked ()
 {
-  bool answer;
-
-  answer = showOkCancel (QStringLiteral ("Quit ") % QApplication::applicationName () % QStringLiteral ("?"));
-  if (!answer)
-    return;
-
-  closing ();
+  if( showOkCancel(QString("Quit %1?").arg(QApplication::applicationName())) )
+      close();
 }
 
 // options_clicked ()
@@ -1328,6 +1312,17 @@ MainWindow::currentTab_changed (int index)
 
 /// Events
 ///
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+  QSettings pref(APPDIR, APPNAME);
+  QSize saveSize;
+
+  if (!isMaximized())
+    saveSize = size();
+  pref.setValue("main-window-size", saveSize);
+  event->accept();
+}
+
 // show
 void
 MainWindow::showEvent (QShowEvent * event)
