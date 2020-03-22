@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QTACFunctions</class>
+ <widget class="QWidget" name="QTACFunctions">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>278</width>
+    <height>228</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../resources/ChartGeany.qrc">
+    <normaloff>:/icons/images/icons/TIFF/cglogo.tiff</normaloff>:/icons/images/icons/TIFF/cglogo.tiff</iconset>
+  </property>
+ </widget>
+ <resources>
+  <include location="../resources/ChartGeany.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -1,0 +1,348 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;
+      charset=ISO-8859-7">
+    <title></title>
+  </head>
+  <body>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0"
+      align="center">
+      <tbody>
+        <tr>
+          <td valign="top" bgcolor="#66cccc">
+            <div align="center"><font color="#333333"><font size="+1"><b><font
+                      color="#663300"><i>C</i><i>gtool</i></font></b><br>
+                  <br>
+                </font></font> <i><b>ChartGeany command line tool <br>
+                  version 6.1.5<br>
+                  <font size="-1"><br>
+                  </font></b></i> </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td valign="top">CGTOOL<br>
+            <br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="90%" valign="top"><b>NAME<br>
+              <br>
+            </b> </td>
+          <td valign="top"><br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="10%" valign="top"><br>
+          </td>
+          <td valign="top">cgtool - ChartGeany command line tool for
+            data and module manipulation<br>
+            <br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="90%" valign="top"><b>SYNOPSIS<br>
+              <br>
+            </b> </td>
+          <td valign="top"><br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="10%" valign="top"><br>
+          </td>
+          <td valign="top">cgtool mode option [PARAMETER] [DBFILE]<br>
+            <br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="90%" valign="top"><b>DESCRIPTION<br>
+              <br>
+            </b> </td>
+          <td valign="top"><br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="10%" valign="top"><br>
+          </td>
+          <td width="70%" valign="top">Manipulate data and modules using
+            cgbase.dat. Cgbase.dat is the database file of ChartGeany.
+            Display information about data tables and extract the data
+            to psv (pipe separated values) file or stdout. Display
+            information about modules, import, export, compile or
+            decompile them. <br>
+            <br>
+          </td>
+          <td width="20%" valign="top"><br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="90%" valign="top"><b>SYNTAX OVERVIEW<br>
+              <br>
+            </b> </td>
+          <td valign="top"><br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="10%" valign="top"><br>
+          </td>
+          <td width="70%" valign="top">Cgtool operates under the
+            following modes: <i>data</i>, <i>help</i>,<i> info</i> and
+            <i>module</i>. Each mode supports a set of options. Options
+            may take their own set of parameters. The last optional
+            argument is the full path of cgbase.dat. If omitted, the
+            default path is used: $HOME/.config/ChartGeany/cgbase.dat.<br>
+            <br>
+          </td>
+          <td width="20%" valign="top"><br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="90%" valign="top"><b>MODES AND OPTIONS<br>
+              <br>
+            </b> </td>
+          <td valign="top"><br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="10%" valign="top">mode:<br>
+            <br>
+            options:<br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+          </td>
+          <td width="70%" valign="top"><b>data</b><br>
+            <br>
+            <b>--export TABLEID</b><br>
+            Exports the data of table with id equal to TABLEID to a psv
+            file with .csv extension. Csv extension is used for
+            compatibility with LibreOffice Calc. <br>
+            <br>
+            <b>--export-tostdout TABLEID</b><br>
+            Exports the data of table with id equal to TABLEID to
+            stdout. <br>
+            <br>
+            <b>--list</b><br>
+            Lists the id, symbol, feed and name of the data tables.<br>
+            &nbsp; <br>
+          </td>
+          <td width="20%" valign="top"><br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="10%" valign="top">mode:<br>
+            <br>
+            options:<br>
+            <br>
+          </td>
+          <td width="70%" valign="top"><b>help</b><br>
+            <br>
+            none<br>
+            Displays a help screen for the syntax, the license and the
+            copyright notice.<br>
+            <br>
+          </td>
+          <td width="20%" valign="top"><br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="10%" valign="top">mode:<br>
+            <br>
+            options:<br>
+            <br>
+          </td>
+          <td width="70%" valign="top"><b>info</b><br>
+            <br>
+            <b> </b><b>--cgscript-toolchain TOOLCHAIN</b><br>
+            Information about the compiler, the compiler flags and the
+            linker flags.<br>
+            <br>
+            <b>--dbfile</b><br>
+            Information about the supported CGScript version, the data
+            feeds, the toolchains and the version of cgbase.dat. <br>
+            <br>
+          </td>
+          <td width="20%" valign="top"><br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="10%" valign="top">mode:<br>
+            <br>
+            options:<br>
+            <br>
+          </td>
+          <td width="70%" valign="top"><b>module</b><br>
+            <br>
+            <b>--compile FILE</b><br>
+            Compiles the FILE with .cgs extension (source) and creates a
+            FILE with .cgm extension (module). <br>
+            <br>
+            <b>--delete MODULEID</b><br>
+            Deletes the module with id equal to MODULEID.<br>
+            <br>
+            <b>--decompile FILE</b><br>
+            Decompiles the FILE with .cgm extension and creates a FILE
+            with .cgs extension.<br>
+            <br>
+            <b>--export MODULEID</b><br>
+            Exports the module with id equal to MODULE id to a .cgm
+            file. <br>
+            <br>
+            <b>--import FILE<br>
+            </b>Imports the FILE with .cgm extension to cgbase.dat. <br>
+            <br>
+            <b>--list</b><br>
+            Lists the module id, name, type, version and status of the
+            modules in cgbase.dat. <br>
+            <br>
+            <b>--verbose-compile FILE<br>
+            </b>Same as --compile but more verbose. <br>
+            <br>
+          </td>
+          <td width="20%" valign="top"><br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="90%" valign="top"><b><span style="font-weight:
+                bold;">AUTHOR<br>
+                <br>
+              </span> </b> </td>
+          <td valign="top"><br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="10%" valign="top"><br>
+          </td>
+          <td valign="top">Written by Lucas Tsatiris<br>
+            <br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="90%" valign="top"><b><span style="font-weight:
+                bold;"><span style="font-weight: bold;">REPORTING BUGS<br>
+                  <br>
+                </span> </span> </b> </td>
+          <td valign="top"><br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="10%" valign="top"><br>
+          </td>
+          <td valign="top">You may report bugs or request features by
+            email to: chartgeany@gmail.com<br>
+            <br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="90%" valign="top"><b><span style="font-weight:
+                bold;"><span style="font-weight: bold;">COPYRIGHT<br>
+                  <br>
+                </span> </span> </b> </td>
+          <td valign="top"><br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tbody>
+        <tr>
+          <td width="10%" valign="top"><br>
+          </td>
+          <td valign="top">Copyright © 2020 Lucas Tsatiris.&nbsp;&nbsp;
+            License GPLv2+: GNU GPL&nbsp; version&nbsp; 2&nbsp; or&nbsp;
+            later: <br>
+            http://www.gnu.org/licenses/gpl-2.0.html<br>
+            <br>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+    <div style="text-align:center"><a
+        href="https://sourceforge.net/p/chart-geany/"><img alt="Download
+          Chart Geany"
+          src="https://sourceforge.net/sflogo.php?type=13&amp;group_id=3006515"></a></div>
+    <br>
+  </body>
+</html>

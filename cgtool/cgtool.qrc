@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="source">
+    <file>../ChartGeany/cgscript/include/bottom.h</file>
+    <file>../ChartGeany/cgscript/include/newscript.h</file>
+    <file>../ChartGeany/cgscript/include/top.h</file>
+  </qresource>
+</RCC>
