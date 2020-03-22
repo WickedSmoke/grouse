@@ -211,7 +211,7 @@ MainWindow::MainWindow (QWidget * parent):
   ResourceMutex = new QMutex (QMutex::NonRecursive);
 
   ui->setupUi (this);
-  correctTitleBar (this);
+  setWindowFlags( windowFlags() & ~Qt::WindowContextHelpButtonHint );
 
   UserAgents
       << QStringLiteral ("Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.2 Safari/537.36")

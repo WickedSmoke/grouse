@@ -989,17 +989,6 @@ correctTitleBar (QDialog *dialog)
                            & ~Qt::WindowCloseButtonHint));
 }
 
-void
-correctTitleBar (QMainWindow *window)
-{
-  Qt::WindowFlags flags = window->windowFlags();
-  Qt::WindowFlags helpFlag = Qt::WindowContextHelpButtonHint;
-  flags = flags & (~helpFlag);
-  window->setWindowFlags(flags);
-  window->setWindowFlags (((window->windowFlags() | Qt::CustomizeWindowHint)
-                           & ~Qt::WindowCloseButtonHint));
-}
-
 // native http header
 QString
 nativeHttpHeader ()

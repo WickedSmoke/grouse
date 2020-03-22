@@ -176,8 +176,6 @@ correctButtonBoxFonts (QDialogButtonBox *box,
 extern void
 correctTitleBar (QDialog *dialog);
 
-extern void
-correctTitleBar (QMainWindow *window);
 
 // native http header
 extern QString
