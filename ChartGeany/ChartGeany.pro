@@ -707,17 +707,15 @@ SOURCES     += \
 # libtcc
 linux*|win32* {
 INCLUDEPATH += \
-        3rdparty/libtcc/include \
-        3rdparty/libtcc/i386 \
-        3rdparty/libtcc/x86_64
+        ../3rdparty/libtcc
 
 SOURCES += \
-        3rdparty/libtcc/src/tccasm.c \
-        3rdparty/libtcc/src/tccelf.c \
-        3rdparty/libtcc/src/tccgen.c \
-        3rdparty/libtcc/src/tccpp.c \
-        3rdparty/libtcc/src/tccrun.c \
-        3rdparty/libtcc/src/libtcc.c
+        ../3rdparty/libtcc/tccasm.c \
+        ../3rdparty/libtcc/tccelf.c \
+        ../3rdparty/libtcc/tccgen.c \
+        ../3rdparty/libtcc/tccpp.c \
+        ../3rdparty/libtcc/tccrun.c \
+        ../3rdparty/libtcc/libtcc.c
 }
 
 #

@@ -1,0 +1,3 @@
+[submodule "3rdparty/libtcc"]
+	path = 3rdparty/libtcc
+	url = git://repo.or.cz/tinycc.git
