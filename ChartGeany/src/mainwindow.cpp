@@ -618,9 +618,6 @@ MainWindow::MainWindow (QWidget * parent):
   // load application fonts
   loadFonts ();
 
-  // check for new vesrion
-  checkNewVersion ();
-
   // export classes and variables
   loadcsvdialog = loadcsvdlg;
   downloaddatadialog = downloaddatadlg;
@@ -644,10 +641,14 @@ MainWindow::MainWindow (QWidget * parent):
 
   ui->tabWidget->resize (width () - 2, height () - 60);
 
-  if (newversion)
-    if (Application_Settings->options.checknewversion == true)
-      if (showDownloadMessage ())
-        QDesktopServices::openUrl (QUrl (APPWEBPAGE));
+  newversion = false;
+  if (Application_Settings->options.checknewversion == true)
+  {
+    // check for new vesrion
+    checkNewVersion ();
+    if (newversion && showDownloadMessage ())
+      QDesktopServices::openUrl (QUrl (APPWEBPAGE));
+  }
 
   waitdlg->setMessage (QString::fromUtf8 ("Exiting. Please wait..."));
 
