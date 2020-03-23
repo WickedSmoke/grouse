@@ -194,7 +194,8 @@ sqlcb_dbdata (void *dummy, int argc, char **argv, char **column)
 
 // constructor
 MainWindow::MainWindow (QWidget * parent):
-  QMainWindow (parent), ui (new Ui::MainWindow)
+  QMainWindow (parent), ui (new Ui::MainWindow),
+  infodlg(nullptr)
 {
   Q_UNUSED (QTACastFromConstVoid)
 
@@ -613,7 +614,6 @@ MainWindow::MainWindow (QWidget * parent):
   waitdlg = new WaitDialog;
   templatemanagerdlg = new TemplateManagerDialog (this);
   optionsdlg = new OptionsDialog (this);
-  infodlg = new InfoDialog (this);
 
   // load application fonts
   loadFonts ();
@@ -1155,8 +1155,12 @@ MainWindow::homeButton_clicked ()
 void
 MainWindow::infoButton_clicked ()
 {
-  if (infodlg == nullptr)
-    return;
+  if (! infodlg)
+  {
+    infodlg = new InfoDialog (this);
+    if (! infodlg)
+      return;
+  }
 
   infodlg->show ();
   infodlg->activateWindow ();
