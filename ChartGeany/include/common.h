@@ -53,7 +53,6 @@ extern TemplateManagerDialog *templatemanager;  // template manager dialog
 extern QMutex *ResourceMutex;                   // mutex to protect shared resources
 extern SQLists *ComboItems;             // QStringLists used as combo box items and more
 extern QString installationPath;        // the path ChartGeany binary is installed
-extern QStringList UserAgents;          // Http user agents
 extern int NCORES;                      // number of active cores
 extern const char DEFAULT_FONT_FAMILY[];
 extern const int  FONT_POINTSIZE_PAD;
@@ -182,7 +181,7 @@ extern QString
 nativeHttpHeader (void);
 
 // random http header
-extern QString
+extern QByteArray
 httpHeader (void);
 
 // json parse

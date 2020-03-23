@@ -26,7 +26,7 @@
 #include "common.h"
 
 // constructor
-NetService::NetService (qint16  nettimeout, QString httpHeader, QObject *parent)
+NetService::NetService (qint16  nettimeout, const QByteArray& httpHeader, QObject *parent)
 {
   timeout = nettimeout;
   header = httpHeader;
@@ -177,7 +177,7 @@ NetService::httpGET (QString url, QFile & tempFile, Cookies *cookies)
   tempFile.resize (0);
   request.setSslConfiguration(QSslConfiguration::defaultConfiguration());
   request.setUrl(qurl);
-  request.setRawHeader("User-Agent", header.toLatin1 ());
+  request.setRawHeader("User-Agent", header);
   if (cookie.size () > 0)
     request.setRawHeader("cookie: ", cookie.toLatin1 ());
 
@@ -273,7 +273,7 @@ NetService::httpFinished(QNetworkReply *reply)
     setActualUrl (url, redirectUrl);
     request.setSslConfiguration(QSslConfiguration::defaultConfiguration());
     request.setUrl (QUrl(redirectUrl));
-    request.setRawHeader("User-Agent", header.toLatin1 ());
+    request.setRawHeader("User-Agent", header);
     reply->manager ()->get (request);
 
     return;

@@ -50,7 +50,7 @@ class NetService: public QObject
   Q_OBJECT
   
 public:
-  explicit NetService (qint16  nettimeout, QString httpHeader, QObject *parent = 0); // constructor
+  explicit NetService (qint16  nettimeout, const QByteArray& httpHeader, QObject *parent = 0); // constructor
   ~NetService (void);	     				 // destructor
 
   CG_ERR_RESULT httpGET (QString url, QFile & tempFile, Cookies *cookies); // downloads the url content
@@ -60,7 +60,7 @@ public:
 
 private:
   NetRequestVector Request;			// list of all requests
-  QString header;					// http header
+  QByteArray header;				// http header
   QString cookie;					// cookie for http header
   qint16  timeout;					// network timeout in seconds
 

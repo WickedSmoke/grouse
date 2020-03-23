@@ -184,7 +184,7 @@ AlphaVantageFeed::getRealTimePrice (QString symbol, RTPrice & rtprice, API api)
   tempFile.resize (0);
 
   netservice = new NetService (Application_Settings->options.nettimeout,
-                               httpHeader ().toLatin1 (), this);
+                               httpHeader(), this);
   result = netservice->httpGET (url, tempFile, NULL);
   if (result != CG_ERR_OK)
     goto getRealTimePrice_end;
@@ -299,7 +299,7 @@ AlphaVantageFeed::symbolExistence (QString & symbol, QString & name, QString & m
   tempFile.resize (0);
 
   netservice = new NetService (Application_Settings->options.nettimeout,
-                               httpHeader ().toLatin1 (), this);
+                               httpHeader(), this);
   ioresult = netservice->httpGET (urlstr, tempFile, NULL);
   if (ioresult != CG_ERR_OK)
     goto symbolExistence_end;
@@ -404,7 +404,7 @@ AlphaVantageFeed::downloadData (QString symbol, QString timeframe, QString curre
   tempFile.resize (0);
 
   netservice = new NetService (Application_Settings->options.nettimeout,
-                               httpHeader ().toLatin1 (), this);
+                               httpHeader(), this);
 
   // fill symbol entry
   entry.symbol = Symbol;

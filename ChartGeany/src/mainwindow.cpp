@@ -67,7 +67,6 @@ DebugDialog *debugdialog;
 QProgressBar *GlobalProgressBar;
 static SplashDialog *splash = nullptr;
 QString Year, Month, Day, UID, RunCounter;
-QStringList UserAgents;
 QMutex *ResourceMutex = nullptr;
 size_t CGScriptFunctionRegistrySize;
 
@@ -222,19 +221,6 @@ MainWindow::MainWindow (QWidget * parent):
   ui->setupUi (this);
   setWindowFlags( windowFlags() & ~Qt::WindowContextHelpButtonHint );
 
-  UserAgents
-      << QStringLiteral ("Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.2 Safari/537.36")
-      << QStringLiteral ("Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25")
-      << QStringLiteral ("Mozilla/5.0 (Windows NT 6.2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1467.0 Safari/537.36")
-      << QStringLiteral ("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1")
-      << QStringLiteral ("Mozilla/5.0 (X11; Linux x86_64; rv:17.0) Gecko/20121202 Firefox/17.0 Iceweasel/17.0.1")
-      << QStringLiteral ("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36")
-      << QStringLiteral ("Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0) Opera 12.14")
-      << QStringLiteral ("Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0)")
-      << QStringLiteral ("Opera/12.0 (Windows NT 5.2;U;en)Presto/22.9.168 Version/12.00")
-      << QStringLiteral ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246")
-      << QStringLiteral ("Mozilla/4.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/5.0)")
-      << QStringLiteral ("Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) like Gecko");
 
 // set the sqlite db path
   appsettings.sqlitefile = QDir::homePath () % QDir::separator()  % QStringLiteral (".config") % QDir::separator()  % APPDIR % QDir::separator()  % DBNAME;

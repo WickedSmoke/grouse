@@ -146,7 +146,7 @@ IEXFeed::getRealTimePrice (QString symbol, RTPrice & rtprice)
   tempFile.resize (0);
 
   netservice = new NetService (Application_Settings->options.nettimeout,
-                               httpHeader ().toLatin1 (), this);
+                               httpHeader(), this);
   result = netservice->httpGET (url, tempFile, NULL);
   if (result != CG_ERR_OK)
     goto getRealTimePrice_end;
@@ -255,7 +255,7 @@ IEXFeed::symbolExistence (QString & symbol, QString & name, QString & market)
   tempFile.resize (0);
 
   netservice = new NetService (Application_Settings->options.nettimeout,
-                               httpHeader ().toLatin1 (), this);
+                               httpHeader(), this);
   ioresult = netservice->httpGET (urlstr, tempFile, NULL);
   if (ioresult != CG_ERR_OK)
     goto symbolExistence_end;
@@ -362,7 +362,7 @@ IEXFeed::downloadData (QString symbol, QString timeframe, QString currency,
   entry.dnlstring = url;
 
   netservice = new NetService (Application_Settings->options.nettimeout,
-                               httpHeader ().toLatin1 (), this);
+                               httpHeader(), this);
   result = netservice->httpGET (url, tempFile, NULL);
   if (result != CG_ERR_OK)
     goto downloadData_end;
@@ -443,7 +443,7 @@ IEXFeed::downloadStats (QString symbol)
   tempFile.resize (0);
 
   netservice = new NetService (Application_Settings->options.nettimeout,
-                               httpHeader ().toLatin1 (), this);
+                               httpHeader(), this);
   result = netservice->httpGET (url, tempFile, NULL);
   if (result != CG_ERR_OK)
     goto downloadStats_end;
@@ -515,7 +515,7 @@ IEXFeed::getSymbols ()
   tempFile.resize (0);
 
   netservice = new NetService (Application_Settings->options.nettimeout,
-                               httpHeader ().toLatin1 (), this);
+                               httpHeader(), this);
   if (CG_ERR_OK != netservice->httpGET (url, tempFile, NULL))
     goto getSymbols_end;
 
