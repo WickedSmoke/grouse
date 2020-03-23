@@ -76,6 +76,13 @@ bool FULL = false;
 
 QAtomicInt GlobalError;
 
+#define CREATE_DIALOG(ptr,T) \
+  if(! ptr) { \
+    ptr = new T(this); \
+    if(! ptr) return; \
+  }
+
+
 // load application fonts
 void
 MainWindow::loadFonts ()
@@ -195,7 +202,8 @@ sqlcb_dbdata (void *dummy, int argc, char **argv, char **column)
 // constructor
 MainWindow::MainWindow (QWidget * parent):
   QMainWindow (parent), ui (new Ui::MainWindow),
-  infodlg(nullptr)
+  portfoliomanagerdlg(nullptr),
+  optionsdlg(nullptr), infodlg(nullptr)
 {
   Q_UNUSED (QTACastFromConstVoid)
 
@@ -607,13 +615,11 @@ MainWindow::MainWindow (QWidget * parent):
   loadcsvdlg = new LoadCSVDialog (this);
   downloaddatadlg = new DownloadDataDialog (this);
   datamanagerdlg = new DataManagerDialog (this);
-  portfoliomanagerdlg = new PortfolioManagerDialog (this);
   debugdlg = new DebugDialog (this);
   modulemanagerdlg = new ModuleManagerDialog (this);
   progressdlg = new ProgressDialog (this);
   waitdlg = new WaitDialog;
   templatemanagerdlg = new TemplateManagerDialog (this);
-  optionsdlg = new OptionsDialog (this);
 
   // load application fonts
   loadFonts ();
@@ -1041,6 +1047,7 @@ MainWindow::managerButton_clicked ()
 void
 MainWindow::portfolioButton_clicked ()
 {
+  CREATE_DIALOG( portfoliomanagerdlg, PortfolioManagerDialog )
   portfoliomanagerdlg->show ();
 }
 
@@ -1130,18 +1137,21 @@ MainWindow::exitButton_clicked ()
 void
 MainWindow::optionsButton_clicked ()
 {
-  if (optionsdlg == nullptr)
-    return;
+#if 0   // #ifdef Q_OS_MAC
+  if( optionsdlg )
+  {
+    /* this is a weird trick in order to keep os x running */
+    optionsdlg->exec ();
+    delete optionsdlg;
+    optionsdlg = new (std::nothrow) OptionsDialog (this);
+    if (optionsdlg == nullptr)
+      return;
+  }
+#endif
 
-  /* this is a weird trick in order to keep os x running */
-  optionsdlg->exec ();
-  delete optionsdlg;
-  optionsdlg = new (std::nothrow) OptionsDialog (this);
-
-  if (optionsdlg == nullptr)
-    return;
-
+  CREATE_DIALOG( optionsdlg, OptionsDialog )
   correctWidgetFonts (optionsdlg);
+  optionsdlg->show();
 }
 
 // home_clicked ()
@@ -1155,13 +1165,7 @@ MainWindow::homeButton_clicked ()
 void
 MainWindow::infoButton_clicked ()
 {
-  if (! infodlg)
-  {
-    infodlg = new InfoDialog (this);
-    if (! infodlg)
-      return;
-  }
-
+  CREATE_DIALOG( infodlg, InfoDialog )
   infodlg->show ();
   infodlg->activateWindow ();
   infodlg->raise ();
