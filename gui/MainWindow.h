@@ -8,6 +8,7 @@
 
 
 #include <QMainWindow>
+#include "datamanagerdialog.h"
 
 
 class MainWindow : public QMainWindow
@@ -18,6 +19,15 @@ public:
 
     MainWindow();
 
+    CG_ERR_RESULT addChart (TableDataVector & datavector);
+    bool expandedChart() const;
+    void setExpandChart(bool);
+
+    QStringList getTabKeys(QString type);
+
+    void enableTickerButton();
+    void disableTickerButton();
+
 public slots:
 
     void open( const QString& file );
@@ -25,6 +35,7 @@ public slots:
 
 protected:
 
+    virtual void closeEvent( QCloseEvent* );
     virtual void keyPressEvent( QKeyEvent* );
     virtual void mousePressEvent( QMouseEvent* );
 
@@ -40,6 +51,7 @@ private slots:
     void open();
     void save();
     void saveAs();
+    void showDataManager();
 
 private:
 
@@ -51,6 +63,9 @@ private:
     QAction* _actSave;
     QAction* _actQuit;
     QAction* _actAbout;
+    QAction* _actManageData;
+
+    DataManagerDialog* _dataManager;
 
     // Disabled copy constructor and operator=
     MainWindow( const MainWindow & ) : QMainWindow( 0 ) {}

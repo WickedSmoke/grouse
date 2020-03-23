@@ -10,21 +10,88 @@
 #include <QKeyEvent>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QProgressBar>
+#include <QSettings>
 #include "MainWindow.h"
+#include "chartapp.h"
+#include "defs.h"
+#include "progressdialog.h"
 
 
-MainWindow::MainWindow()
+#define CREATE_DIALOG(ptr,T) \
+    if(! ptr) { \
+        ptr = new T(this); \
+        if(! ptr) return; \
+    }
+
+
+MainWindow::MainWindow() :
+    _dataManager(nullptr)
 {
     createActions();
     createMenus();
     createTools();
+
+    QSettings pref(APPDIR, APPNAME);
+    QSize size = pref.value("main-window-size", QSize()).toSize();
+    if (size.isValid())
+    {
+        resize(size);
+        show();
+    }
+    else
+    {
+        showMaximized();
+    }
 }
+
+
+CG_ERR_RESULT MainWindow::addChart(TableDataVector& /*datavector*/)
+{
+    return CG_ERR_OK;   // TODO
+}
+
+
+bool MainWindow::expandedChart() const
+{
+    return false; // TODO expandedChartFlag;
+}
+
+
+void MainWindow::setExpandChart(bool)
+{
+    // TODO
+}
+
+
+QStringList MainWindow::getTabKeys(QString /*type*/)
+{
+    return QStringList();   // TODO
+}
+
+
+void MainWindow::enableTickerButton() {}
+
+
+void MainWindow::disableTickerButton() {}
 
 
 void MainWindow::showAbout()
 {
-    QMessageBox::information( this, "About MainWindow",
-        "Product\n\nVersion 0.0.1" );
+    QMessageBox::information( this, "About Scat",
+        "Scat\n\nVersion 0.0.1" );
+}
+
+
+void MainWindow::closeEvent( QCloseEvent* event )
+{
+    QSettings pref(APPDIR, APPNAME);
+    QSize saveSize;
+
+    if( ! isMaximized() )
+        saveSize = size();
+    pref.setValue("main-window-size", saveSize);
+    event->accept();
 }
 
 
@@ -51,17 +118,24 @@ void MainWindow::mousePressEvent( QMouseEvent* )
 
 void MainWindow::createActions()
 {
+#define CONNECT(act,slot)   connect(act,SIGNAL(triggered()),this,slot)
+
     _actOpen = new QAction( "&Open...", this );
-    connect( _actOpen, SIGNAL(triggered()), this, SLOT(open()));
+    CONNECT( _actOpen, SLOT(open()) );
 
     _actSave = new QAction( "&Save", this );
-    connect( _actSave, SIGNAL(triggered()), this, SLOT(save()));
+    CONNECT( _actSave, SLOT(save()) );
 
     _actQuit = new QAction( "&Quit", this );
-    connect( _actQuit, SIGNAL(triggered()), this, SLOT(close()));
+    _actQuit->setShortcut( QKeySequence::Quit );
+    CONNECT( _actQuit, SLOT(close()) );
 
     _actAbout = new QAction( "&About", this );
-    connect( _actAbout, SIGNAL(triggered()), this, SLOT(showAbout()));
+    CONNECT( _actAbout, SLOT(showAbout()) );
+
+    _actManageData = new QAction( "&Manage Data...", this );
+    _actManageData->setShortcut( QKeySequence("F1") );
+    CONNECT( _actManageData, SLOT(showDataManager()) );
 }
 
 
@@ -74,6 +148,9 @@ void MainWindow::createMenus()
     file->addAction( _actSave );
     file->addSeparator();
     file->addAction( _actQuit );
+
+    QMenu* tools = bar->addMenu( "&Tool" );
+    tools->addAction( _actManageData );
 
     bar->addSeparator();
 
@@ -125,14 +202,78 @@ void MainWindow::saveAs()
 }
 
 
+void MainWindow::showDataManager()
+{
+    CREATE_DIALOG( _dataManager, DataManagerDialog );
+    _dataManager->show();
+}
+
+
 //----------------------------------------------------------------------------
+
+
+#include "cgscript.h"
+#include "downloaddatadialog.h"
+#include "progressdialog.h"
+#include "templatemanagerdialog.h"
+#include "debugdialog.h"
+
+
+AppOptions _options;
+AppOptions *Application_Options = &_options;
+
+SQLists _comboitems;
+SQLists *ComboItems = &_comboitems;
+
+QProgressBar *GlobalProgressBar = nullptr;
+QMutex *ResourceMutex = nullptr;
+QString Year, Month, Day;
+QString UID, RunCounter;
+
+DownloadDataDialog *downloaddatadialog;
+TemplateManagerDialog *templatemanager;
+ProgressDialog *progressdialog;
+DebugDialog *debugdialog;
+
+size_t CGScriptFunctionRegistrySize;
+int NCORES;
+
+const char DEFAULT_FONT_FAMILY[] = "Tahoma";
+#ifdef Q_OS_MAC
+const int  FONT_POINTSIZE_PAD = 3;
+const int  FONT_PIXELSIZE_PAD = 3;
+#else
+const int  FONT_POINTSIZE_PAD = 1;
+const int  FONT_PIXELSIZE_PAD = 1;
+#endif
+const int  CHART_FONT_SIZE_PAD = 3;
 
 
 int main( int argc, char **argv )
 {
-    QApplication app( argc, argv );
-
+    ChartApp app( argc, argv );
+    InstrumentDatabase idb;
     MainWindow w;
+
+    CGScriptFunctionRegistrySize = cgscript_init();
+
+    {
+    const char* openError;
+    QString fn = QDir::homePath() % QDir::separator() %
+        QStringLiteral(".config") % QDir::separator() % APPDIR %
+        QDir::separator() % DBNAME;
+    if( ! idb.openFile( fn, &openError ) )
+    {
+        showMessage( openError );
+        return 1;
+    }
+    }
+
+    downloaddatadialog = new DownloadDataDialog(&w);
+    progressdialog  = new ProgressDialog(&w);
+    templatemanager = new TemplateManagerDialog(&w);
+    debugdialog     = new DebugDialog(&w);
+
     w.show();
 
     if( argc > 1 )
