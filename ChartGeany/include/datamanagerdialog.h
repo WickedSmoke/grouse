@@ -80,7 +80,6 @@ private:
   QString formSQLDropSentence (QString table, qint32 *nentries); // form a drop sql sentence
 
 private slots:
-  void importButton_clicked (void);
   void refreshButton_clicked (void);
   void exitButton_clicked (void);
   void trashButton_clicked (void);

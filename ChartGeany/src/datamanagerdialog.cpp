@@ -112,8 +112,10 @@ DataManagerDialog::DataManagerDialog (QWidget * parent):
   // connect to signals
   connect (ui->chartButton, SIGNAL (clicked ()), this,
            SLOT (chartButton_clicked ()));
-  connect (ui->importButton, SIGNAL (clicked ()), this,
-           SLOT (importButton_clicked ()));
+  connect (ui->importButton, SIGNAL (clicked ()), ui->tableWidget,
+           SLOT (clearSelection()));
+  connect (ui->importButton, SIGNAL (clicked ()), parent,
+           SLOT (showCsvDialog()));
   connect (ui->downloadButton, SIGNAL (clicked ()), this,
            SLOT (downloadButton_clicked ()));
   connect (ui->refreshButton, SIGNAL (clicked ()), this,
@@ -136,9 +138,6 @@ DataManagerDialog::DataManagerDialog (QWidget * parent):
           this, SLOT(filter_combol_changed (const QString &)));
 
   // correctWidgetFonts (this);
-  if (parent != NULL)
-    setParent (parent);
-
   // correctTitleBar (this);
 }
 
@@ -244,14 +243,6 @@ DataManagerDialog::reloadSymbols ()
 
 /// Signals
 ///
-// importButton_clicked ()
-void
-DataManagerDialog::importButton_clicked ()
-{
-  ui->tableWidget->clearSelection ();
-  loadcsvdialog->show ();
-}
-
 // downloadButton_clicked ()
 void
 DataManagerDialog::downloadButton_clicked ()

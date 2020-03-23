@@ -65,6 +65,9 @@ public:
   }; // returns stock ticker
   bool expandedChart () const NOEXCEPT;
 
+public slots:
+  void showCsvDialog();
+
 private:
   Ui::MainWindow *ui;
   void *sqlitebuff;                     // buffer for sqlite

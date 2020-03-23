@@ -59,7 +59,6 @@ const int  CHART_FONT_SIZE_PAD = 3;
 
 AppSettings *Application_Settings;
 SQLists *ComboItems;
-LoadCSVDialog *loadcsvdialog;
 DownloadDataDialog *downloaddatadialog;
 TemplateManagerDialog *templatemanager;
 ProgressDialog *progressdialog;
@@ -201,7 +200,7 @@ sqlcb_dbdata (void *dummy, int argc, char **argv, char **column)
 // constructor
 MainWindow::MainWindow (QWidget * parent):
   QMainWindow (parent), ui (new Ui::MainWindow),
-  portfoliomanagerdlg(nullptr),
+  loadcsvdlg(nullptr), portfoliomanagerdlg(nullptr),
   optionsdlg(nullptr), infodlg(nullptr)
 {
   Q_UNUSED (QTACastFromConstVoid)
@@ -598,7 +597,6 @@ MainWindow::MainWindow (QWidget * parent):
   strcpy (comboitems.commissiontypes_query, "select * from COMMISSIONTYPES");
 
   // create widgets
-  loadcsvdlg = new LoadCSVDialog (this);
   downloaddatadlg = new DownloadDataDialog (this);
   datamanagerdlg = new DataManagerDialog (this);
   debugdlg = new DebugDialog (this);
@@ -611,7 +609,6 @@ MainWindow::MainWindow (QWidget * parent):
   loadFonts ();
 
   // export classes and variables
-  loadcsvdialog = loadcsvdlg;
   downloaddatadialog = downloaddatadlg;
   progressdialog = progressdlg;
   templatemanager = templatemanagerdlg;
@@ -961,6 +958,12 @@ MainWindow::setExpandChart (bool expandflag)
       ui->tabWidget->widget(counter)->resize (ui->tabWidget->width () - 2,
                                               ui->tabWidget->height () - 20);
   }
+}
+
+void MainWindow::showCsvDialog()
+{
+  CREATE_DIALOG( loadcsvdlg, LoadCSVDialog )
+  loadcsvdlg->show();
 }
 
 // set developer's mode
