@@ -34,7 +34,7 @@ QMAKE_CXXFLAGS += -std=c++11
 
 INCLUDEPATH = include \
               ../ChartGeany/3rdparty/sqlite3/include \
-              ../ChartGeany/3rdparty/simplecrypt/include \
+              ../3rdparty/simplecrypt \
               ../ChartGeany/include \
               ../ChartGeany/cgscript/include
 
@@ -88,11 +88,11 @@ SOURCES += src/cgscript_toolchain.cpp \
            ../ChartGeany/src/sqlcb_modules.cpp \
            ../ChartGeany/src/sqlcb_symbol_table.cpp \
            ../ChartGeany/src/sqlcb_toolchain.cpp \
-           ../ChartGeany/3rdparty/simplecrypt/simplecrypt.cpp \
+           ../3rdparty/simplecrypt/simplecrypt.cpp \
            ../ChartGeany/3rdparty/sqlite3/sqlite3_wrapper.c
 
 HEADERS += ../ChartGeany/include/appdata.h \
-           ../ChartGeany/3rdparty/simplecrypt/include/simplecrypt.h
+           ../3rdparty/simplecrypt/simplecrypt.h
 
 #
 # libtcc

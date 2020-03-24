@@ -176,7 +176,7 @@ INCLUDEPATH += \
         3rdparty/sqlite3/include \
         3rdparty/segvcatch/include \
         ../3rdparty/ta-lib/include \
-        3rdparty/simplecrypt/include
+        ../3rdparty/simplecrypt
 
 # application sources, common for all Qt versions, platforms and compilers
 SOURCES += \
@@ -336,7 +336,7 @@ LIBS += -L../3rdparty -lta-lib
 SOURCES += \
         3rdparty/sqlite3/sqlite3_wrapper.c \
         3rdparty/segvcatch/src/segvcatch.cpp \
-        3rdparty/simplecrypt/simplecrypt.cpp
+        ../3rdparty/simplecrypt/simplecrypt.cpp
 
 # 3rdparty headers common for all Qt versions, platforms and compilers
 HEADERS  += \
