@@ -236,40 +236,41 @@ void setGlobalError(CG_ERR_RESULT err, const char *_file_, int _line_)
 }
 
 
+static const size_t ErrorMessageCount = 25;
+static const char* ErrorMessages[ ErrorMessageCount ] =
+{
+    "No error",
+    "Cannot open file",
+    "Cannot create temporary table",
+    "Cannot create table",
+    "Cannot insert data",
+    "Cannot delete data",
+    "Cannot access database",
+    "Invalid reply or network error",
+    "Cannot create temporary file",
+    "Cannot write to file",
+    "Transaction error",
+    "Not enough memory",
+    "Symbol does not exist",
+    "Cannot access data",
+    "Network timeout",
+    "Invalid data",
+    "Request pending",
+    "Buffer not found",
+    "No quotes for symbol",
+    "Operation failed",
+    "Compiler not found",
+    "Compilation failed",
+    "No data",
+    "No api key",
+    "Invalid object type"
+};
+
 // error messages
 QString errorMessage(CG_ERR_RESULT err)
 {
-  QStringList ErrorMessage;
-  ErrorMessage  <<
-                QStringLiteral ("No error") <<
-                QStringLiteral ("Cannot open file") <<
-                QStringLiteral ("Cannot create temporary table") <<
-                QStringLiteral ("Cannot create table") <<
-                QStringLiteral ("Cannot insert data") <<
-                QStringLiteral ("Cannot delete data") <<
-                QStringLiteral ("Cannot access database") <<
-                QStringLiteral ("Invalid reply or network error") <<
-                QStringLiteral ("Cannot create temporary file") <<
-                QStringLiteral ("Cannot write to file") <<
-                QStringLiteral ("Transaction error") <<
-                QStringLiteral ("Not enough memory") <<
-                QStringLiteral ("Symbol does not exist") <<
-                QStringLiteral ("Cannot access data") <<
-                QStringLiteral ("Network timeout") <<
-                QStringLiteral ("Invalid data") <<
-                QStringLiteral ("Request pending") <<
-                QStringLiteral ("Buffer not found") <<
-                QStringLiteral ("No quotes for symbol") <<
-                QStringLiteral ("Operation failed") <<
-                QStringLiteral ("Compiler not found") <<
-                QStringLiteral ("Compilation failed") <<
-                QStringLiteral ("No data") <<
-                QStringLiteral ("No api key") <<
-                QStringLiteral ("Invalid object type");
-
   GlobalError = CG_ERR_OK;
-
-  return ErrorMessage[err];
+  return QString(ErrorMessages[err]);
 }
 
 
