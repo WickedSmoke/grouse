@@ -62,23 +62,6 @@ typedef struct alignas (max_align_t) // frame data as loaded from sqlite table
 Q_DECLARE_TYPEINFO (QTAChartFrame, Q_MOVABLE_TYPE);
 typedef QVector < QTAChartFrame > FrameVector;
 
-typedef struct  // fundamenta data as loaded from sqlite table
-{
-  QString bv;
-  QString mc;
-  QString ebitda;
-  QString pe;
-  QString peg;
-  QString dy;
-  QString epscurrent;
-  QString epsnext;
-  QString es;
-  QString ps;
-  QString pbv;
-} QTAChartData;
-
-Q_DECLARE_TYPEINFO (QTAChartData, Q_MOVABLE_TYPE);
-
 namespace Ui
 {
   class QTAChart;

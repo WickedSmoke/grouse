@@ -63,8 +63,8 @@
 #include <QColor>
 #include "appdata.h"
 #include "sqlite3.h"
+#include "idb.h"
 
-#define QSTR_SIZE           128
 #define TICKER_HEIGHT        35
 
 // minimum and maximum qreal values
@@ -243,90 +243,14 @@ typedef struct
   bool devmode;                 // default setting for developer mode
 } AppOptions;
 
-// Lists populated by SQL statements
-typedef struct
-{
-  QStringList formatList;       // list of supported formats
-  QStringList timeframeList;    // list of supported timeframes
-  QStringList currencyList;     // list of supported currencies
-  QStringList marketList;       // list of supported markets
-  QStringList datafeedsList;    // list of supported datafeeds
-  QStringList realtimeList;     // list of real time flags for datafeeds
-  QStringList symlistList;      // list of symlist tables for datafeeds
-  QStringList symlisturlList;   // list of symlist urls for datafeeds
-  QStringList transactiontypeList;      // list of portfolio transaction types
-  QStringList commissiontypeList;       // list of commission type
-  char formats_query[QSTR_SIZE];     // "select FORMAT from FORMATS"
-  char timeframes_query[QSTR_SIZE];  // "select TIMEFRAME from TIMEFRAMES_ORDERED"
-  char currencies_query[QSTR_SIZE];  // "select SYMBOL from CURRENCIES"
-  char markets_query[QSTR_SIZE];     // "select MARKET from MARKETS"
-  char datafeeds_query[QSTR_SIZE];     // "select * from DATAFEEDS"
-  char transactiontypes_query[QSTR_SIZE];     // "select * from TRANSACTIONTYPES"
-  char commissiontypes_query[QSTR_SIZE];      // "select * from COMMISSIONTYPES"
-} SQLists;
-
-// Real time price
-#ifdef Q_OS_WIN
-typedef struct alignas (4)
-#else
-typedef struct alignas (8)
-#endif
-{
-  QString symbol;       // symbol
-  QString feed;         // data feed (GOOGLE, YAHOO etc)
-  QString price;        // current price
-  QString change;       // price change
-  QString prcchange;    // price percent change
-  QString open;         // day open
-  QString high;         // day high
-  QString low;          // day low
-  QString volume;       // day volume
-  QString date;         // date
-  QString time;         // time
-} RTPrice;
-
-Q_DECLARE_METATYPE (RTPrice);
-Q_DECLARE_TYPEINFO (RTPrice, Q_MOVABLE_TYPE);
-typedef QList < RTPrice > RTPriceList;
-Q_DECLARE_METATYPE (RTPriceList);
 
 // application settings
 typedef struct
 {
-  sqlite3 *db;          // database handler
   QString sqlitefile;   // full path of database file
-  QString pragma;       // PRAGMA statements
   AppOptions options;   // application options
 } AppSettings;
 
-
-// symbol entry input data
-typedef struct
-{
-  QString csvfile;      // path of csv file
-  QString tablename;    // table name (eg AAPL_OTHER_DAY_CSV)
-  QString tmptablename; // temporary table name (eg TMP_GSPC_OTHER_DAY_CSV)
-  QString symbol;       // symbol (eg AAPL)
-  QString name;         // company/index name (eg Apple Inc.)
-  QString market;       // market (eg NYSE)
-  QString timeframe;    // timeframe (DAY, WEEK, MONTH)
-  QString currency;     // currency (USD, EUR etc)
-  QString format;       // csv format (eg YAHOO)
-  QString source;       // source (CSV, YAHOO etc)
-  QString dnlstring;    // download string
-  QString BookValue;    // book value
-  QString MarketCap;    // market capitalization
-  QString EBITDA;       // EBITDA
-  QString PE;           // Price/Earnings
-  QString PEG;          // Price/Earnings
-  QString Yield;        // Yield
-  QString EPScy;        // EPS current year
-  QString EPSny;        // EPS next year
-  QString ES;           // Earnings/Share
-  QString PS;           // Price/Sales
-  QString PBv;          // Price/Book Value
-  bool    adjust;       // true: adjust data, false: do not adjust
-} SymbolEntry;
 
 // table data for symbols
 typedef struct
@@ -365,10 +289,6 @@ typedef QVector < ToolchainRec * > ToolchainVector;
 extern AppSettings *Application_Settings;       // application settings
 extern QAtomicInt GlobalError;                  // global error code
 extern QString Year, Month, Day, RunCounter, UID;
-
-// set global error
-extern void
-setGlobalError(CG_ERR_RESULT err, const char *_file_, int _line_);
 
 // load a csv file to sqlite
 // operation may be "CREATE" or "UPDATE"

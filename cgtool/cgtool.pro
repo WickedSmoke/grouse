@@ -33,6 +33,7 @@ QMAKE_CXXFLAGS += -std=c++11
 }
 
 INCLUDEPATH = include \
+              ../database \
               ../ChartGeany/3rdparty/sqlite3/include \
               ../3rdparty/simplecrypt \
               ../ChartGeany/include \
@@ -81,13 +82,13 @@ SOURCES += src/cgscript_toolchain.cpp \
            src/list_symbols.cpp \
            src/main.cpp \
            src/updatedb.cpp \
-           ../ChartGeany/src/platformstring.cpp \
-           ../ChartGeany/src/selectfromdb.cpp \
-           ../ChartGeany/src/sqlcb_datafeeds.cpp \
-           ../ChartGeany/src/sqlcb_dbversion.cpp \
-           ../ChartGeany/src/sqlcb_modules.cpp \
-           ../ChartGeany/src/sqlcb_symbol_table.cpp \
-           ../ChartGeany/src/sqlcb_toolchain.cpp \
+           ../database/idb.cpp \
+           ../database/platformstring.cpp \
+           ../database/sqlcb_datafeeds.cpp \
+           ../database/sqlcb_dbversion.cpp \
+           ../database/sqlcb_modules.cpp \
+           ../database/sqlcb_symbol_table.cpp \
+           ../database/sqlcb_toolchain.cpp \
            ../3rdparty/simplecrypt/simplecrypt.cpp \
            ../ChartGeany/3rdparty/sqlite3/sqlite3_wrapper.c
 

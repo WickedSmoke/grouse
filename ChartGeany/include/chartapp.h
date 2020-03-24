@@ -19,7 +19,6 @@
 #ifndef CHARTAPP_H
 #define CHARTAPP_H
 
-#include <QtGui>
 #include <QApplication>
 #include <QMutex>
 
@@ -33,14 +32,10 @@ public:
 
   void moduleLock (QObject *obj);
   void moduleUnlock (QObject *obj);
-  void ioLock ();
-  void ioUnlock ();
-  bool ioTrylock ();
 
 private:
   QObject *lockholder;  // the object that holds the lock
   QMutex *modmutex;     // mutex for modules
-  QMutex *iomutex;      // mutex for multithreaded use of sqlite
 };
 
 

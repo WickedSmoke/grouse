@@ -62,51 +62,6 @@ delay(int secs)
     QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
 
-// insert or update database
-int
-updatedb (QString &SQL, bool trylock)
-{
-  QString sql;
-  char *errmsg = nullptr;
-  static int updcounter = 0;
-  int rc;
-
-  sql = QStringLiteral ("BEGIN;") % SQL % QStringLiteral ("COMMIT;");
-
-  updcounter ++;
-  if (updcounter == 1000)
-  {
-    sql += "PRAGMA shrink_memory;";
-    updcounter = 0;
-  }
-
-  setGlobalError(CG_ERR_OK, __FILE__, __LINE__);
-
-  if (!trylock)
-    (qobject_cast <ChartApp *> (qApp))->ioLock ();
-  else
-  if ((qobject_cast <ChartApp *> (qApp))->ioTrylock () == false)
-    return SQLITE_OK;
-
-  rc = sqlite3_exec(Application_Settings->db, sql.toUtf8(), nullptr, nullptr, &errmsg);
-
-  if (errmsg != nullptr)
-    sqlite3_free(errmsg);
-
-  if (rc != SQLITE_OK)
-    resetDatabase ();
-
-  (qobject_cast <ChartApp *> (qApp))->ioUnlock ();
-
-  return rc;
-}
-
-int
-updatedb (QString &SQL)
-{
-  return updatedb (SQL, false);
-}
-
 // show message box
 void
 showMessage (const QString& message, QWidget* parent)
@@ -160,43 +115,6 @@ showOkCancel (const QString& message, QWidget* parent)
                             QMessageBox::Ok | QMessageBox::Cancel,
                             QMessageBox::Cancel);
   return( btn == QMessageBox::Ok );
-}
-
-// error messages
-QString
-errorMessage (CG_ERR_RESULT err)
-{
-  QStringList ErrorMessage;
-  ErrorMessage  <<
-                QStringLiteral ("No error") <<
-                QStringLiteral ("Cannot open file") <<
-                QStringLiteral ("Cannot create temporary table") <<
-                QStringLiteral ("Cannot create table") <<
-                QStringLiteral ("Cannot insert data") <<
-                QStringLiteral ("Cannot delete data") <<
-                QStringLiteral ("Cannot access database") <<
-                QStringLiteral ("Invalid reply or network error") <<
-                QStringLiteral ("Cannot create temporary file") <<
-                QStringLiteral ("Cannot write to file") <<
-                QStringLiteral ("Transaction error") <<
-                QStringLiteral ("Not enough memory") <<
-                QStringLiteral ("Symbol does not exist") <<
-                QStringLiteral ("Cannot access data") <<
-                QStringLiteral ("Network timeout") <<
-                QStringLiteral ("Invalid data") <<
-                QStringLiteral ("Request pending") <<
-                QStringLiteral ("Buffer not found") <<
-                QStringLiteral ("No quotes for symbol") <<
-                QStringLiteral ("Operation failed") <<
-                QStringLiteral ("Compiler not found") <<
-                QStringLiteral ("Compilation failed") <<
-                QStringLiteral ("No data") <<
-                QStringLiteral ("No api key") <<
-                QStringLiteral ("Invalid object type");
-
-  GlobalError = CG_ERR_OK;
-
-  return ErrorMessage[err];
 }
 
 // full operating system description
@@ -297,19 +215,6 @@ fullOperatingSystemVersion ()
 
   full = os + ver + desc;
   return full;
-}
-
-// set global error
-void
-setGlobalError(CG_ERR_RESULT err, const char *_file_, int _line_)
-{
-  Q_UNUSED (_file_)
-  Q_UNUSED (_line_)
-
-  if (GlobalError.fetchAndAddAcquire (0) == CG_ERR_OK)
-    GlobalError = err;
-
-  return;
 }
 
 // formats' callback
@@ -1008,34 +913,6 @@ nativeHttpHeader ()
   return header;
 }
 
-static const size_t UserAgentCount = 12;
-static const char* UserAgents[ UserAgentCount ] =
-{
-  "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.2 Safari/537.36",
-  "Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X, AppleWebKit/536.26 (KHTML, like Gecko, Version/6.0 Mobile/10A5355d Safari/8536.25",
-  "Mozilla/5.0 (Windows NT 6.2, AppleWebKit/537.36 (KHTML, like Gecko, Chrome/28.0.1467.0 Safari/537.36",
-  "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0, Gecko/20100101 Firefox/40.1",
-  "Mozilla/5.0 (X11; Linux x86_64; rv:17.0, Gecko/20121202 Firefox/17.0 Iceweasel/17.0.1",
-  "Mozilla/5.0 (Windows NT 6.1, AppleWebKit/537.36 (KHTML, like Gecko, Chrome/41.0.2228.0 Safari/537.36",
-  "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0, Opera 12.14",
-  "Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0,",
-  "Opera/12.0 (Windows NT 5.2;U;en,Presto/22.9.168 Version/12.00",
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64, AppleWebKit/537.36 (KHTML, like Gecko, Chrome/42.0.2311.135 Safari/537.36 Edge/12.246",
-  "Mozilla/4.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/5.0,",
-  "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0, like Gecko"
-};
-
-// random http header
-QByteArray
-httpHeader ()
-{
-  QTime time = QTime::currentTime();
-
-  qsrand((uint)time.msec());
-  const char* str = UserAgents[qrand() % UserAgentCount];
-  return QByteArray::fromRawData( str, strlen(str) );
-}
-
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -1172,74 +1049,6 @@ familyTree (QObject *obj)
   }
 
   return list;
-}
-
-// reset the database
-void
-resetDatabase ()
-{
-  int rc;
-
-  // close
-  sqlite3_close (Application_Settings->db);
-
-  // open sqlite db
-  rc = sqlite3_open(Application_Settings->sqlitefile.toUtf8 (), &Application_Settings->db);
-  if (rc != SQLITE_OK) // if open failed, quit application
-  {
-    showMessage (QString::fromUtf8 ("Cannot create or open database. Application quits."));
-    sqlite3_close (Application_Settings->db);
-    qApp->exit (1);
-
-#if defined (Q_OS_WIN) || defined (Q_OS_MAC)
-    exit (1);
-#else
-    std::quick_exit (1);
-#endif
-  }
-  sqlite3_extended_result_codes(Application_Settings->db, 1);
-
-  // execute pragma
-  rc = sqlite3_exec(Application_Settings->db, Application_Settings->pragma.toUtf8(), nullptr, nullptr, nullptr);
-  if (rc != SQLITE_OK) // if open failed, quit application
-  {
-    showMessage (QString::fromUtf8 ("Cannot create or open database. Application quits."));
-    sqlite3_close (Application_Settings->db);
-    qApp->exit (1);
-
-#if defined (Q_OS_WIN) || defined (Q_OS_MAC)
-    exit (1);
-#else
-    quick_exit (1);
-#endif
-  }
-}
-
-// update price table
-void
-updatePrice (RTPrice rtprice)
-{
-  QString SQL = QStringLiteral ("");
-  int rc;
-
-  if (rtprice.price.toDouble () <= 0)
-    rtprice.price = QStringLiteral ("0");
-
-  SQL += QStringLiteral ("DELETE FROM prices WHERE symbol = '") % rtprice.symbol %
-         QStringLiteral ("' AND feed = '") % rtprice.feed % QStringLiteral ("'; ") %
-         QStringLiteral ("INSERT INTO prices (symbol, feed, date, price, volume, time, change, \
-          prcchange, timestamp) VALUES ('") %
-         rtprice.symbol % QStringLiteral ("','") %
-         rtprice.feed % QStringLiteral ("','") %
-         rtprice.date % QStringLiteral ("',") %
-         rtprice.price % QStringLiteral (",'") %
-         rtprice.volume % QStringLiteral ("','") %
-         rtprice.time % QStringLiteral ("','") %
-         rtprice.change % QStringLiteral ("','") %
-         rtprice.prcchange % QStringLiteral ("', (datetime('now','localtime')));");
-  rc = updatedb (SQL, true);
-  if (rc != CG_ERR_OK)
-    setGlobalError (CG_ERR_TRANSACTION, __FILE__, __LINE__);
 }
 
 // return number of significant digits after the decimal point: Qt/C++ implementation

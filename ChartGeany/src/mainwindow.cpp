@@ -34,6 +34,7 @@
 #include <QFocusEvent>
 #include <QLayout>
 #include <QMainWindow>
+#include <QSettings>
 
 #include "netservice.h"
 #include "sqlite3.h"
@@ -72,7 +73,6 @@ size_t CGScriptFunctionRegistrySize;
 int NCORES;
 bool FULL = false;
 
-QAtomicInt GlobalError;
 
 #define CREATE_DIALOG(ptr,T) \
   if(! ptr) { \
@@ -173,30 +173,6 @@ MainWindow::checkNewVersion ()
   }
 }
 
-extern int
-sqlcb_dbversion (void *versionptr, int argc, char **argv, char **column);
-
-static int
-sqlcb_dbdata (void *dummy, int argc, char **argv, char **column)
-{
-  QString colname;
-
-  if (dummy != nullptr)
-    return 1;
-
-  for (qint32 counter = 0; counter < argc; counter ++)
-  {
-    colname = QString::fromUtf8(column[counter]);
-    colname = colname.toUpper ();
-    if (colname == QLatin1String ("UID"))
-      UID = QString::fromUtf8 (argv[counter]);
-    if (colname == QLatin1String ("RUNCOUNTER"))
-      RunCounter = QString::fromUtf8 (argv[counter]);
-  }
-
-  return 0;
-}
-
 // constructor
 MainWindow::MainWindow (QWidget * parent):
   QMainWindow (parent), ui (new Ui::MainWindow),
@@ -208,12 +184,9 @@ MainWindow::MainWindow (QWidget * parent):
   const QString stylesheet =
     QStringLiteral ("background: transparent; background-color: white; color:black");
   QDateTime datetime;
-  QFileInfo dbfile;
   QFile initcopy;
-  QString SQLCommand = QStringLiteral ("");
-  int rc, dbversion;
+  const char* openError;
 
-  sqlitebuff = nullptr;
   GlobalError = CG_ERR_OK;
   ResourceMutex = new QMutex (QMutex::NonRecursive);
 
@@ -221,99 +194,19 @@ MainWindow::MainWindow (QWidget * parent):
   setWindowFlags( windowFlags() & ~Qt::WindowContextHelpButtonHint );
 
 
-// set the sqlite db path
-  appsettings.sqlitefile = QDir::homePath () % QDir::separator()  % QStringLiteral (".config") % QDir::separator()  % APPDIR % QDir::separator()  % DBNAME;
-
-// set the sqlite db status
-  QFileInfo encstatus;
-  QString encstatusname = QDir::homePath () % "/" % ".config" % "/" % APPDIR % "/" % ENCSTATUS;
-  encstatus.setFile (encstatusname);
-
-// check db existence
-  dbfile.setFile (appsettings.sqlitefile);
-
-  if (dbfile.exists () == true)
+  // set the db path
+  QString dbfile = QDir::homePath() % QDir::separator() % QStringLiteral(".config") % QDir::separator() % APPDIR % QDir::separator() % DBNAME;
+  if( ! idb.openFile( dbfile, &openError ) )
   {
-    // check if db is encrypted and decrypt it
-    if (encstatus.exists () == false)
-    {
-      WaitDialog *decryptdlg = new WaitDialog;
-      decryptdlg->setMessage (QString::fromUtf8 ("Decrypting database. Please wait..."));
-      decryptdlg->show ();
-      QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
-
-      SQLCommand  = "PRAGMA key = " + DBKEY + ";";
-      SQLCommand += "PRAGMA locking_mode = EXCLUSIVE;BEGIN EXCLUSIVE;COMMIT;";
-      SQLCommand += "ATTACH DATABASE '" +
-        appsettings.sqlitefile + "2' AS plaintext KEY '';";
-      SQLCommand += "SELECT sqlcipher_export('plaintext');  DETACH DATABASE plaintext;";
-
-      // open sqlite db
-      rc = sqlite3_open(appsettings.sqlitefile.toUtf8 (), &appsettings.db);
-      if (rc != SQLITE_OK) // if open failed, quit application
-      {
-        delete decryptdlg;
-        showMessage (QString::fromUtf8 ("Cannot create or open database. Application quits."));
-        sqlite3_close (appsettings.db);
-        qApp->exit (1);
-#if defined (Q_OS_WIN) || defined (Q_OS_MAC)
-        exit (1);
-#else
-        quick_exit (1);
-#endif
-      }
-
-      // apply decrypt pragmas
-      rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), nullptr, this, nullptr);
-      if (rc != SQLITE_OK) // if open failed, quit application
-      {
-        delete decryptdlg;
-        showMessage (QString::fromUtf8 ("Cannot create or open database. Application quits."));
-        sqlite3_close (appsettings.db);
-        qApp->exit (1);
+    showMessage ( QString(openError).append(" Application quits.") );
+    qApp->exit (1);
 
 #if defined (Q_OS_WIN) || defined (Q_OS_MAC)
-        exit (1);
+    exit (1);
 #else
-        quick_exit (1);
+    quick_exit (1);
 #endif
-      }
-      sqlite3_close (appsettings.db);
-
-      // delete old and rename new file
-      QFile::remove (appsettings.sqlitefile);
-      QFile::rename(appsettings.sqlitefile + "2", appsettings.sqlitefile);
-
-      // create status file
-      QFile statfile (encstatusname);
-      statfile.open(QIODevice::WriteOnly);
-      statfile.close ();
-
-      decryptdlg->hide ();
-      showMessage (QString::fromUtf8 ("Decryption completed. Now restart the application."));
-      qApp->exit (0);
-
-#if defined (Q_OS_WIN) || defined (Q_OS_MAC)
-      exit (1);
-#else
-      quick_exit (1);
-#endif
-    }
   }
-
-  SQLCommand = ' ';
-  // SQLCommand += "PRAGMA key = " + DBKEY + ";";
-  SQLCommand += QStringLiteral (
-    "PRAGMA locking_mode = EXCLUSIVE;BEGIN EXCLUSIVE;COMMIT;\
-     PRAGMA max_page_count = 4294967291; PRAGMA mmap_size=33554432;\
-     PRAGMA synchronous = EXTRA;\
-     PRAGMA secure_delete = 0;\
-     PRAGMA threads = 0;\
-     PRAGMA automatic_index = ON; \
-     PRAGMA journal_mode=TRUNCATE; PRAGMA temp_store=MEMORY;\
-     PRAGMA wal_checkpoint(TRUNCATE);");
-
-  appsettings.pragma = SQLCommand;
 
   ticker = nullptr;
   expandedChartFlag = false;
@@ -387,171 +280,8 @@ MainWindow::MainWindow (QWidget * parent):
   // export application settings
   Application_Settings = &appsettings;
 
-// #ifdef Q_OS_LINUX
-  // set static heap size for sqlite: 48M
-  sqlitebuff = malloc (1024*1024*1024);
-  if (sqlitebuff != nullptr)
-    sqlite3_config (SQLITE_CONFIG_HEAP, sqlitebuff, 1024*1024*48, 64);
-
-  // enable multithreading
-  sqlite3_config (SQLITE_CONFIG_SERIALIZED);
-// #endif
-
-  // check db existence and create it if needed
-  dbfile.setFile (appsettings.sqlitefile);
-  if (dbfile.exists () == false)
-  {
-    if (!QDir (QDir::homePath () % QDir::separator()  % QStringLiteral (".config") % QDir::separator()  % APPDIR).exists ())
-      QDir ().mkpath (QDir::homePath () % QDir::separator()  % QStringLiteral (".config") % QDir::separator()  % APPDIR);
-
-    // open sqlite db
-    rc = sqlite3_open(appsettings.sqlitefile.toUtf8 (), &appsettings.db);
-    if (rc != SQLITE_OK) // if open failed, quit application
-    {
-      showMessage (QString::fromUtf8 ("Cannot create or open database. Application quits."));
-      sqlite3_close (appsettings.db);
-      qApp->exit (1);
-
-#if defined (Q_OS_WIN) || defined (Q_OS_MAC)
-      exit (1);
-#else
-      quick_exit (1);
-#endif
-    }
-    sqlite3_extended_result_codes(appsettings.db, 1);
-
-    // apply pragmas
-    rc = sqlite3_exec(Application_Settings->db, Application_Settings->pragma.toUtf8(), nullptr, this, nullptr);
-    if (rc != SQLITE_OK) // if open failed, quit application
-    {
-      showMessage (QString::fromUtf8 ("Cannot create or open database. Application quits."));
-      sqlite3_close (appsettings.db);
-      qApp->exit (1);
-
-#if defined (Q_OS_WIN) || defined (Q_OS_MAC)
-      exit (1);
-#else
-      quick_exit (1);
-#endif
-    }
-
-    if (dbman (1, appsettings) != CG_ERR_OK)
-    {
-      showMessage (QString::fromUtf8 ("Cannot create or open database. Application quits."));
-      qApp->exit (1);
-
-#if defined (Q_OS_WIN) || defined (Q_OS_MAC)
-      exit (1);
-#else
-      quick_exit (1);
-#endif
-    }
-
-    // create status file
-    QFile statfile (encstatusname);
-    statfile.open(QIODevice::WriteOnly);
-    statfile.close ();
-
-    /*  Keep this here for development and debug. DO NOT DELETE
-        initcopy.setFileName ("geanymasterbase.dat");
-        initcopy.copy (appsettings.sqlitefile);
-    */
-  }
-  else
-  {
-    // open sqlite db
-    rc = sqlite3_open(appsettings.sqlitefile.toUtf8 (), &appsettings.db);
-    if (rc != SQLITE_OK) // if open failed, quit application
-    {
-      showMessage (QString::fromUtf8 ("Cannot create or open database. Application quits."));
-      sqlite3_close (appsettings.db);
-      qApp->exit (1);
-
-#if defined (Q_OS_WIN) || defined (Q_OS_MAC)
-      exit (1);
-#else
-      quick_exit (1);
-#endif
-    }
-    sqlite3_extended_result_codes(appsettings.db, 1);
-  }
-
   // export classes and variables
   ComboItems = &comboitems;
-
-  // apply pragmas
-  rc = sqlite3_exec(Application_Settings->db, Application_Settings->pragma.toUtf8(), nullptr, this, nullptr);
-  if (rc != SQLITE_OK) // if open failed, quit application
-  {
-    showMessage (QString::fromUtf8 ("Cannot create or open database. Application quits."));
-    sqlite3_close (appsettings.db);
-    qApp->exit (1);
-
-#if defined (Q_OS_WIN) || defined (Q_OS_MAC)
-    exit (1);
-#else
-    quick_exit (1);
-#endif
-  }
-
-  // check version
-  SQLCommand = QStringLiteral ("SELECT * FROM VERSION;");
-  rc = sqlite3_exec(Application_Settings->db, SQLCommand.toUtf8(),
-                    sqlcb_dbversion, (void *) &dbversion, nullptr);
-  if (rc != SQLITE_OK) // if open failed, quit application
-  {
-    showMessage (QString::fromUtf8 ("Cannot create or open database. Application quits."));
-    sqlite3_close (appsettings.db);
-    qApp->exit (1);
-
-#if defined (Q_OS_WIN) || defined (Q_OS_MAC)
-    exit (1);
-#else
-    quick_exit (1);
-#endif
-  }
-
-  if (dbversion == -1) // invalid dbversion
-  {
-    showMessage (QString::fromUtf8 ("Invalid data file. Application quits."));
-    sqlite3_close (appsettings.db);
-    qApp->exit (1);
-
-#if defined (Q_OS_WIN) || defined (Q_OS_MAC)
-    exit (1);
-#else
-    quick_exit (1);
-#endif
-  }
-
-  dbversion ++; // upgrade db file
-  if (dbman (dbversion, appsettings) != CG_ERR_OK)
-  {
-    showMessage (QString::fromUtf8 ("Cannot create or open database. Application quits."));
-    sqlite3_close (appsettings.db);
-    qApp->exit (1);
-
-#if defined (Q_OS_WIN) || defined (Q_OS_MAC)
-    exit (1);
-#else
-    quick_exit (1);
-#endif
-  }
-
-  // sqlite3 limit options for linux
-#ifdef Q_OS_LINUX
-  // maximum columns
-  sqlite3_limit(appsettings.db, SQLITE_LIMIT_COLUMN, 256);
-
-  // maximum sql length
-  sqlite3_limit(appsettings.db, SQLITE_LIMIT_SQL_LENGTH, 20971520);
-
-  // maximum compound select
-  sqlite3_limit(appsettings.db, SQLITE_LIMIT_COMPOUND_SELECT, 128);
-
-  // maximum expression depth
-  sqlite3_limit(appsettings.db, SQLITE_LIMIT_EXPR_DEPTH, 256);
-#endif
 
   // load application's options
   loadAppOptions (&Application_Settings->options);
@@ -574,18 +304,6 @@ MainWindow::MainWindow (QWidget * parent):
     QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
     delay (3);
   }
-
-  // increase run counter
-  SQLCommand = QStringLiteral ("UPDATE VERSION SET RUNCOUNTER = RUNCOUNTER + 1;");
-  rc = sqlite3_exec(Application_Settings->db, SQLCommand.toUtf8(), nullptr, this, nullptr);
-
-  // vacuum
-  SQLCommand = QStringLiteral ("REINDEX; VACUUM;");
-  rc = sqlite3_exec(Application_Settings->db, SQLCommand.toUtf8(), sqlcb_dbdata, nullptr, nullptr);
-
-  // load run counter and UID
-  SQLCommand = QStringLiteral ("SELECT * FROM VERSION;");
-  rc = sqlite3_exec(Application_Settings->db, SQLCommand.toUtf8(), sqlcb_dbdata, nullptr, nullptr);
 
   // initialize SQL statements
   strcpy (comboitems.formats_query, "select FORMAT from FORMATS");
@@ -653,16 +371,7 @@ MainWindow::MainWindow (QWidget * parent):
   if (Application_Settings->options.showsplashscreen == true)
     splash->hide ();
 
-#ifdef DEBUG
-  // disable all modules
-  SQLCommand = QStringLiteral ("UPDATE modules SET STATUS ='DISABLED';");
-  rc = sqlite3_exec(Application_Settings->db, SQLCommand.toUtf8(), sqlcb_dbdata, nullptr, nullptr);
-#endif
-
-  // disable all modules when move from a platform to another
-  SQLCommand = QStringLiteral ("UPDATE modules SET STATUS = 'DISABLED' WHERE PLATFORM <> '") %
-               platformString () % QStringLiteral ("';");
-  rc = sqlite3_exec(Application_Settings->db, SQLCommand.toUtf8(), sqlcb_dbdata, nullptr, nullptr);
+  idb.disableModules();
 
   // initialize cgscript
   CGScriptFunctionRegistrySize = cgscript_init ();
@@ -712,29 +421,10 @@ MainWindow::~MainWindow ()
       delete wid;
   }
 
-  // close database
-  if (Application_Settings->db != nullptr)
-  {
-    sqlite3_close (Application_Settings->db);
-    Application_Settings->db = nullptr;
-  }
-
-  QString sqlitebackupfile =
-    QDir::homePath () % QDir::separator()  % QStringLiteral (".config") % QDir::separator()  % APPDIR % QDir::separator()  % DBNAMEBACKUP;
-
-  QFile::remove(sqlitebackupfile);
-  QFile::copy(appsettings.sqlitefile, sqlitebackupfile);
-
   if (waitdlg != nullptr)
   {
     delete waitdlg;
     waitdlg = nullptr;
-  }
-
-  if (sqlitebuff != nullptr)
-  {
-    sqlite3_config (SQLITE_CONFIG_HEAP, nullptr, 0, 64);
-    free (sqlitebuff);
   }
 
   delete ui;
@@ -770,7 +460,6 @@ MainWindow::addChart (TableDataVector & datavector)
   QTAChart *tachart;
   QTAChartData Data;
   QString SQLCmd, title, subtitle;
-  int rc;
   CG_ERR_RESULT result = CG_ERR_OK;
 
   tachart = new (std::nothrow) QTAChart (ui->tabWidget);
@@ -809,15 +498,10 @@ MainWindow::addChart (TableDataVector & datavector)
   tachart->setObjectName ("Chart");
 
   // load data
-  SQLCmd = QStringLiteral ("select * from basedata where base = '") %
-           datavector[0].base % QStringLiteral ("'");
-  rc = sqlite3_exec(Application_Settings->db, SQLCmd.toUtf8(),
-                    sqlcb_fundamentals, static_cast <void *> (&Data), nullptr);
-  if (rc != SQLITE_OK)
+  result = idb.loadChartData(datavector[0].base, &Data);
+  if( result != CG_ERR_OK )
   {
     delete tachart;
-    result = CG_ERR_ACCESS_DATA;
-    setGlobalError(result, __FILE__, __LINE__);
     showMessage (QStringLiteral ("Symbol ") % datavector[0].symbol % ": " % errorMessage (result), this);
     return result;
   }

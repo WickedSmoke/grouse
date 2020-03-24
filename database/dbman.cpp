@@ -17,12 +17,13 @@
  */
 
 #include "optsize.h"
+#include <QColor>
 #include <QString>
 #include <QFile>
 #include <QTextStream>
 #include <QDateTime>
 #include <QCryptographicHash>
-#include "defs.h"
+#include "idb.h"
 
 // create portfolio views
 extern QString
@@ -30,13 +31,13 @@ createportfolioviews (QString viewname);
 
 // db schema version 1
 static CG_ERR_RESULT
-version1 (AppSettings appsettings)
+version1 (sqlite3* db)
 {
   QString SQLCommand;
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -151,7 +152,7 @@ version1 (AppSettings appsettings)
   SQLCommand.append ('\n');
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -714,7 +715,7 @@ version1 (AppSettings appsettings)
   SQLCommand.append ('\n');
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -727,13 +728,13 @@ version1 (AppSettings appsettings)
 
 // db schema version 2
 static CG_ERR_RESULT
-version2 (AppSettings appsettings)
+version2 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -760,7 +761,7 @@ version2 (AppSettings appsettings)
   SQLCommand += "COMMIT;";
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -772,13 +773,13 @@ version2 (AppSettings appsettings)
 
 // db schema version 3
 static CG_ERR_RESULT
-version3 (AppSettings appsettings)
+version3 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -830,7 +831,7 @@ version3 (AppSettings appsettings)
   SQLCommand += "COMMIT;";
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -842,13 +843,13 @@ version3 (AppSettings appsettings)
 
 // db schema version 4
 static CG_ERR_RESULT
-version4 (AppSettings appsettings)
+version4 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -877,7 +878,7 @@ version4 (AppSettings appsettings)
   SQLCommand += "COMMIT;";
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -889,13 +890,13 @@ version4 (AppSettings appsettings)
 
 // db schema version 5
 static CG_ERR_RESULT
-version5 (AppSettings appsettings)
+version5 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -918,7 +919,7 @@ version5 (AppSettings appsettings)
   SQLCommand += "COMMIT;";
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -930,14 +931,14 @@ version5 (AppSettings appsettings)
 
 // db schema version 6
 static CG_ERR_RESULT
-version6 (AppSettings appsettings)
+version6 (sqlite3* db)
 {
   QString SQLCommand = "", UID;
   QByteArray ba;
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -966,7 +967,7 @@ version6 (AppSettings appsettings)
   SQLCommand += "COMMIT;";
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1042,7 +1043,7 @@ version7_sqlcb_sqlite_master (void *classptr, int argc, char **argv, char **colu
 
 
 static CG_ERR_RESULT
-version7 (AppSettings appsettings)
+version7 (sqlite3* db)
 {
   QString SQLCommand = "", query;
   QStringList templates;
@@ -1050,7 +1051,7 @@ version7 (AppSettings appsettings)
   int rc;
 
   query = "select name from sqlite_master where name like 'template\\_%' escape '\\';";
-  rc = sqlite3_exec(appsettings.db, query.toUtf8(),
+  rc = sqlite3_exec(db, query.toUtf8(),
                     version7_sqlcb_sqlite_master,
                     static_cast <void *> (&templates), NULL);
   if (rc != SQLITE_OK)
@@ -1069,7 +1070,7 @@ version7 (AppSettings appsettings)
   SQLCommand += "COMMIT;";
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1082,13 +1083,13 @@ version7 (AppSettings appsettings)
 
 // db schema version 8
 static CG_ERR_RESULT
-version8 (AppSettings appsettings)
+version8 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1242,7 +1243,7 @@ version8 (AppSettings appsettings)
   SQLCommand += "COMMIT;";
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1254,13 +1255,13 @@ version8 (AppSettings appsettings)
 
 // db schema version 9
 static CG_ERR_RESULT
-version9 (AppSettings appsettings)
+version9 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1314,7 +1315,7 @@ version9 (AppSettings appsettings)
   SQLCommand.append ('\n');
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1326,13 +1327,13 @@ version9 (AppSettings appsettings)
 
 // db schema version 10
 static CG_ERR_RESULT
-version10 (AppSettings appsettings)
+version10 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1364,7 +1365,7 @@ version10 (AppSettings appsettings)
   SQLCommand.append ('\n');
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1376,13 +1377,13 @@ version10 (AppSettings appsettings)
 
 // db schema version 11
 static CG_ERR_RESULT
-version11 (AppSettings appsettings)
+version11 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1400,7 +1401,7 @@ version11 (AppSettings appsettings)
   SQLCommand.append ('\n');
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1412,13 +1413,13 @@ version11 (AppSettings appsettings)
 
 // db schema version 12
 static CG_ERR_RESULT
-version12 (AppSettings appsettings)
+version12 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1453,7 +1454,7 @@ version12 (AppSettings appsettings)
   SQLCommand.append ('\n');
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1465,13 +1466,13 @@ version12 (AppSettings appsettings)
 
 // db schema version 13
 static CG_ERR_RESULT
-version13 (AppSettings appsettings)
+version13 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1494,7 +1495,7 @@ version13 (AppSettings appsettings)
   SQLCommand.append ('\n');
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1507,13 +1508,13 @@ version13 (AppSettings appsettings)
 
 // db schema version 14
 static CG_ERR_RESULT
-version14 (AppSettings appsettings)
+version14 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1542,7 +1543,7 @@ version14 (AppSettings appsettings)
   SQLCommand.append ('\n');
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1554,13 +1555,13 @@ version14 (AppSettings appsettings)
 
 // db schema version 15
 static CG_ERR_RESULT
-version15 (AppSettings appsettings)
+version15 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1599,7 +1600,7 @@ version15 (AppSettings appsettings)
   SQLCommand.append ('\n');
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1611,13 +1612,13 @@ version15 (AppSettings appsettings)
 
 // db schema version 16
 static CG_ERR_RESULT
-version16 (AppSettings appsettings)
+version16 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1633,7 +1634,7 @@ version16 (AppSettings appsettings)
   SQLCommand.append ('\n');
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1645,13 +1646,13 @@ version16 (AppSettings appsettings)
 
 // db schema version 17
 static CG_ERR_RESULT
-version17 (AppSettings appsettings)
+version17 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1776,7 +1777,7 @@ version17 (AppSettings appsettings)
   SQLCommand.append ('\n');
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1788,13 +1789,13 @@ version17 (AppSettings appsettings)
 
 // db schema version 18
 static CG_ERR_RESULT
-version18 (AppSettings appsettings)
+version18 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1822,7 +1823,7 @@ version18 (AppSettings appsettings)
   SQLCommand.append ('\n');
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -1834,13 +1835,13 @@ version18 (AppSettings appsettings)
 
 // db schema version 19
 static CG_ERR_RESULT
-version19 (AppSettings appsettings)
+version19 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -2330,7 +2331,7 @@ version19 (AppSettings appsettings)
   SQLCommand.append ('\n');
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -2342,13 +2343,13 @@ version19 (AppSettings appsettings)
 
 // db schema version 20
 static CG_ERR_RESULT
-version20 (AppSettings appsettings)
+version20 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -2374,7 +2375,7 @@ version20 (AppSettings appsettings)
   SQLCommand.append ('\n');
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -2386,13 +2387,13 @@ version20 (AppSettings appsettings)
 
 // db schema version 21
 static CG_ERR_RESULT
-version21 (AppSettings appsettings)
+version21 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -2419,7 +2420,7 @@ version21 (AppSettings appsettings)
   SQLCommand.append ('\n');
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -2431,13 +2432,13 @@ version21 (AppSettings appsettings)
 
 // db schema version 22
 static CG_ERR_RESULT
-version22 (AppSettings appsettings)
+version22 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -2455,7 +2456,7 @@ version22 (AppSettings appsettings)
   SQLCommand.append ('\n');
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -2467,13 +2468,13 @@ version22 (AppSettings appsettings)
 
 // db schema version 23
 static CG_ERR_RESULT
-version23 (AppSettings appsettings)
+version23 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -2490,7 +2491,7 @@ version23 (AppSettings appsettings)
   SQLCommand.append ('\n');
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -2502,13 +2503,13 @@ version23 (AppSettings appsettings)
 
 // db schema version 24
 static CG_ERR_RESULT
-version24 (AppSettings appsettings)
+version24 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -2549,7 +2550,7 @@ version24 (AppSettings appsettings)
    END;";
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -2561,13 +2562,13 @@ version24 (AppSettings appsettings)
 
 // db schema version 25
 static CG_ERR_RESULT
-version25 (AppSettings appsettings)
+version25 (sqlite3* db)
 {
   QString SQLCommand = "";
   CG_ERR_RESULT result = CG_ERR_OK;
   int rc;
 
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -2782,7 +2783,7 @@ version25 (AppSettings appsettings)
   SQLCommand += "COMMIT;";
 
   // execute sql
-  rc = sqlite3_exec(appsettings.db, SQLCommand.toUtf8(), NULL, NULL, NULL);
+  rc = sqlite3_exec(db, SQLCommand.toUtf8(), NULL, NULL, NULL);
   if (rc != SQLITE_OK)
   {
     result = CG_ERR_TRANSACTION;
@@ -2794,134 +2795,134 @@ version25 (AppSettings appsettings)
 
 // database manager
 CG_ERR_RESULT
-dbman (int dbversion, AppSettings appsettings)
+dbman (int dbversion, sqlite3* db)
 {
   CG_ERR_RESULT result = CG_ERR_DBACCESS;
 
   switch (dbversion)
   {
   case 1:
-    result = version1 (appsettings);
+    result = version1 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 2:
-    result = version2 (appsettings);
+    result = version2 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 3:
-    result = version3 (appsettings);
+    result = version3 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 4:
-    result = version4 (appsettings);
+    result = version4 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 5:
-    result = version5 (appsettings);
+    result = version5 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 6:
-    result = version6 (appsettings);
+    result = version6 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 7:
-    result = version7 (appsettings);
+    result = version7 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 8:
-    result = version8 (appsettings);
+    result = version8 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 9:
-    result = version9 (appsettings);
+    result = version9 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 10:
-    result = version10 (appsettings);
+    result = version10 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 11:
-    result = version11 (appsettings);
+    result = version11 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 12:
-    result = version12 (appsettings);
+    result = version12 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 13:
-    result = version13 (appsettings);
+    result = version13 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 14:
-    result = version14 (appsettings);
+    result = version14 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 15:
-    result = version15 (appsettings);
+    result = version15 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 16:
-    result = version16 (appsettings);
+    result = version16 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 17:
-    result = version17 (appsettings);
+    result = version17 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 18:
-    result = version18 (appsettings);
+    result = version18 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 19:
-    result = version19 (appsettings);
+    result = version19 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 20:
-    result = version20 (appsettings);
+    result = version20 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 21:
-    result = version21 (appsettings);
+    result = version21 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 22:
-    result = version22 (appsettings);
+    result = version22 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 23:
-    result = version23 (appsettings);
+    result = version23 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 24:
-    result = version24 (appsettings);
+    result = version24 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through
   case 25:
-    result = version25 (appsettings);
+    result = version25 (db);
     if (result != CG_ERR_OK)
       return result;
     // fall through

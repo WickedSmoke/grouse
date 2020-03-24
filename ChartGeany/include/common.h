@@ -65,10 +65,6 @@ extern size_t CGScriptFunctionRegistrySize;
 
 // extern functions
 
-// database manager
-CG_ERR_RESULT
-dbman (int dbversion, AppSettings appsettings);
-
 // show a message box
 extern void
 showMessage (const QString& message, QWidget* parent = nullptr);
@@ -84,25 +80,6 @@ showDownloadMessage (void);
 // delay nsecs
 extern void
 delay(int secs);
-
-// insert or update rows in database tables
-extern int
-updatedb (QString &SQL);
-
-extern int
-updatedb (QString &SQL, bool trylock);
-
-// select from database
-extern int
-selectfromdb (const char *sql, int (*callback)(void*,int,char**,char**), void *arg1);
-
-// select count (*) query. returns the counter or -1 on error
-extern int
-selectcount (QString &SQL);
-
-// returns description of an error code
-extern QString
-errorMessage (CG_ERR_RESULT err);
 
 // returns full operating system description
 extern QString
@@ -175,14 +152,9 @@ correctButtonBoxFonts (QDialogButtonBox *box,
 extern void
 correctTitleBar (QDialog *dialog);
 
-
 // native http header
 extern QString
 nativeHttpHeader (void);
-
-// random http header
-extern QByteArray
-httpHeader (void);
 
 // json parse
 extern bool
@@ -191,14 +163,6 @@ json_parse (QString jsonstr, QStringList *node, QStringList *value, void *n1);
 // object's family tree of descendants
 extern QObjectList
 familyTree (QObject *obj);
-
-// reset database
-extern void
-resetDatabase ();
-
-// update price table
-extern void
-updatePrice (RTPrice rtprice);
 
 // roundf(3) for Windows
 #ifdef Q_OS_WIN32
@@ -248,10 +212,6 @@ appRestoreOverrideCursor (const QWidget *widget);
 // create portfolio views
 extern QString
 createportfolioviews (QString viewname);
-
-// platform string (eg linux64-gcc)
-extern QString
-platformString (void);
 
 #if defined (Q_OS_LINUX) || defined (Q_OS_MAC)
 // install signal handlers

@@ -173,6 +173,7 @@ DEFINES    *= QT_NO_WARNING_OUTPUT
 INCLUDEPATH += \
         include \
         cgscript/include \
+        ../database \
         3rdparty/sqlite3/include \
         3rdparty/segvcatch/include \
         ../3rdparty/ta-lib/include \
@@ -197,18 +198,13 @@ SOURCES += \
         src/chartapp.cpp \
         src/common.cpp \
         src/compile.cpp \
-        src/csv.cpp \
         src/create_portfolio_views.cpp \
         src/databrowserdialog.cpp \
         src/datamanagerdialog.cpp \
-        dbman/dbman.cpp \
         src/debugdialog.cpp \
         src/downloaddatadialog.cpp \
         src/dynparamsdialog.cpp \
         src/editorwidget.cpp \
-        src/feedav.cpp \
-        src/feediex.cpp \
-        src/feedyahoo.cpp \
         src/function_dataset.cpp \
         src/highlighter.cpp \
         src/infodialog.cpp \
@@ -222,7 +218,6 @@ SOURCES += \
         src/netservice.cpp \
         src/native_segvfpe.cpp \
         src/optionsdialog.cpp \
-        src/platformstring.cpp \
         src/priceupdater.cpp \
         src/priceworker.cpp \
         src/progressdialog.cpp \
@@ -251,18 +246,24 @@ SOURCES += \
         src/qtachart_utilities.cpp \
         src/qtcgraphicsitem.cpp \
         src/splashdialog.cpp \
-        src/sqlcb_dbversion.cpp \
-        src/sqlcb_datafeeds.cpp \
-        src/sqlcb_modules.cpp \
-        src/sqlcb_symbol_table.cpp \
-        src/sqlcb_toolchain.cpp \
         src/stockticker.cpp \
-        src/selectfromdb.cpp \
         src/symbollistdialog.cpp \
         src/templatemanagerdialog.cpp \
         src/textobjectdialog.cpp \
         src/unix_signals.cpp \
-        src/waitdialog.cpp
+        src/waitdialog.cpp \
+        ../database/csv.cpp \
+        ../database/dbman.cpp \
+        ../database/feedav.cpp \
+        ../database/feediex.cpp \
+        ../database/feedyahoo.cpp \
+        ../database/platformstring.cpp \
+        ../database/sqlcb_dbversion.cpp \
+        ../database/sqlcb_datafeeds.cpp \
+        ../database/sqlcb_modules.cpp \
+        ../database/sqlcb_symbol_table.cpp \
+        ../database/sqlcb_toolchain.cpp \
+        ../database/idb.cpp
 
 # application headers, common for all Qt versions, platforms and compilers
 HEADERS  += \
@@ -282,9 +283,6 @@ HEADERS  += \
         include/downloaddatadialog.h \
         include/dynparamsdialog.h \
         include/editorwidget.h \
-        include/feedav.h \
-        include/feediex.h \
-        include/feedyahoo.h \
         include/highlighter.h \
         include/infodialog.h \
         include/licensedialog.h \
@@ -318,7 +316,10 @@ HEADERS  += \
         include/templatemanagerdialog.h \
         include/textobjectdialog.h \
         include/unix_signals.h \
-        include/waitdialog.h
+        include/waitdialog.h \
+        ../database/feedav.h \
+        ../database/feediex.h \
+        ../database/feedyahoo.h
 
 
 # Qt5 specific sources and headers

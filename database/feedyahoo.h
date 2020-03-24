@@ -20,7 +20,7 @@
 #define FEEDYAHOO_H
 
 #include <QObject>
-#include "defs.h"
+#include "idb.h"
 
 namespace Ui
 {
@@ -58,11 +58,11 @@ public:
   CG_ERR_RESULT getRealTimePrice (QString symbol,
                                   RTPrice & rtprice, YAHOO_API api); // get real time price
   CG_ERR_RESULT getRealTimePricejson (QString symbol, RTPrice & rtprice); // get real time price                                  
-  QString getTableName () const NOEXCEPT
+  QString getTableName () const
   {
     return tableName;
   };   // get the table name of the last operation
-  QString getSymbolName () const NOEXCEPT
+  QString getSymbolName () const
   {
     return symbolName;
   }; // get the name of the last symbol retrieved

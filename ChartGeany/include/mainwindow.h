@@ -70,7 +70,7 @@ public slots:
 
 private:
   Ui::MainWindow *ui;
-  void *sqlitebuff;                     // buffer for sqlite
+  InstrumentDatabase idb;
   AppSettings appsettings;              // application setting
   SQLists comboitems;                   // string lists used to populate
   //   various comboboxes

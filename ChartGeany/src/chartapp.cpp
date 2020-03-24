@@ -21,13 +21,11 @@
 ChartApp::ChartApp (int & argc, char **argv): QApplication(argc, argv)
 {
   modmutex = new QMutex;
-  iomutex = new QMutex;
 }
 
 ChartApp::~ChartApp ()
 {
   delete modmutex;
-  delete iomutex;
 }
 
 void
@@ -43,24 +41,5 @@ ChartApp::moduleUnlock (QObject *obj)
   Q_UNUSED (obj)
 
   modmutex->unlock ();
-
   lockholder = nullptr;
-}
-
-void
-ChartApp::ioLock ()
-{
-  iomutex->lock ();
-}
-
-void
-ChartApp::ioUnlock ()
-{
-  iomutex->unlock ();
-}
-
-bool
-ChartApp::ioTrylock ()
-{
-  return iomutex->tryLock ();
 }

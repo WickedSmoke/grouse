@@ -16,6 +16,9 @@
  * 
  */
 
+#ifndef CG_ERRORS_H
+#define CG_ERRORS_H
+
 // Error codes
 typedef enum
 {
@@ -47,3 +50,5 @@ typedef enum
 } CG_ERRORS;
 
 typedef int CG_ERR_RESULT;
+
+#endif // CG_ERRORS_H
