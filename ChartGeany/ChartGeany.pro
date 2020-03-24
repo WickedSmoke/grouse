@@ -438,24 +438,8 @@ HEADERS += \
 #
 # x86disasm
 linux*|macx* {
-INCLUDEPATH += \
-        3rdparty/x86dis/include
-
-SOURCES     += \
-        3rdparty/x86dis/src/ia32_implicit.c \
-        3rdparty/x86dis/src/ia32_insn.c \
-        3rdparty/x86dis/src/ia32_invariant.c \
-        3rdparty/x86dis/src/ia32_modrm.c \
-        3rdparty/x86dis/src/ia32_opcode_tables.c \
-        3rdparty/x86dis/src/ia32_operand.c \
-        3rdparty/x86dis/src/ia32_reg.c \
-        3rdparty/x86dis/src/ia32_settings.c \
-        3rdparty/x86dis/src/x86_disasm.c \
-        3rdparty/x86dis/src/x86_format.c \
-        3rdparty/x86dis/src/x86_imm.c \
-        3rdparty/x86dis/src/x86_insn.c \
-        3rdparty/x86dis/src/x86_misc.c \
-        3rdparty/x86dis/src/x86_operand_list.c
+INCLUDEPATH += ../3rdparty/x86dis/include
+LIBS += -lx86dis
 }
 
 #
