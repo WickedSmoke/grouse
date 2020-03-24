@@ -461,16 +461,8 @@ SOURCES     += \
 #
 # libtcc
 linux*|win32* {
-INCLUDEPATH += \
-        ../3rdparty/libtcc
-
-SOURCES += \
-        ../3rdparty/libtcc/tccasm.c \
-        ../3rdparty/libtcc/tccelf.c \
-        ../3rdparty/libtcc/tccgen.c \
-        ../3rdparty/libtcc/tccpp.c \
-        ../3rdparty/libtcc/tccrun.c \
-        ../3rdparty/libtcc/libtcc.c
+INCLUDEPATH += ../3rdparty/libtcc
+LIBS += -ltcc
 }
 
 #

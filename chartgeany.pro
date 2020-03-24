@@ -1,5 +1,7 @@
 TEMPLATE = subdirs
-SUBDIRS  = talib cgtool ChartGeany
+SUBDIRS  = talib tcc cgtool ChartGeany
 
 talib.file = 3rdparty/ta-lib.pro
-ChartGeany.depends = talib
+tcc.file = 3rdparty/tcc.pro
+cgtool.depends = tcc
+ChartGeany.depends = talib tcc
