@@ -67,14 +67,14 @@ QTAChart::QTAChart (QWidget * parent):
   core->hvline = NULL;
   core->events_enabled = true;
   core->tfinit = false;
-  core->forecolor = Application_Settings->options.forecolor;
+  core->forecolor = Application_Options->forecolor;
   core->framecolor = core->forecolor;
   core->textcolor = core->forecolor;
-  core->backcolor = Application_Settings->options.backcolor;
+  core->backcolor = Application_Options->backcolor;
   core->gridcolor = core->forecolor;
   core->cursorcolor = Qt::yellow;
-  core->linecolor = Application_Settings->options.linecolor;
-  core->barcolor = Application_Settings->options.barcolor;
+  core->linecolor = Application_Options->linecolor;
+  core->barcolor = Application_Options->barcolor;
 
   core->titletext[0] = 0;
   core->subtitletext[0] = 0;
@@ -89,10 +89,10 @@ QTAChart::QTAChart (QWidget * parent):
   core->chartframe = 10;
   core->nsubcharts = 0;
   core->lineprice = &core->CLOSE;
-  core->show_volumes = Application_Settings->options.showvolume;
+  core->show_volumes = Application_Options->showvolume;
   core->volumes = NULL;
-  core->show_grid = Application_Settings->options.showgrid;
-  core->show_onlineprice = Application_Settings->options.showonlineprice;
+  core->show_grid = Application_Options->showgrid;
+  core->show_onlineprice = Application_Options->showonlineprice;
   core->onlineprice = NULL;
   core->show_ruller = true;
   core->drag = false;
@@ -100,10 +100,10 @@ QTAChart::QTAChart (QWidget * parent):
   core->reloaded = false;
   core->redraw = true;
   core->recalc = true;
-  core->linear = Application_Settings->options.linear;
+  core->linear = Application_Options->linear;
   core->currenttf = QStringLiteral ("");
   core->always_redraw = true;
-  core->chart_style = Application_Settings->options.chartstyle;
+  core->chart_style = Application_Options->chartstyle;
   core->height = height ();
   core->width = width ();
   core->chartrightmost = (qint64) (core->width - core->right_border_width);

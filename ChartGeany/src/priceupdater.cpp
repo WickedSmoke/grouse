@@ -101,7 +101,7 @@ PriceWorkerTicker::process()
     {
       Sleeper::msleep(sleepms);
       counter += sleepms;
-      if (counter >= (Application_Settings->options.nettimeout * 2200))
+      if (counter >= (Application_Options->nettimeout * 2200))
         counter = 0;
     }
   }

@@ -71,7 +71,7 @@ public slots:
 private:
   Ui::MainWindow *ui;
   InstrumentDatabase idb;
-  AppSettings appsettings;              // application setting
+  AppOptions options;                   // application setting
   SQLists comboitems;                   // string lists used to populate
   //   various comboboxes
   LoadCSVDialog *loadcsvdlg;            // dialog to load CSV file

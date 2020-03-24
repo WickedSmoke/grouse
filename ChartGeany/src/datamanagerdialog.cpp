@@ -762,7 +762,7 @@ DataManagerDialog::chartButton_clicked ()
     {
       if (qAbs (TDVector[0].lastupdate.toLongLong () -
                 (QDateTime::currentMSecsSinceEpoch() / 1000)) > 7200 &&
-          Application_Settings->options.autoupdate)
+          Application_Options->autoupdate)
         updateButton_clicked ();
       this->hide ();
       (qobject_cast <MainWindow*> (parent ()))->addChart (TDVector);

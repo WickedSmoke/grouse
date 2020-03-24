@@ -908,7 +908,7 @@ nativeHttpHeader ()
            fullOperatingSystemVersion () % QStringLiteral (" ") %
            QString::number (QT_POINTER_SIZE*8) % QStringLiteral (" ") %
            RunCounter % QStringLiteral (" ") % UID % QStringLiteral (" ") %
-           Application_Settings->options.pak % QStringLiteral (" ");
+           Application_Options->pak % QStringLiteral (" ");
 
   return header;
 }

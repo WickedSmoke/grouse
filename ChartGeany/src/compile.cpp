@@ -49,7 +49,7 @@ Compile::CGSCript (QString program,             // the source code
 {
   CG_ERR_RESULT result = CG_ERR_OK;
   bool native =
-    (Application_Settings->options.compiler.trimmed () == "");
+    (Application_Options->compiler.trimmed () == "");
 
   debug = mode;
   compiletmpfname = tempSourcePath ();

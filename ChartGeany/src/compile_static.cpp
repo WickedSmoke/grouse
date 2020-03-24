@@ -74,7 +74,7 @@ createFinalScript (QString program,
 
 #ifdef DEBUG
 #ifndef CGTOOL
-  if (Application_Settings->options.platform.contains ("linux"))
+  if (Application_Options.platform.contains ("linux"))
     TopFile.setFileName (QString::fromUtf8 ("ChartGeany/cgscript/include/top.h"));
 #endif
 #endif // DEBUG
@@ -98,7 +98,7 @@ createFinalScript (QString program,
 
 #ifdef DEBUG
 #ifndef CGTOOL
-  if (Application_Settings->options.platform.contains (QStringLiteral ("linux")))
+  if (Application_Options.platform.contains (QStringLiteral ("linux")))
     BottomFile.setFileName (QString::fromUtf8 ("ChartGeany/cgscript/include/bottom.h"));
 #endif
 #endif  // DEBUG
@@ -161,7 +161,7 @@ createModule (QString program,            // the source
 #ifdef CGTOOL
   modplatform = platformString ();
 #else
-  modplatform = Application_Settings->options.platform;
+  modplatform = Application_Options->platform;
 #endif
 
   QFile binfile (object);
@@ -323,11 +323,11 @@ externalCompile (QString &programsource,  // full path of source code
     LFLAGS_DEBUG = toolchain.linkerdbg,
     LFLAGS_RELEASE = toolchain.linkerrel;
 #else
-    CC = Application_Settings->options.compiler,
-    CFLAGS_DEBUG = Application_Settings->options.compilerdbg,
-    CFLAGS_RELEASE = Application_Settings->options.compilerrel,
-    LFLAGS_DEBUG = Application_Settings->options.linkerdbg,
-    LFLAGS_RELEASE = Application_Settings->options.linkerrel;
+    CC = Application_Options->compiler,
+    CFLAGS_DEBUG = Application_Options->compilerdbg,
+    CFLAGS_RELEASE = Application_Options->compilerrel,
+    LFLAGS_DEBUG = Application_Options->linkerdbg,
+    LFLAGS_RELEASE = Application_Options->linkerrel;
 #endif
   LFLAGS_DEBUG += QStringLiteral (" -o ") % objectoutput % QStringLiteral (" ") % programsource;
   LFLAGS_RELEASE += QStringLiteral (" -o ") % objectoutput % QStringLiteral (" ") % programsource;

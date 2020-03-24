@@ -70,7 +70,7 @@ IEXFeed::symbolURL (QString symbol)
 
   urlstr = QStringLiteral ("https://cloud.iexapis.com/v1/stock/") % symbol %
            QStringLiteral ("/quote") %
-           QStringLiteral ("/?token=") % Application_Settings->options.iexapikey;
+           QStringLiteral ("/?token=") % Application_Options->iexapikey;
   return urlstr;
 }
 
@@ -92,7 +92,7 @@ IEXFeed::symbolStatsURL (QString symbol)
   urlstr = QStringLiteral ("https://cloud.iexapis.com/v1/stock/");
   urlstr += symbol;
   urlstr += QStringLiteral ("/stats");
-  urlstr += QStringLiteral ("/?token=") % Application_Settings->options.iexapikey;
+  urlstr += QStringLiteral ("/?token=") % Application_Options->iexapikey;
   return urlstr;
 }
 
@@ -111,7 +111,7 @@ IEXFeed::downloadURL (QString symbol)
 
   downstr = QStringLiteral ("https://cloud.iexapis.com/v1/stock/") %
             symbol % QStringLiteral ("/chart/5y") %
-            QStringLiteral ("/?token=") % Application_Settings->options.iexapikey;
+            QStringLiteral ("/?token=") % Application_Options->iexapikey;
 
   return downstr;
 }
@@ -145,7 +145,7 @@ IEXFeed::getRealTimePrice (QString symbol, RTPrice & rtprice)
   }
   tempFile.resize (0);
 
-  netservice = new NetService (Application_Settings->options.nettimeout,
+  netservice = new NetService (Application_Options->nettimeout,
                                httpHeader(), this);
   result = netservice->httpGET (url, tempFile, NULL);
   if (result != CG_ERR_OK)
@@ -254,7 +254,7 @@ IEXFeed::symbolExistence (QString & symbol, QString & name, QString & market)
   }
   tempFile.resize (0);
 
-  netservice = new NetService (Application_Settings->options.nettimeout,
+  netservice = new NetService (Application_Options->nettimeout,
                                httpHeader(), this);
   ioresult = netservice->httpGET (urlstr, tempFile, NULL);
   if (ioresult != CG_ERR_OK)
@@ -313,7 +313,7 @@ IEXFeed::downloadData (QString symbol, QString timeframe, QString currency,
   NetService *netservice = NULL;
   CG_ERR_RESULT result = CG_ERR_OK;
 
-  if (Application_Settings->options.iexapikey == QLatin1String (""))
+  if (Application_Options->iexapikey == QLatin1String (""))
   {
     result = CG_ERR_NO_API_KEY;
     goto downloadData_end;
@@ -361,7 +361,7 @@ IEXFeed::downloadData (QString symbol, QString timeframe, QString currency,
   url = downloadURL (symbol);
   entry.dnlstring = url;
 
-  netservice = new NetService (Application_Settings->options.nettimeout,
+  netservice = new NetService (Application_Options->nettimeout,
                                httpHeader(), this);
   result = netservice->httpGET (url, tempFile, NULL);
   if (result != CG_ERR_OK)
@@ -442,7 +442,7 @@ IEXFeed::downloadStats (QString symbol)
   }
   tempFile.resize (0);
 
-  netservice = new NetService (Application_Settings->options.nettimeout,
+  netservice = new NetService (Application_Options->nettimeout,
                                httpHeader(), this);
   result = netservice->httpGET (url, tempFile, NULL);
   if (result != CG_ERR_OK)
@@ -514,7 +514,7 @@ IEXFeed::getSymbols ()
     goto getSymbols_end;
   tempFile.resize (0);
 
-  netservice = new NetService (Application_Settings->options.nettimeout,
+  netservice = new NetService (Application_Options->nettimeout,
                                httpHeader(), this);
   if (CG_ERR_OK != netservice->httpGET (url, tempFile, NULL))
     goto getSymbols_end;

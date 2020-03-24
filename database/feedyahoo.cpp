@@ -325,7 +325,7 @@ YahooFeed::getRealTimePrice (QString symbol, RTPrice & rtprice, YAHOO_API api)
   }
   tempFile.resize (0);
 
-  netservice = new NetService (Application_Settings->options.nettimeout,
+  netservice = new NetService (Application_Options->nettimeout,
                                httpHeader(), this);
   result = netservice->httpGET (url, tempFile, NULL);
   if (result != CG_ERR_OK)
@@ -487,7 +487,7 @@ YahooFeed::getRealTimePricejson (QString symbol, RTPrice & rtprice)
   }
   tempFile.resize (0);
 
-  netservice = new NetService (Application_Settings->options.nettimeout,
+  netservice = new NetService (Application_Options->nettimeout,
                                httpHeader(), this);
   result = netservice->httpGET (url, tempFile, NULL);
   if (result != CG_ERR_OK)
@@ -607,7 +607,7 @@ YahooFeed::downloadStats (QString symbol, YAHOO_API api)
   }
   tempFile.resize (0);
 
-  netservice = new NetService (Application_Settings->options.nettimeout,
+  netservice = new NetService (Application_Options->nettimeout,
                                httpHeader(), this);
   result = netservice->httpGET (url, tempFile, NULL);
   if (result != CG_ERR_OK)
@@ -710,7 +710,7 @@ YahooFeed::downloadStatsjson (QString symbol)
   }
   tempFile.resize (0);
 
-  netservice = new NetService (Application_Settings->options.nettimeout,
+  netservice = new NetService (Application_Options->nettimeout,
                                httpHeader(), this);
   result = netservice->httpGET (url, tempFile, NULL);
   if (result != CG_ERR_OK)
@@ -800,7 +800,7 @@ YahooFeed::symbolExistence (QString & symbol, QString & name, QString & market,
   }
   tempFile.resize (0);
 
-  netservice = new NetService (Application_Settings->options.nettimeout,
+  netservice = new NetService (Application_Options->nettimeout,
                                httpHeader(), this);
   ioresult = netservice->httpGET (urlstr, tempFile, NULL);
   if (ioresult != CG_ERR_OK)
@@ -896,7 +896,7 @@ YahooFeed::symbolExistencejson (QString & symbol, QString & name, QString & mark
   }
   tempFile.resize (0);
 
-  netservice = new NetService (Application_Settings->options.nettimeout,
+  netservice = new NetService (Application_Options->nettimeout,
                                httpHeader(), this);
   ioresult = netservice->httpGET (urlstr, tempFile, NULL);
   if (ioresult != CG_ERR_OK)
@@ -1014,7 +1014,7 @@ YahooFeed::downloadData (QString symbol, QString timeframe, QString currency,
   }
   tempFile.resize (0);
 
-  netservice = new NetService (Application_Settings->options.nettimeout,
+  netservice = new NetService (Application_Options->nettimeout,
                                httpHeader(), this);
   // get cookie and crumb
   // if (cookie == QLatin1String (""))

@@ -73,7 +73,7 @@ AlphaVantageFeed::symbolURL (QString symbol)
     QStringLiteral ("https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=");
   urlstr += symbol;
   urlstr += QStringLiteral ("&apikey=");
-  urlstr += Application_Settings->options.avapikey;
+  urlstr += Application_Options->avapikey;
   return urlstr;
 }
 
@@ -124,7 +124,7 @@ AlphaVantageFeed::downloadURL (QString symbol)
     QStringLiteral ("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=");
   downstr += symbol;
   downstr += QStringLiteral ("&outputsize=full&datatype=csv&apikey=");
-  downstr += Application_Settings->options.avapikey;
+  downstr += Application_Options->avapikey;
 
   return downstr;
 }
@@ -149,7 +149,7 @@ AlphaVantageFeed::realTimePriceURLjson (QString symbol)
     QStringLiteral ("https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=");
   urlstr += symbol;
   urlstr += QStringLiteral ("&apikey=");
-  urlstr += Application_Settings->options.avapikey;
+  urlstr += Application_Options->avapikey;
   return urlstr;
 }
 
@@ -183,7 +183,7 @@ AlphaVantageFeed::getRealTimePrice (QString symbol, RTPrice & rtprice, API api)
   }
   tempFile.resize (0);
 
-  netservice = new NetService (Application_Settings->options.nettimeout,
+  netservice = new NetService (Application_Options->nettimeout,
                                httpHeader(), this);
   result = netservice->httpGET (url, tempFile, NULL);
   if (result != CG_ERR_OK)
@@ -298,7 +298,7 @@ AlphaVantageFeed::symbolExistence (QString & symbol, QString & name, QString & m
   }
   tempFile.resize (0);
 
-  netservice = new NetService (Application_Settings->options.nettimeout,
+  netservice = new NetService (Application_Options->nettimeout,
                                httpHeader(), this);
   ioresult = netservice->httpGET (urlstr, tempFile, NULL);
   if (ioresult != CG_ERR_OK)
@@ -373,7 +373,7 @@ AlphaVantageFeed::downloadData (QString symbol, QString timeframe, QString curre
   NetService *netservice = NULL;
   CG_ERR_RESULT result = CG_ERR_OK;
 
-  if (Application_Settings->options.avapikey == QLatin1String (""))
+  if (Application_Options->avapikey == QLatin1String (""))
   {
     result = CG_ERR_NO_API_KEY;
     goto downloadData_end;
@@ -403,7 +403,7 @@ AlphaVantageFeed::downloadData (QString symbol, QString timeframe, QString curre
   }
   tempFile.resize (0);
 
-  netservice = new NetService (Application_Settings->options.nettimeout,
+  netservice = new NetService (Application_Options->nettimeout,
                                httpHeader(), this);
 
   // fill symbol entry

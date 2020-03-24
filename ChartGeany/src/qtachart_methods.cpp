@@ -208,7 +208,7 @@ QTAChart::loadFrames (QString tablename)
   // if market is London and longbp = true;
   if ((tdc.currency.trimmed ().left (3) == QLatin1String ("GBp") ||
        tdc.market.trimmed ().left (3) == QLatin1String ("LON")) &&
-      Application_Settings->options.longbp)
+      Application_Options->longbp)
   {
     int fc = frames.count ();
     for (qint32 counter = 0; counter < fc; counter ++)

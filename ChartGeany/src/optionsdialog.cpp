@@ -477,7 +477,7 @@ OptionsDialog::loadOptions (void)
   int row, nrows, col, ncols;
   CG_ERR_RESULT result;
 
-  result = loadAppOptions (&Application_Settings->options);
+  result = loadAppOptions (Application_Options);
   if (result != CG_ERR_OK)
   {
     showMessage (errorMessage (result), this);
@@ -529,14 +529,14 @@ OptionsDialog::loadOptions (void)
       QString objName = object->objectName ();
 
       if (objName == QLatin1String ("avapikeyEdit"))
-        ((QLineEdit *) object)->setText (Application_Settings->options.avapikey);
+        ((QLineEdit *) object)->setText (Application_Options->avapikey);
 
       if (objName == QLatin1String ("iexapikeyEdit"))
-        ((QLineEdit *) object)->setText (Application_Settings->options.iexapikey);
+        ((QLineEdit *) object)->setText (Application_Options->iexapikey);
 
       if (objName == QLatin1String ("splashCheckBox"))
       {
-        if (Application_Settings->options.showsplashscreen)
+        if (Application_Options->showsplashscreen)
           ((QCheckBox *) object)->setCheckState (Qt::Checked);
         else
           ((QCheckBox *) object)->setCheckState (Qt::Unchecked);
@@ -544,7 +544,7 @@ OptionsDialog::loadOptions (void)
 
       if (objName == QLatin1String ("newVersionCheckBox"))
       {
-        if (Application_Settings->options.checknewversion)
+        if (Application_Options->checknewversion)
           ((QCheckBox *) object)->setCheckState (Qt::Checked);
         else
           ((QCheckBox *) object)->setCheckState (Qt::Unchecked);
@@ -552,7 +552,7 @@ OptionsDialog::loadOptions (void)
 
       if (objName == QLatin1String ("londonPricesCheckBox"))
       {
-        if (Application_Settings->options.longbp)
+        if (Application_Options->longbp)
           ((QCheckBox *) object)->setCheckState (Qt::Checked);
         else
           ((QCheckBox *) object)->setCheckState (Qt::Unchecked);
@@ -560,7 +560,7 @@ OptionsDialog::loadOptions (void)
 
       if (objName == QLatin1String ("autoUpdateCheckBox"))
       {
-        if (Application_Settings->options.autoupdate)
+        if (Application_Options->autoupdate)
           ((QCheckBox *) object)->setCheckState (Qt::Checked);
         else
           ((QCheckBox *) object)->setCheckState (Qt::Unchecked);
@@ -568,7 +568,7 @@ OptionsDialog::loadOptions (void)
 
       if (objName == QLatin1String ("devModeCheckBox"))
       {
-        if (Application_Settings->options.devmode)
+        if (Application_Options->devmode)
           ((QCheckBox *) object)->setCheckState (Qt::Checked);
         else
           ((QCheckBox *) object)->setCheckState (Qt::Unchecked);
@@ -576,48 +576,48 @@ OptionsDialog::loadOptions (void)
 
       if (objName == QLatin1String ("enableProxyBox"))
       {
-        if (Application_Settings->options.enableproxy)
+        if (Application_Options->enableproxy)
           ((QCheckBox *) object)->setCheckState (Qt::Checked);
         else
           ((QCheckBox *) object)->setCheckState (Qt::Unchecked);
       }
 
       if (objName == QLatin1String ("proxyHostEdit"))
-        ((QLineEdit *) object)->setText (Application_Settings->options.proxyhost);
+        ((QLineEdit *) object)->setText (Application_Options->proxyhost);
 
       if (objName == QLatin1String ("proxyUserEdit"))
-        ((QLineEdit *) object)->setText (Application_Settings->options.proxyuser);
+        ((QLineEdit *) object)->setText (Application_Options->proxyuser);
 
       if (objName == QLatin1String ("proxyPasswordEdit"))
-        ((QLineEdit *) object)->setText (Application_Settings->options.proxypass);
+        ((QLineEdit *) object)->setText (Application_Options->proxypass);
 
       if (objName == QLatin1String ("platformEdit"))
       {
-        ((QLineEdit *) object)->setText (Application_Settings->options.platform);
+        ((QLineEdit *) object)->setText (Application_Options->platform);
         ((QLineEdit *) object)->setCursorPosition (0);
       }
 
       if (objName == QLatin1String ("compilerEdit"))
       {
-        ((QLineEdit *) object)->setText (Application_Settings->options.compiler);
+        ((QLineEdit *) object)->setText (Application_Options->compiler);
         ((QLineEdit *) object)->setCursorPosition (0);
       }
 
       if (objName == QLatin1String ("compilerDbgEdit"))
       {
-        ((QLineEdit *) object)->setText (Application_Settings->options.compilerdbg);
+        ((QLineEdit *) object)->setText (Application_Options->compilerdbg);
         ((QLineEdit *) object)->setCursorPosition (0);
       }
 
       if (objName == QLatin1String ("compilerRelEdit"))
       {
-        ((QLineEdit *) object)->setText (Application_Settings->options.compilerrel);
+        ((QLineEdit *) object)->setText (Application_Options->compilerrel);
         ((QLineEdit *) object)->setCursorPosition (0);
       }
 
       if (objName == QLatin1String ("linkerEdit"))
       {
-        ((QLineEdit *) object)->setText (Application_Settings->options.linker);
+        ((QLineEdit *) object)->setText (Application_Options->linker);
         ((QLineEdit *) object)->setCursorPosition (0);
       }
 
@@ -628,46 +628,46 @@ OptionsDialog::loadOptions (void)
       }
 
       if (objName == QLatin1String ("linkerDbgEdit"))
-        ((QLineEdit *) object)->setText (Application_Settings->options.linkerdbg);
+        ((QLineEdit *) object)->setText (Application_Options->linkerdbg);
 
       if (objName == QLatin1String ("linkerRelEdit"))
       {
-        ((QLineEdit *) object)->setText (Application_Settings->options.linkerrel);
+        ((QLineEdit *) object)->setText (Application_Options->linkerrel);
         ((QLineEdit *) object)->setCursorPosition (0);
       }
 
       if (objName == QLatin1String ("proxyPortSpinBox"))
-        ((QSpinBox *) object)->setValue (Application_Settings->options.proxyport);
+        ((QSpinBox *) object)->setValue (Application_Options->proxyport);
 
       if (objName == QLatin1String ("netTimeOutSpinBox"))
-        ((QSpinBox *) object)->setValue (Application_Settings->options.nettimeout);
+        ((QSpinBox *) object)->setValue (Application_Options->nettimeout);
 
       if (objName == QLatin1String ("scrollSpeedSpinBox"))
-        ((QSpinBox *) object)->setValue (Application_Settings->options.scrollspeed);
+        ((QSpinBox *) object)->setValue (Application_Options->scrollspeed);
     }
   }
 
   QNetworkProxy proxy;
-  if (!Application_Settings->options.enableproxy)
+  if (!Application_Options->enableproxy)
     proxy.setType(QNetworkProxy::NoProxy);
   else
     proxy.setType(QNetworkProxy::HttpProxy);
 
-  proxy.setHostName(Application_Settings->options.proxyhost);
-  proxy.setPort(Application_Settings->options.proxyport);
-  proxy.setUser(Application_Settings->options.proxyuser);
-  proxy.setPassword(Application_Settings->options.proxypass);
+  proxy.setHostName(Application_Options->proxyhost);
+  proxy.setPort(Application_Options->proxyport);
+  proxy.setUser(Application_Options->proxyuser);
+  proxy.setPassword(Application_Options->proxypass);
   QNetworkProxy::setApplicationProxy (proxy);
 
-  setChartStyle (Application_Settings->options.chartstyle);
-  setLineColor (Application_Settings->options.linecolor);
-  setForeColor (Application_Settings->options.forecolor);
-  setBarColor (Application_Settings->options.barcolor);
-  setBackColor (Application_Settings->options.backcolor);
-  setGrid (Application_Settings->options.showgrid);
-  setVolumes (Application_Settings->options.showvolume);
-  setOnlinePrice (Application_Settings->options.showonlineprice);
-  setLinearScale (Application_Settings->options.linear);
+  setChartStyle (Application_Options->chartstyle);
+  setLineColor (Application_Options->linecolor);
+  setForeColor (Application_Options->forecolor);
+  setBarColor (Application_Options->barcolor);
+  setBackColor (Application_Options->backcolor);
+  setGrid (Application_Options->showgrid);
+  setVolumes (Application_Options->showvolume);
+  setOnlinePrice (Application_Options->showonlineprice);
+  setLinearScale (Application_Options->linear);
 
   int idx = ui->platformComboBox->findText (ui->platformEdit->text ());
   ui->platformComboBox->setCurrentIndex (idx);
@@ -689,110 +689,110 @@ OptionsDialog::saveOptions ()
     foreach (const QObject *object, objectlist)
     {
       if (object->objectName () == QLatin1String ("avapikeyEdit"))
-        Application_Settings->options.avapikey = ((QLineEdit *) object)->text ().trimmed ();
+        Application_Options->avapikey = ((QLineEdit *) object)->text ().trimmed ();
 
       if (object->objectName () == QLatin1String ("iexapikeyEdit"))
-        Application_Settings->options.iexapikey = ((QLineEdit *) object)->text ().trimmed ();
+        Application_Options->iexapikey = ((QLineEdit *) object)->text ().trimmed ();
 
       if (object->objectName () == QLatin1String ("splashCheckBox"))
       {
         if (((QCheckBox *) object)->checkState () == Qt::Checked)
-          Application_Settings->options.showsplashscreen = true;
+          Application_Options->showsplashscreen = true;
         else
-          Application_Settings->options.showsplashscreen = false;
+          Application_Options->showsplashscreen = false;
       }
 
       if (object->objectName () == QLatin1String ("newVersionCheckBox"))
       {
         if (((QCheckBox *) object)->checkState () == Qt::Checked)
-          Application_Settings->options.checknewversion = true;
+          Application_Options->checknewversion = true;
         else
-          Application_Settings->options.checknewversion = false;
+          Application_Options->checknewversion = false;
       }
 
       if (object->objectName () == QLatin1String ("londonPricesCheckBox"))
       {
         if (((QCheckBox *) object)->checkState () == Qt::Checked)
-          Application_Settings->options.longbp = true;
+          Application_Options->longbp = true;
         else
-          Application_Settings->options.longbp = false;
+          Application_Options->longbp = false;
       }
 
       if (object->objectName () == QLatin1String ("autoUpdateCheckBox"))
       {
         if (((QCheckBox *) object)->checkState () == Qt::Checked)
-          Application_Settings->options.autoupdate = true;
+          Application_Options->autoupdate = true;
         else
-          Application_Settings->options.autoupdate = false;
+          Application_Options->autoupdate = false;
       }
 
       if (object->objectName () == QLatin1String ("devModeCheckBox"))
       {
         if (((QCheckBox *) object)->checkState () == Qt::Checked)
-          Application_Settings->options.devmode = true;
+          Application_Options->devmode = true;
         else
-          Application_Settings->options.devmode = false;
+          Application_Options->devmode = false;
 
-        (qobject_cast <MainWindow *> (parentWidget ()))->setDevMode (Application_Settings->options.devmode);
+        (qobject_cast <MainWindow *> (parentWidget ()))->setDevMode (Application_Options->devmode);
       }
 
       if (object->objectName () == QLatin1String ("enableProxyBox"))
       {
         if (((QCheckBox *) object)->checkState () == Qt::Checked)
-          Application_Settings->options.enableproxy = true;
+          Application_Options->enableproxy = true;
         else
-          Application_Settings->options.enableproxy = false;
+          Application_Options->enableproxy = false;
       }
 
       if (object->objectName () == QLatin1String ("compilerEdit"))
-        Application_Settings->options.compiler = ((QLineEdit *) object)->text ().replace ("'", " ").trimmed ();
+        Application_Options->compiler = ((QLineEdit *) object)->text ().replace ("'", " ").trimmed ();
 
       if (object->objectName () == QLatin1String ("compilerDbgEdit"))
-        Application_Settings->options.compilerdbg = ((QLineEdit *) object)->text ().replace ("'", " ").trimmed ();
+        Application_Options->compilerdbg = ((QLineEdit *) object)->text ().replace ("'", " ").trimmed ();
 
       if (object->objectName () == QLatin1String ("compilerRelEdit"))
-        Application_Settings->options.compilerrel = ((QLineEdit *) object)->text ().replace ("'", " ").trimmed ();
+        Application_Options->compilerrel = ((QLineEdit *) object)->text ().replace ("'", " ").trimmed ();
 
       if (object->objectName () == QLatin1String ("linkerEdit"))
-        Application_Settings->options.linker = ((QLineEdit *) object)->text ().replace ("'", " ").trimmed ();
+        Application_Options->linker = ((QLineEdit *) object)->text ().replace ("'", " ").trimmed ();
 
       if (object->objectName () == QLatin1String ("linkerDbgEdit"))
-        Application_Settings->options.linkerdbg = ((QLineEdit *) object)->text ().replace ("'", " ").trimmed ();
+        Application_Options->linkerdbg = ((QLineEdit *) object)->text ().replace ("'", " ").trimmed ();
 
       if (object->objectName () == QLatin1String ("linkerRelEdit"))
-        Application_Settings->options.linkerrel = ((QLineEdit *) object)->text ().replace ("'", " ").trimmed ();
+        Application_Options->linkerrel = ((QLineEdit *) object)->text ().replace ("'", " ").trimmed ();
 
       if (object->objectName () == QLatin1String ("proxyHostEdit"))
-        Application_Settings->options.proxyhost = ((QLineEdit *) object)->text ().replace ("'", " ").trimmed ();
+        Application_Options->proxyhost = ((QLineEdit *) object)->text ().replace ("'", " ").trimmed ();
 
       if (object->objectName () == QLatin1String ("proxyUserEdit"))
-        Application_Settings->options.proxyuser = ((QLineEdit *) object)->text ().replace ("'", " ").trimmed ();
+        Application_Options->proxyuser = ((QLineEdit *) object)->text ().replace ("'", " ").trimmed ();
 
       if (object->objectName () == QLatin1String ("proxyPasswordEdit"))
-        Application_Settings->options.proxypass = ((QLineEdit *) object)->text ().replace ("'", " ").trimmed ();
+        Application_Options->proxypass = ((QLineEdit *) object)->text ().replace ("'", " ").trimmed ();
 
       if (object->objectName () == QLatin1String ("proxyPortSpinBox"))
-        Application_Settings->options.proxyport = (qint16) ((QSpinBox *) object)->value ();
+        Application_Options->proxyport = (qint16) ((QSpinBox *) object)->value ();
 
       if (object->objectName () == QLatin1String ("netTimeOutSpinBox"))
-        Application_Settings->options.nettimeout = (qint16) ((QSpinBox *) object)->value ();
+        Application_Options->nettimeout = (qint16) ((QSpinBox *) object)->value ();
 
       if (object->objectName () == QLatin1String ("scrollSpeedSpinBox"))
-        Application_Settings->options.scrollspeed = (qint16) ((QSpinBox *) object)->value ();
+        Application_Options->scrollspeed = (qint16) ((QSpinBox *) object)->value ();
     }
   }
 
-  Application_Settings->options.linecolor = lineColor ();
-  Application_Settings->options.barcolor = barColor ();
-  Application_Settings->options.forecolor = foreColor ();
-  Application_Settings->options.backcolor = backColor ();
-  Application_Settings->options.chartstyle = ChartStyle ();
-  Application_Settings->options.showgrid = Grid ();
-  Application_Settings->options.showvolume = Volumes ();
-  Application_Settings->options.linear = LinearScale ();
-  Application_Settings->options.showonlineprice = OnlinePrice ();
+  Application_Options->linecolor = lineColor ();
+  Application_Options->barcolor = barColor ();
+  Application_Options->forecolor = foreColor ();
+  Application_Options->backcolor = backColor ();
+  Application_Options->chartstyle = ChartStyle ();
+  Application_Options->showgrid = Grid ();
+  Application_Options->showvolume = Volumes ();
+  Application_Options->linear = LinearScale ();
+  Application_Options->showonlineprice = OnlinePrice ();
 
-  result = saveAppOptions (&Application_Settings->options);
+  result = saveAppOptions (Application_Options);
   if (result != CG_ERR_OK)
   {
     showMessage (errorMessage (result), this);
@@ -1120,25 +1120,25 @@ OptionsDialog::applyPlatformBtn_clicked (void)
    {
      if (rec->platform == ui->platformComboBox->currentText ())
      {
-       Application_Settings->options.platform = rec->platform;
-       ui->platformEdit->setText (Application_Settings->options.platform);
+       Application_Options->platform = rec->platform;
+       ui->platformEdit->setText (Application_Options->platform);
        ui->platformEdit->setCursorPosition (0);
 
-       Application_Settings->options.compiler = rec->compiler;
-       ui->compilerEdit->setText (Application_Settings->options.compiler);
+       Application_Options->compiler = rec->compiler;
+       ui->compilerEdit->setText (Application_Options->compiler);
        ui->compilerEdit->setCursorPosition (0);
 
-       Application_Settings->options.compilerdbg = rec->compilerdbg;
+       Application_Options->compilerdbg = rec->compilerdbg;
 
-       Application_Settings->options.compilerrel = rec->compilerrel;
+       Application_Options->compilerrel = rec->compilerrel;
 
-       Application_Settings->options.linker = rec->linker;
-       ui->linkerEdit->setText (Application_Settings->options.linker);
+       Application_Options->linker = rec->linker;
+       ui->linkerEdit->setText (Application_Options->linker);
        ui->linkerEdit->setCursorPosition (0);
 
-       Application_Settings->options.linkerdbg = rec->linkerdbg;
+       Application_Options->linkerdbg = rec->linkerdbg;
 
-       Application_Settings->options.linkerrel = rec->linkerrel;
+       Application_Options->linkerrel = rec->linkerrel;
      }
    }
 }

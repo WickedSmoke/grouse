@@ -58,7 +58,7 @@ const int  FONT_PIXELSIZE_PAD = 1;
 #endif
 const int  CHART_FONT_SIZE_PAD = 3;
 
-AppSettings *Application_Settings;
+AppOptions *Application_Options;
 SQLists *ComboItems;
 DownloadDataDialog *downloaddatadialog;
 TemplateManagerDialog *templatemanager;
@@ -131,7 +131,7 @@ MainWindow::checkNewVersion ()
 
   tempFile.resize (0);
 
-  netservice = new NetService (Application_Settings->options.nettimeout,
+  netservice = new NetService (Application_Options->nettimeout,
                                nativeHttpHeader ().toLatin1 (), this);
   ioresult = netservice->httpGET (urlstr, tempFile, nullptr);
   if (ioresult != CG_ERR_OK)
@@ -278,16 +278,16 @@ MainWindow::MainWindow (QWidget * parent):
   */
 
   // export application settings
-  Application_Settings = &appsettings;
+  Application_Options = &options;
 
   // export classes and variables
   ComboItems = &comboitems;
 
   // load application's options
-  loadAppOptions (&Application_Settings->options);
+  loadAppOptions (Application_Options);
 
   // show developer mode buttons
-  if (Application_Settings->options.devmode == true)
+  if (Application_Options->devmode == true)
   {
     ui->developButton->setVisible (true);
     ui->debugButton->setVisible (true);
@@ -295,7 +295,7 @@ MainWindow::MainWindow (QWidget * parent):
   }
 
   // show splash
-  if (Application_Settings->options.showsplashscreen == true)
+  if (Application_Options->showsplashscreen == true)
   {
     splash = new SplashDialog (this);
     correctWidgetFonts (splash);
@@ -349,7 +349,7 @@ MainWindow::MainWindow (QWidget * parent):
   ui->tabWidget->resize (width () - 2, height () - 60);
 
   newversion = false;
-  if (Application_Settings->options.checknewversion == true)
+  if (Application_Options->checknewversion == true)
   {
     // check for new vesrion
     checkNewVersion ();
@@ -368,7 +368,7 @@ MainWindow::MainWindow (QWidget * parent):
 #endif // Q_OS_MAC
 
   correctWidgetFonts (this);
-  if (Application_Settings->options.showsplashscreen == true)
+  if (Application_Options->showsplashscreen == true)
     splash->hide ();
 
   idb.disableModules();
@@ -608,7 +608,7 @@ MainWindow::setExpandChart (bool expandflag)
     ui->infoButton->show ();
     ui->exitButton->show ();
     ui->modulesButton->show ();
-    if (Application_Settings->options.devmode == true)
+    if (Application_Options->devmode == true)
     {
       ui->debugButton->show ();
       ui->developButton->show ();

@@ -67,7 +67,7 @@ StockTicker::StockTicker (QWidget * parent):
   newdata = false;
   tickerdata = NULL;
   tickerlabel = NULL;
-  tickerspeed = Application_Settings->options.scrollspeed;
+  tickerspeed = Application_Options->scrollspeed;
   worker = NULL;
   tickerstring = QStringLiteral ("");
   ticker_running = false;

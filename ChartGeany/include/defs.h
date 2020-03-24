@@ -243,15 +243,6 @@ typedef struct
   bool devmode;                 // default setting for developer mode
 } AppOptions;
 
-
-// application settings
-typedef struct
-{
-  QString sqlitefile;   // full path of database file
-  AppOptions options;   // application options
-} AppSettings;
-
-
 // table data for symbols
 typedef struct
 {
@@ -286,7 +277,7 @@ Q_DECLARE_TYPEINFO (ToolchainRec, Q_MOVABLE_TYPE);
 typedef QVector < ToolchainRec * > ToolchainVector;
 
 
-extern AppSettings *Application_Settings;       // application settings
+extern AppOptions *Application_Options;
 extern QAtomicInt GlobalError;                  // global error code
 extern QString Year, Month, Day, RunCounter, UID;
 

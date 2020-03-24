@@ -74,7 +74,7 @@ PriceWorker::process()
     {
       Sleeper::msleep(sleepms);
       counter += sleepms;
-      if (counter >= (Application_Settings->options.nettimeout * 1100))
+      if (counter >= (Application_Options->nettimeout * 1100))
         counter = 0;
     }
   }
