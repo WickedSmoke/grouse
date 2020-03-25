@@ -149,10 +149,10 @@
     <file>../cgscript/include/top.h</file>
   </qresource>
   <qresource prefix="qcodeeditor">
-     <file>../3rdparty/qcodeeditor/resources/default_style.xml</file>
-     <file>../3rdparty/qcodeeditor/resources/languages/glsl.xml</file>
-     <file>../3rdparty/qcodeeditor/resources/languages/cpp.xml</file>
-     <file>../3rdparty/qcodeeditor/resources/languages/lua.xml</file>
-     <file>../3rdparty/qcodeeditor/resources/languages/python.xml</file>
+     <file>../../3rdparty/qcodeeditor/resources/default_style.xml</file>
+     <file>../../3rdparty/qcodeeditor/resources/languages/glsl.xml</file>
+     <file>../../3rdparty/qcodeeditor/resources/languages/cpp.xml</file>
+     <file>../../3rdparty/qcodeeditor/resources/languages/lua.xml</file>
+     <file>../../3rdparty/qcodeeditor/resources/languages/python.xml</file>
   </qresource>
 </RCC>

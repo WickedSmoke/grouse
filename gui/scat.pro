@@ -14,7 +14,7 @@ INCLUDEPATH += ../ChartGeany/include \
 	../3rdparty/simplecrypt \
 	../3rdparty/ta-lib/include \
 	../3rdparty/x86dis/include \
-	../ChartGeany/3rdparty/sqlite3/include
+	../3rdparty/sqlite3/include
 
 LIBS += -ldl -lxlsreader
 
@@ -121,5 +121,5 @@ SOURCES += MainWindow.cpp \
 
 LIBS += -L../3rdparty -lta-lib -lx86dis
 
-SOURCES += ../ChartGeany/3rdparty/sqlite3/sqlite3.c \
+SOURCES += ../3rdparty/sqlite3/sqlite3.c \
 	../3rdparty/simplecrypt/simplecrypt.cpp

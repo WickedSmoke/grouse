@@ -174,8 +174,8 @@ INCLUDEPATH += \
         include \
         cgscript/include \
         ../database \
-        3rdparty/sqlite3/include \
-        3rdparty/segvcatch/include \
+        ../3rdparty/sqlite3/include \
+        ../3rdparty/segvcatch/include \
         ../3rdparty/ta-lib/include \
         ../3rdparty/simplecrypt
 
@@ -335,8 +335,8 @@ LIBS += -L../3rdparty -lta-lib
 
 # 3rdparty sources common for all Qt versions, platforms and compilers
 SOURCES += \
-        3rdparty/sqlite3/sqlite3_wrapper.c \
-        3rdparty/segvcatch/src/segvcatch.cpp \
+        ../3rdparty/sqlite3/sqlite3_wrapper.c \
+        ../3rdparty/segvcatch/src/segvcatch.cpp \
         ../3rdparty/simplecrypt/simplecrypt.cpp
 
 # 3rdparty headers common for all Qt versions, platforms and compilers
@@ -369,61 +369,61 @@ HEADERS  += \
 equals(QT_MAJOR_VERSION, 5) {
 greaterThan(QT_MINOR_VERSION, 6) {
 INCLUDEPATH += \
-        3rdparty/qcodeeditor/include \
-        3rdparty/qcodeeditor/include/internal
+        ../3rdparty/qcodeeditor/include \
+        ../3rdparty/qcodeeditor/include/internal
 
 SOURCES += \
-        3rdparty/qcodeeditor/src/QCodeEditor.cpp \
-        3rdparty/qcodeeditor/src/QCXXHighlighter.cpp \
-        3rdparty/qcodeeditor/src/QFramedTextAttribute.cpp \
-        3rdparty/qcodeeditor/src/QGLSLCompleter.cpp \
-        3rdparty/qcodeeditor/src/QGLSLHighlighter.cpp \
-        3rdparty/qcodeeditor/src/QJSONHighlighter.cpp \
-        3rdparty/qcodeeditor/src/QLanguage.cpp \
-        3rdparty/qcodeeditor/src/QLineNumberArea.cpp \
-        3rdparty/qcodeeditor/src/QLuaCompleter.cpp \
-        3rdparty/qcodeeditor/src/QLuaHighlighter.cpp \
-        3rdparty/qcodeeditor/src/QPythonCompleter.cpp \
-        3rdparty/qcodeeditor/src/QPythonHighlighter.cpp \
-        3rdparty/qcodeeditor/src/QStyleSyntaxHighlighter.cpp \
-        3rdparty/qcodeeditor/src/QSyntaxStyle.cpp \
-        3rdparty/qcodeeditor/src/QXMLHighlighter.cpp
+        ../3rdparty/qcodeeditor/src/QCodeEditor.cpp \
+        ../3rdparty/qcodeeditor/src/QCXXHighlighter.cpp \
+        ../3rdparty/qcodeeditor/src/QFramedTextAttribute.cpp \
+        ../3rdparty/qcodeeditor/src/QGLSLCompleter.cpp \
+        ../3rdparty/qcodeeditor/src/QGLSLHighlighter.cpp \
+        ../3rdparty/qcodeeditor/src/QJSONHighlighter.cpp \
+        ../3rdparty/qcodeeditor/src/QLanguage.cpp \
+        ../3rdparty/qcodeeditor/src/QLineNumberArea.cpp \
+        ../3rdparty/qcodeeditor/src/QLuaCompleter.cpp \
+        ../3rdparty/qcodeeditor/src/QLuaHighlighter.cpp \
+        ../3rdparty/qcodeeditor/src/QPythonCompleter.cpp \
+        ../3rdparty/qcodeeditor/src/QPythonHighlighter.cpp \
+        ../3rdparty/qcodeeditor/src/QStyleSyntaxHighlighter.cpp \
+        ../3rdparty/qcodeeditor/src/QSyntaxStyle.cpp \
+        ../3rdparty/qcodeeditor/src/QXMLHighlighter.cpp
 
 HEADERS += \
-        3rdparty/qcodeeditor/include/QCodeEditor \
-        3rdparty/qcodeeditor/include/QCXXHighlighter \
-        3rdparty/qcodeeditor/include/QFramedTextAttribute \
-        3rdparty/qcodeeditor/include/QGLSLCompleter \
-        3rdparty/qcodeeditor/include/QGLSLHighlighter \
-        3rdparty/qcodeeditor/include/QHighlightBlockRule  \
-        3rdparty/qcodeeditor/include/QHighlightRule \
-        3rdparty/qcodeeditor/include/QJSONHighlighter \
-        3rdparty/qcodeeditor/include/QLanguage \
-        3rdparty/qcodeeditor/include/QLineNumberArea \
-        3rdparty/qcodeeditor/include/QLuaCompleter \
-        3rdparty/qcodeeditor/include/QLuaHighlighter \
-        3rdparty/qcodeeditor/include/QPythonCompleter \
-        3rdparty/qcodeeditor/include/QPythonHighlighter \
-        3rdparty/qcodeeditor/include/QStyleSyntaxHighlighter \
-        3rdparty/qcodeeditor/include/QSyntaxStyle \
-        3rdparty/qcodeeditor/include/QXMLHighlighter \
-        3rdparty/qcodeeditor/include/internal/QCodeEditor.hpp \
-        3rdparty/qcodeeditor/include/internal/QCXXHighlighter.hpp \
-        3rdparty/qcodeeditor/include/internal/QFramedTextAttribute.hpp \
-        3rdparty/qcodeeditor/include/internal/QGLSLCompleter.hpp \
-        3rdparty/qcodeeditor/include/internal/QGLSLHighlighter.hpp \
-        3rdparty/qcodeeditor/include/internal/QHighlightBlockRule.hpp \
-        3rdparty/qcodeeditor/include/internal/QHighlightRule.hpp \
-        3rdparty/qcodeeditor/include/internal/QJSONHighlighter.hpp \
-        3rdparty/qcodeeditor/include/internal/QLanguage.hpp \
-        3rdparty/qcodeeditor/include/internal/QLineNumberArea.hpp \
-        3rdparty/qcodeeditor/include/internal/QLuaCompleter.hpp \
-        3rdparty/qcodeeditor/include/internal/QLuaHighlighter.hpp \
-        3rdparty/qcodeeditor/include/internal/QPythonCompleter.hpp \
-        3rdparty/qcodeeditor/include/internal/QPythonHighlighter.hpp \
-        3rdparty/qcodeeditor/include/internal/QStyleSyntaxHighlighter.hpp \
-        3rdparty/qcodeeditor/include/internal/QSyntaxStyle.hpp \
-        3rdparty/qcodeeditor/include/internal/QXMLHighlighter.hpp
+        ../3rdparty/qcodeeditor/include/QCodeEditor \
+        ../3rdparty/qcodeeditor/include/QCXXHighlighter \
+        ../3rdparty/qcodeeditor/include/QFramedTextAttribute \
+        ../3rdparty/qcodeeditor/include/QGLSLCompleter \
+        ../3rdparty/qcodeeditor/include/QGLSLHighlighter \
+        ../3rdparty/qcodeeditor/include/QHighlightBlockRule  \
+        ../3rdparty/qcodeeditor/include/QHighlightRule \
+        ../3rdparty/qcodeeditor/include/QJSONHighlighter \
+        ../3rdparty/qcodeeditor/include/QLanguage \
+        ../3rdparty/qcodeeditor/include/QLineNumberArea \
+        ../3rdparty/qcodeeditor/include/QLuaCompleter \
+        ../3rdparty/qcodeeditor/include/QLuaHighlighter \
+        ../3rdparty/qcodeeditor/include/QPythonCompleter \
+        ../3rdparty/qcodeeditor/include/QPythonHighlighter \
+        ../3rdparty/qcodeeditor/include/QStyleSyntaxHighlighter \
+        ../3rdparty/qcodeeditor/include/QSyntaxStyle \
+        ../3rdparty/qcodeeditor/include/QXMLHighlighter \
+        ../3rdparty/qcodeeditor/include/internal/QCodeEditor.hpp \
+        ../3rdparty/qcodeeditor/include/internal/QCXXHighlighter.hpp \
+        ../3rdparty/qcodeeditor/include/internal/QFramedTextAttribute.hpp \
+        ../3rdparty/qcodeeditor/include/internal/QGLSLCompleter.hpp \
+        ../3rdparty/qcodeeditor/include/internal/QGLSLHighlighter.hpp \
+        ../3rdparty/qcodeeditor/include/internal/QHighlightBlockRule.hpp \
+        ../3rdparty/qcodeeditor/include/internal/QHighlightRule.hpp \
+        ../3rdparty/qcodeeditor/include/internal/QJSONHighlighter.hpp \
+        ../3rdparty/qcodeeditor/include/internal/QLanguage.hpp \
+        ../3rdparty/qcodeeditor/include/internal/QLineNumberArea.hpp \
+        ../3rdparty/qcodeeditor/include/internal/QLuaCompleter.hpp \
+        ../3rdparty/qcodeeditor/include/internal/QLuaHighlighter.hpp \
+        ../3rdparty/qcodeeditor/include/internal/QPythonCompleter.hpp \
+        ../3rdparty/qcodeeditor/include/internal/QPythonHighlighter.hpp \
+        ../3rdparty/qcodeeditor/include/internal/QStyleSyntaxHighlighter.hpp \
+        ../3rdparty/qcodeeditor/include/internal/QSyntaxStyle.hpp \
+        ../3rdparty/qcodeeditor/include/internal/QXMLHighlighter.hpp
 }
 }
 
@@ -454,13 +454,13 @@ LIBS += -ltcc
 # libxls
 macx*|win32*|contains(OSDISTRO, .*Debian.*)|contains(OSDISTRO, .*centos.*)|contains(OSDISTRO, .*Ubuntu.*) {
 INCLUDEPATH += \
-        3rdparty/libxls/include
+        ../3rdparty/libxls/include
 
 SOURCES += \
-        3rdparty/libxls/src/endian.c \
-        3rdparty/libxls/src/ole.c \
-        3rdparty/libxls/src/xls.c \
-        3rdparty/libxls/src/xlstool.c
+        ../3rdparty/libxls/src/endian.c \
+        ../3rdparty/libxls/src/ole.c \
+        ../3rdparty/libxls/src/xls.c \
+        ../3rdparty/libxls/src/xlstool.c
 
 LIBS    -= -lxlsreader
 }
