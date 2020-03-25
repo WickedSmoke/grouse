@@ -433,25 +433,16 @@ bool InstrumentDatabase::openFile( const QString& filename, const char** err )
     // open sqlite db
     rc = sqlite3_open(_dbPath.toUtf8 (), &_db);
     if (rc != SQLITE_OK)
-    {
-      sqlite3_close (_db);
-      FATAL("Cannot create or open database.");
-    }
+      goto create_fail;
     sqlite3_extended_result_codes(_db, 1);
 
     // apply pragmas
     rc = sqlite3_exec(_db, _pragma.toUtf8(), nullptr, this, nullptr);
     if (rc != SQLITE_OK) // if open failed, quit application
-    {
-      sqlite3_close (_db);
-      FATAL("Cannot create or open database.");
-    }
+      goto create_fail;
 
     if (dbman (1, _db) != CG_ERR_OK)
-    {
-      sqlite3_close (_db);
-      FATAL("Cannot create or open database.");
-    }
+      goto create_fail;
 
     // create status file
     QFile statfile (encstatusname);
@@ -468,37 +459,21 @@ bool InstrumentDatabase::openFile( const QString& filename, const char** err )
     // open sqlite db
     rc = sqlite3_open(_dbPath.toUtf8 (), &_db);
     if (rc != SQLITE_OK) // if open failed, quit application
-    {
-      showMessage (QString::fromUtf8 ("Cannot create or open database. Application quits."));
-      sqlite3_close (_db);
-      qApp->exit (1);
-
-#if defined (Q_OS_WIN) || defined (Q_OS_MAC)
-      exit (1);
-#else
-      quick_exit (1);
-#endif
-    }
+      goto create_fail;
     sqlite3_extended_result_codes(_db, 1);
   }
 
   // apply pragmas
   rc = sqlite3_exec(_db, _pragma.toUtf8(), nullptr, this, nullptr);
   if (rc != SQLITE_OK) // if open failed, quit application
-  {
-    sqlite3_close (_db);
-    FATAL("Cannot create or open database.");
-  }
+    goto create_fail;
 
   // check version
   SQLCommand = QStringLiteral ("SELECT * FROM VERSION;");
   rc = sqlite3_exec(_db, SQLCommand.toUtf8(),
                     sqlcb_dbversion, (void *) &dbversion, nullptr);
   if (rc != SQLITE_OK) // if open failed, quit application
-  {
-    sqlite3_close (_db);
-    FATAL("Cannot create or open database.");
-  }
+    goto create_fail;
 
   if (dbversion == -1) // invalid dbversion
   {
@@ -508,10 +483,7 @@ bool InstrumentDatabase::openFile( const QString& filename, const char** err )
 
   dbversion ++; // upgrade db file
   if (dbman (dbversion, _db) != CG_ERR_OK)
-  {
-    sqlite3_close (_db);
-    FATAL("Cannot create or open database.");
-  }
+    goto create_fail;
 
   // sqlite3 limit options for linux
 #ifdef Q_OS_LINUX
@@ -535,6 +507,12 @@ bool InstrumentDatabase::openFile( const QString& filename, const char** err )
   rc = sqlite3_exec(_db, SQLCommand.toUtf8(), sqlcb_dbdata, nullptr, nullptr);
 
   return true;
+
+create_fail:
+
+  sqlite3_close (_db);
+  _db = nullptr;
+  FATAL("Cannot create or open database.");
 }
 
 
