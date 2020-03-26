@@ -1,6 +1,8 @@
 OBJECTS_DIR = obj
 MOC_DIR = moc
 
+RESOURCES += ../ChartGeany/resources/ChartGeany.qrc
+
 CONFIG += qt debug
 
 QT += widgets network webenginewidgets
