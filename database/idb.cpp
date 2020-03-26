@@ -48,7 +48,6 @@ int selectfromdb(sqlite3 *db, const char *sql,
 #include "common.h"
 
 extern CG_ERR_RESULT dbman(int dbversion, sqlite3*);
-int sqlcb_dbversion(void *versionptr, int argc, char **argv, char **column);
 
 QAtomicInt GlobalError;
 static InstrumentDatabase* gDatabase = nullptr;
@@ -474,14 +473,11 @@ bool InstrumentDatabase::openFile( const QString& filename, const char** err )
     goto create_fail;
 
   // check version
-  rc = sqlite3_exec(_db, "SELECT * FROM VERSION;",
-                    sqlcb_dbversion, (void *) &dbversion, nullptr);
-  if (rc != SQLITE_OK) // if open failed, quit application
-    goto create_fail;
-
+  dbversion = dbVersion();
   if (dbversion == -1) // invalid dbversion
   {
     sqlite3_close (_db);
+    _db = nullptr;
     FATAL("Invalid data file.");
   }
 
@@ -559,6 +555,19 @@ int InstrumentDatabase::loadChartData( const QString& base, QTAChartData* dat )
     }
     return CG_ERR_OK;
 }
+
+int sqlcb_dbversion(void *versionptr, int argc, char **argv, char **column);
+
+/**
+  Return database version or -1 if error.
+*/
+int InstrumentDatabase::dbVersion()
+{
+  int version = -1;
+  sqlite3_exec(_db, "SELECT * FROM VERSION;",
+               sqlcb_dbversion, (void *) &version, nullptr);
+  return version;
+}
 #endif
 
 
@@ -570,7 +579,7 @@ int sqlcb_datafeeds (void *dummy, int argc, char **argv, char **column)
 #ifdef CGTOOL
   QStringList *datafeedsList = static_cast <QStringList *> (dummy);
 #else
-  if (dummy != NULL)
+  if (dummy != nullptr)
     return 1;
 #endif
 
