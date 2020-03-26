@@ -48,6 +48,12 @@ extern int sqlcb_dbversion(void *versionptr, int argc,
 QAtomicInt GlobalError;
 static InstrumentDatabase* gDatabase = nullptr;
 
+#ifdef _WIN32
+#define stringEqualI(A,B)  (_stricmp(A,B) == 0)
+#else
+#define stringEqualI(A,B)  (strcasecmp(A,B) == 0)
+#endif
+
 
 // select from database
 int selectfromdb(const char *sql,
@@ -307,21 +313,19 @@ InstrumentDatabase::~InstrumentDatabase()
 
 static int sqlcb_dbdata(void *dummy, int argc, char **argv, char **column)
 {
-  QString colname;
+  const char* colname;
 
   if (dummy != nullptr)
     return 1;
 
   for (qint32 counter = 0; counter < argc; counter ++)
   {
-    colname = QString::fromUtf8(column[counter]);
-    colname = colname.toUpper ();
-    if (colname == QLatin1String ("UID"))
+    colname = column[counter];
+    if (stringEqualI(colname, "UID"))
       UID = QString::fromUtf8 (argv[counter]);
-    if (colname == QLatin1String ("RUNCOUNTER"))
+    else if (stringEqualI(colname, "RUNCOUNTER"))
       RunCounter = QString::fromUtf8 (argv[counter]);
   }
-
   return 0;
 }
 
