@@ -16,6 +16,12 @@
  *
  */
 
+#ifdef _WIN32
+#define stringEqualI(A,B)  (_stricmp(A,B) == 0)
+#else
+#define stringEqualI(A,B)  (strcasecmp(A,B) == 0)
+#endif
+
 #ifdef CGTOOL
 
 #include "sqlite3.h"
@@ -42,18 +48,12 @@ int selectfromdb(sqlite3 *db, const char *sql,
 #include "common.h"
 
 extern CG_ERR_RESULT dbman(int dbversion, sqlite3*);
-extern int sqlcb_dbversion(void *versionptr, int argc,
-                           char **argv, char **column);
+int sqlcb_dbversion(void *versionptr, int argc, char **argv, char **column);
 
 QAtomicInt GlobalError;
 static InstrumentDatabase* gDatabase = nullptr;
 QString UID, RunCounter;
 
-#ifdef _WIN32
-#define stringEqualI(A,B)  (_stricmp(A,B) == 0)
-#else
-#define stringEqualI(A,B)  (strcasecmp(A,B) == 0)
-#endif
 
 
 // select from database
@@ -560,3 +560,54 @@ int InstrumentDatabase::loadChartData( const QString& base, QTAChartData* dat )
     return CG_ERR_OK;
 }
 #endif
+
+
+// datafeeds' callback
+int sqlcb_datafeeds (void *dummy, int argc, char **argv, char **column)
+{
+  const char* colname;
+
+#ifdef CGTOOL
+  QStringList *datafeedsList = static_cast <QStringList *> (dummy);
+#else
+  if (dummy != NULL)
+    return 1;
+#endif
+
+  for (qint32 counter = 0; counter < argc; counter ++)
+  {
+    colname = column[counter];
+    if (stringEqualI(colname, "FEEDNAME"))
+#ifdef CGTOOL
+      *datafeedsList << QString (argv[counter]);
+#else
+      ComboItems->datafeedsList << QString (argv[counter]);
+#endif
+
+#ifndef CGTOOL
+    else if (stringEqualI(colname, "REALTIME"))
+      ComboItems->realtimeList << QString (argv[counter]);
+    else if (stringEqualI(colname, "SYMLIST"))
+      ComboItems->symlistList << QString (argv[counter]);
+    else if (stringEqualI(colname, "SYMLISTURL"))
+      ComboItems->symlisturlList << QString (argv[counter]);
+#endif
+  }
+  return 0;
+}
+
+
+int sqlcb_dbversion (void *versionptr, int argc, char **argv, char **column)
+{
+  const char* colname;
+  int version = -1;
+
+  for (qint32 counter = 0; counter < argc; counter ++)
+  {
+    colname = column[counter];
+    if (stringEqualI(colname, "VERSION"))
+      version = atoi(argv[counter]);
+  }
+  *(int *) versionptr = version;
+  return 0;
+}

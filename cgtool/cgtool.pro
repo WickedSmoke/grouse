@@ -84,8 +84,6 @@ SOURCES += src/cgscript_toolchain.cpp \
            src/updatedb.cpp \
            ../database/idb.cpp \
            ../database/platformstring.cpp \
-           ../database/sqlcb_datafeeds.cpp \
-           ../database/sqlcb_dbversion.cpp \
            ../database/sqlcb_modules.cpp \
            ../database/sqlcb_symbol_table.cpp \
            ../database/sqlcb_toolchain.cpp \
