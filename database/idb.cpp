@@ -503,13 +503,18 @@ bool InstrumentDatabase::openFile( const QString& filename, const char** err )
   SQLCommand = QStringLiteral ("UPDATE VERSION SET RUNCOUNTER = RUNCOUNTER + 1;");
   rc = sqlite3_exec(_db, SQLCommand.toUtf8(), nullptr, this, nullptr);
 
-  // vacuum
-  SQLCommand = QStringLiteral ("REINDEX; VACUUM;");
-  rc = sqlite3_exec(_db, SQLCommand.toUtf8(), sqlcb_dbdata, nullptr, nullptr);
-
   // load run counter and UID
   SQLCommand = QStringLiteral ("SELECT * FROM VERSION;");
   rc = sqlite3_exec(_db, SQLCommand.toUtf8(), sqlcb_dbdata, nullptr, nullptr);
+  //printf("RunCounter: %d\n", RunCounter.toInt());
+
+  // Vacuum occasionally.  This process can take a few seconds even when
+  // the historical data for only ten securities has been stored.
+  if( (RunCounter.toInt() & 15) == 15 )
+  {
+    SQLCommand = QStringLiteral ("REINDEX; VACUUM;");
+    rc = sqlite3_exec(_db, SQLCommand.toUtf8(), sqlcb_dbdata, nullptr, nullptr);
+  }
 
   return true;
 
