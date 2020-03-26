@@ -334,7 +334,6 @@ static int sqlcb_dbdata(void *dummy, int argc, char **argv, char **column)
 bool InstrumentDatabase::openFile( const QString& filename, const char** err )
 {
   QFileInfo dbfile;
-  QString SQLCommand;
   int dbversion;
   int rc;
 
@@ -365,6 +364,7 @@ bool InstrumentDatabase::openFile( const QString& filename, const char** err )
       decryptdlg->show ();
       QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 
+      QString SQLCommand;
       SQLCommand  = "PRAGMA key = " + DBKEY + ";";
       SQLCommand += "PRAGMA locking_mode = EXCLUSIVE;BEGIN EXCLUSIVE;COMMIT;";
       SQLCommand += "ATTACH DATABASE '" + _dbPath + "2' AS plaintext KEY '';";
@@ -474,8 +474,7 @@ bool InstrumentDatabase::openFile( const QString& filename, const char** err )
     goto create_fail;
 
   // check version
-  SQLCommand = QStringLiteral ("SELECT * FROM VERSION;");
-  rc = sqlite3_exec(_db, SQLCommand.toUtf8(),
+  rc = sqlite3_exec(_db, "SELECT * FROM VERSION;",
                     sqlcb_dbversion, (void *) &dbversion, nullptr);
   if (rc != SQLITE_OK) // if open failed, quit application
     goto create_fail;
@@ -500,20 +499,19 @@ bool InstrumentDatabase::openFile( const QString& filename, const char** err )
 #endif
 
   // increase run counter
-  SQLCommand = QStringLiteral ("UPDATE VERSION SET RUNCOUNTER = RUNCOUNTER + 1;");
-  rc = sqlite3_exec(_db, SQLCommand.toUtf8(), nullptr, this, nullptr);
+  rc = sqlite3_exec(_db, "UPDATE VERSION SET RUNCOUNTER = RUNCOUNTER + 1;",
+                    nullptr, nullptr, nullptr);
 
   // load run counter and UID
-  SQLCommand = QStringLiteral ("SELECT * FROM VERSION;");
-  rc = sqlite3_exec(_db, SQLCommand.toUtf8(), sqlcb_dbdata, nullptr, nullptr);
+  rc = sqlite3_exec(_db, "SELECT * FROM VERSION;",
+                    sqlcb_dbdata, nullptr, nullptr);
   //printf("RunCounter: %d\n", RunCounter.toInt());
 
   // Vacuum occasionally.  This process can take a few seconds even when
   // the historical data for only ten securities has been stored.
   if( (RunCounter.toInt() & 15) == 15 )
   {
-    SQLCommand = QStringLiteral ("REINDEX; VACUUM;");
-    rc = sqlite3_exec(_db, SQLCommand.toUtf8(), sqlcb_dbdata, nullptr, nullptr);
+    rc = sqlite3_exec(_db, "REINDEX; VACUUM;", nullptr, nullptr, nullptr);
   }
 
   return true;
@@ -534,13 +532,13 @@ bool InstrumentDatabase::disableModules()
 #ifdef DEBUG
     // disable all modules
     sqlite3_exec(_db, "UPDATE modules SET STATUS ='DISABLED';",
-                 sqlcb_dbdata, nullptr, nullptr);
+                 nullptr, nullptr, nullptr);
 #endif
 
     // disable all modules when move from a platform to another
     cmd = QStringLiteral("UPDATE modules SET STATUS = 'DISABLED' WHERE PLATFORM <> '") %
                          platformString () % QStringLiteral ("';");
-    rc = sqlite3_exec(_db, cmd.toUtf8(), sqlcb_dbdata, nullptr, nullptr);
+    rc = sqlite3_exec(_db, cmd.toUtf8(), nullptr, nullptr, nullptr);
     return( rc == SQLITE_OK );
 }
 
