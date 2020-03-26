@@ -47,6 +47,7 @@ extern int sqlcb_dbversion(void *versionptr, int argc,
 
 QAtomicInt GlobalError;
 static InstrumentDatabase* gDatabase = nullptr;
+QString UID, RunCounter;
 
 #ifdef _WIN32
 #define stringEqualI(A,B)  (_stricmp(A,B) == 0)

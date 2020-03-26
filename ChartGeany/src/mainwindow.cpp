@@ -66,7 +66,7 @@ ProgressDialog *progressdialog;
 DebugDialog *debugdialog;
 QProgressBar *GlobalProgressBar;
 static SplashDialog *splash = nullptr;
-QString Year, Month, Day, UID, RunCounter;
+QString Year, Month, Day;
 QMutex *ResourceMutex = nullptr;
 size_t CGScriptFunctionRegistrySize;
 

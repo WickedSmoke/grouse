@@ -228,7 +228,6 @@ SQLists *ComboItems = &_comboitems;
 QProgressBar *GlobalProgressBar = nullptr;
 QMutex *ResourceMutex = nullptr;
 QString Year, Month, Day;
-QString UID, RunCounter;
 
 DownloadDataDialog *downloaddatadialog;
 TemplateManagerDialog *templatemanager;

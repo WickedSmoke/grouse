@@ -278,8 +278,7 @@ typedef QVector < ToolchainRec * > ToolchainVector;
 
 
 extern AppOptions *Application_Options;
-extern QAtomicInt GlobalError;                  // global error code
-extern QString Year, Month, Day, RunCounter, UID;
+extern QString Year, Month, Day;
 
 // load a csv file to sqlite
 // operation may be "CREATE" or "UPDATE"
