@@ -8,8 +8,10 @@
 
 
 #include <QMainWindow>
-#include "datamanagerdialog.h"
+#include "defs.h"
 
+
+class DataManager;
 
 class MainWindow : public QMainWindow
 {
@@ -65,7 +67,7 @@ private:
     QAction* _actAbout;
     QAction* _actManageData;
 
-    DataManagerDialog* _dataManager;
+    DataManager* _dataManager;
 
     // Disabled copy constructor and operator=
     MainWindow( const MainWindow & ) : QMainWindow( 0 ) {}

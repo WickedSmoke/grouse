@@ -21,11 +21,11 @@ INCLUDEPATH += ../ChartGeany/include \
 LIBS += -ldl -lxlsreader
 
 HEADERS += MainWindow.h \
+	DataManager.h \
 	../ChartGeany/include/appColorDialog.h \
 	../ChartGeany/include/chartapp.h \
 	../ChartGeany/include/debugdialog.h \
 	../ChartGeany/include/databrowserdialog.h \
-	../ChartGeany/include/datamanagerdialog.h \
 	../ChartGeany/include/downloaddatadialog.h \
 	../ChartGeany/include/dynparamsdialog.h \
 	../ChartGeany/include/symbollistdialog.h \
@@ -55,12 +55,12 @@ HEADERS += MainWindow.h \
 	../database/feedyahoo.h
 
 SOURCES += MainWindow.cpp \
+	DataManager.cpp \
 	../ChartGeany/src/appColorDialog.cpp \
 	../ChartGeany/src/chartapp.cpp \
 	../ChartGeany/src/common.cpp \
 	../ChartGeany/src/debugdialog.cpp \
 	../ChartGeany/src/databrowserdialog.cpp \
-	../ChartGeany/src/datamanagerdialog.cpp \
 	../ChartGeany/src/downloaddatadialog.cpp \
 	../ChartGeany/src/dynparamsdialog.cpp \
 	../ChartGeany/src/symbollistdialog.cpp \

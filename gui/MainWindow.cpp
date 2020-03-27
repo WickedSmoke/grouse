@@ -14,8 +14,8 @@
 #include <QSettings>
 #include "MainWindow.h"
 #include "chartapp.h"
-#include "defs.h"
 #include "progressdialog.h"
+#include "DataManager.h"
 
 
 #define CREATE_DIALOG(ptr,T) \
@@ -204,7 +204,7 @@ void MainWindow::saveAs()
 
 void MainWindow::showDataManager()
 {
-    CREATE_DIALOG( _dataManager, DataManagerDialog );
+    CREATE_DIALOG( _dataManager, DataManager );
     _dataManager->show();
 }
 
