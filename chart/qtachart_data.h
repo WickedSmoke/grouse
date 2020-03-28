@@ -20,7 +20,6 @@
 #define QTACHART_DATA_H
 
 #include <QWidget>
-#include <QTextEdit>
 
 namespace Ui
 {

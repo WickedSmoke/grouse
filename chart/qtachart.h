@@ -22,7 +22,6 @@
 #include <cstddef>
 
 #include <QWidget>
-#include <QList>
 #include "defs.h"
 
 #ifndef Q_OS_WIN
