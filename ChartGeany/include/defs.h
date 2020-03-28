@@ -272,10 +272,6 @@ csv2sqlite (SymbolEntry *data, QString operation);
 extern const QString
 csvline2SQL (QString &csvline, QString &tablename);
 
-// sqlite3_exec callback for retrieving application options
-extern int
-sqlcb_options (void *classptr, int argc, char **argv, char **column);
-
 // sqlite3_exec callback for retrieving toolchain path and options
 extern int
 sqlcb_toolchain (void *classptr, int argc, char **argv, char **column);

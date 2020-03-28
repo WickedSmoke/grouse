@@ -191,6 +191,18 @@ extern int selectfromdb(const char *sql,
 // select count (*) query. returns the counter or -1 on error
 extern int selectcount(QString &SQL);
 
+// sqlite3_exec callbacks.
+extern int sqlcb_formats   (void *dummy, int argc, char **argv, char **);
+extern int sqlcb_timeframes(void *dummy, int argc, char **argv, char **);
+extern int sqlcb_currencies(void *dummy, int argc, char **argv, char **);
+extern int sqlcb_markets   (void *dummy, int argc, char **argv, char **);
+extern int sqlcb_datafeeds (void *dummy, int argc, char **argv, char **);
+extern int sqlcb_nsymbols  (void *nsymptr, int argc, char **argv, char **);
+extern int sqlcb_tickersymbols(void *data, int argc, char **argv, char **);
+extern int sqlcb_tickerfeed(void *data, int argc, char **argv, char **);
+extern int sqlcb_transactiontypes(void *data, int argc, char **argv, char **);
+extern int sqlcb_commissiontypes(void *data, int argc, char **argv, char **);
+
 // random http header
 extern QByteArray httpHeader();
 

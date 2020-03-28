@@ -646,6 +646,51 @@ int InstrumentDatabase::dbVersion()
                sqlcb_dbversion, (void *) &version, nullptr);
   return version;
 }
+
+
+// SQL callbacks
+
+#define LIST_QUERY1(NAME, OUTPUT) \
+    const char* colname; \
+    if (dummy != nullptr) \
+        return 1; \
+    for (qint32 counter = 0; counter < argc; counter ++) { \
+        colname = column[counter]; \
+        if (stringEqualI(colname, NAME)) \
+            ComboItems->OUTPUT << QString(argv[counter]); \
+    } \
+    return 0;
+
+
+int sqlcb_formats(void *dummy, int argc, char **argv, char **column)
+{
+    LIST_QUERY1("FORMAT", formatList)
+}
+
+int sqlcb_timeframes(void *dummy, int argc, char **argv, char **column)
+{
+    LIST_QUERY1("TIMEFRAME", timeframeList)
+}
+
+int sqlcb_currencies(void *dummy, int argc, char **argv, char **column)
+{
+    LIST_QUERY1("SYMBOL", currencyList)
+}
+
+int sqlcb_markets(void *dummy, int argc, char **argv, char **column)
+{
+    LIST_QUERY1("MARKET", marketList)
+}
+
+int sqlcb_transactiontypes(void *dummy, int argc, char **argv, char **column)
+{
+    LIST_QUERY1("DESCRIPTION", transactiontypeList)
+}
+
+int sqlcb_commissiontypes(void *dummy, int argc, char **argv, char **column)
+{
+    LIST_QUERY1("DESCRIPTION", commissiontypeList)
+}
 #endif
 
 

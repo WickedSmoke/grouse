@@ -217,103 +217,6 @@ fullOperatingSystemVersion ()
   return full;
 }
 
-// formats' callback
-int
-sqlcb_formats (void *dummy, int argc, char **argv, char **column)
-{
-  if (dummy != nullptr)
-    return 1;
-
-  for (qint32 counter = 0; counter < argc; counter ++)
-  {
-    QString colname = QString (column[counter]).toUpper ();
-    if (colname == QLatin1String ("FORMAT"))
-      ComboItems->formatList << QString (argv[counter]);
-  }
-  return 0;
-}
-
-// timeframes' callback
-int
-sqlcb_timeframes(void *dummy, int argc, char **argv, char **column)
-{
-  if (dummy != nullptr)
-    return 1;
-
-  for (qint32 counter = 0; counter < argc; counter ++)
-  {
-    QString colname = QString::fromUtf8(column[counter]).toUpper ();
-    if (colname == QLatin1String ("TIMEFRAME"))
-      ComboItems->timeframeList << QString (argv[counter]);
-  }
-  return 0;
-}
-
-
-// currencies' callback
-int
-sqlcb_currencies(void *dummy, int argc, char **argv, char **column)
-{
-  if (dummy != nullptr)
-    return 1;
-
-  for (qint32 counter = 0; counter < argc; counter ++)
-  {
-    QString colname = QString (column[counter]).toUpper ();
-    if (colname == QLatin1String ("SYMBOL"))
-      ComboItems->currencyList << QString (argv[counter]);
-  }
-  return 0;
-}
-
-// currencies' callback
-int
-sqlcb_markets(void *dummy, int argc, char **argv, char **column)
-{
-  if (dummy != nullptr)
-    return 1;
-
-  for (qint32 counter = 0; counter < argc; counter ++)
-  {
-    QString colname = QString (column[counter]).toUpper ();
-    if (colname == QLatin1String ("MARKET"))
-      ComboItems->marketList << QString (argv[counter]);
-  }
-  return 0;
-}
-
-// transaction types callback
-int
-sqlcb_transactiontypes (void *dummy, int argc, char **argv, char **column)
-{
-  if (dummy != nullptr)
-    return 1;
-
-  for (qint32 counter = 0; counter < argc; counter ++)
-  {
-    QString colname = QString (column[counter]).toUpper ();
-    if (colname == QLatin1String ("DESCRIPTION"))
-      ComboItems->transactiontypeList << QString (argv[counter]);
-  }
-  return 0;
-}
-
-// commission types callback
-int
-sqlcb_commissiontypes (void *dummy, int argc, char **argv, char **column)
-{
-  if (dummy != nullptr)
-    return 1;
-
-  for (qint32 counter = 0; counter < argc; counter ++)
-  {
-    QString colname = QString (column[counter]).toUpper ();
-    if (colname == QLatin1String ("DESCRIPTION"))
-      ComboItems->commissiontypeList << QString (argv[counter]);
-  }
-  return 0;
-}
-
 // symbol's data frames callback
 int
 sqlcb_dataframes (void *vectorptr, int argc, char **argv, char **column)
@@ -402,7 +305,7 @@ sqlcb_fundamentals (void *data, int argc, char **argv, char **column)
 }
 
 // sqlite3_exec callback for retrieving application options
-int
+static int
 sqlcb_options (void *classptr, int argc, char **argv, char **column)
 {
   AppOptions *options = static_cast <AppOptions *> (classptr);

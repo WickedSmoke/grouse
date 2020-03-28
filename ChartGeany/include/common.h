@@ -85,26 +85,6 @@ delay(int secs);
 extern QString
 fullOperatingSystemVersion (void);
 
-// sqlite3_exec callback for retrieving supported data formats
-extern int
-sqlcb_formats(void *dummy, int argc, char **argv, char **column);
-
-// sqlite3_exec callback for retrieving supported timeframes
-extern int
-sqlcb_timeframes(void *dummy, int argc, char **argv, char **column);
-
-// sqlite3_exec callback for retrieving supported currencies
-extern int
-sqlcb_currencies(void *dummy, int argc, char **argv, char **column);
-
-// sqlite3_exec callback for retrieving markets
-extern int
-sqlcb_markets(void *dummy, int argc, char **argv, char **column);
-
-// sqlite3_exec callback for retrieving datafeeds
-extern int
-sqlcb_datafeeds(void *dummy, int argc, char **argv, char **column);
-
 // sqlite3_exec callback for retrieving symbol's data frames
 extern int
 sqlcb_dataframes (void *vectorptr, int argc, char **argv, char **column);
@@ -112,26 +92,6 @@ sqlcb_dataframes (void *vectorptr, int argc, char **argv, char **column);
 // sqlite3_exec callback for retrieving symbol's fundamental data
 extern int
 sqlcb_fundamentals (void *data, int argc, char **argv, char **column);
-
-// sqlite3_exec callback for retrieving nsymbols
-extern int
-sqlcb_nsymbols(void *nsymptr, int argc, char **argv, char **column);
-
-// sqlite3_exec callback for ticker symbols
-extern int
-sqlcb_tickersymbols (void *data, int argc, char **argv, char **column);
-
-// sqlite3_exec callback for ticker feed
-extern int
-sqlcb_tickerfeed (void *data, int argc, char **argv, char **column);
-
-// sqlite3_exec callback for transaction types
-extern int
-sqlcb_transactiontypes (void *data, int argc, char **argv, char **column);
-
-// sqlite3_exec callback for commission types
-extern int
-sqlcb_commissiontypes (void *data, int argc, char **argv, char **column);
 
 // correct font size for widget and children
 extern void
