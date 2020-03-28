@@ -36,8 +36,6 @@
 QTAChart::QTAChart (QWidget * parent):
   QWidget (parent), ui (new Ui::QTAChart)
 {
-  Q_UNUSED (QTACastFromConstVoid)
-
   QTAChartCore *core;
   QPalette palette;
   QFont font;

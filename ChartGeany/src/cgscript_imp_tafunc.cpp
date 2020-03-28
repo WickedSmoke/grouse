@@ -37,8 +37,6 @@ using std::unique_ptr;
 static const FrameVector *
 hloc (const void *ptr, TimeFrame_t tf)
 {
-  Q_UNUSED (QTACastFromConstVoid)
-
   const QTAChartCore *core =  static_cast <const QTAChartCore *> (ptr);
   QString TF;
 

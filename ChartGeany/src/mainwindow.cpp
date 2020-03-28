@@ -179,8 +179,6 @@ MainWindow::MainWindow (QWidget * parent):
   loadcsvdlg(nullptr), portfoliomanagerdlg(nullptr),
   optionsdlg(nullptr), infodlg(nullptr)
 {
-  Q_UNUSED (QTACastFromConstVoid)
-
   const QString stylesheet =
     QStringLiteral ("background: transparent; background-color: white; color:black");
   QDateTime datetime;

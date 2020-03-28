@@ -23,8 +23,6 @@
 void
 drawObject (QTACObject *object)
 {
-  Q_UNUSED (QTACastFromConstVoid)
-
   QTAChartCore *core = static_cast <QTAChartCore *> ((void *) object->chartdata);
   QTACObject *child;
   QString timeframe = QStringLiteral ("");

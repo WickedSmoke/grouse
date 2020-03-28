@@ -27,16 +27,7 @@
 #include "defs.h"
 
 // cast const void * to QTACsomething *
-static QTACObject *
-QTACastFromConstVoid (const void *ptr)
-{
-  QObject *obj = static_cast <QObject *> (const_cast <void *> (ptr));
-
-  if (obj->metaObject()->className() == QStringLiteral ("QTACObject"))
-    return qobject_cast <QTACObject *> (obj);
-
-  return nullptr;
-}
+extern QTACObject * QTACastFromConstVoid (const void *ptr);
 
 #else /* standard C */
 

@@ -49,8 +49,6 @@ switch (sig) \
 bool
 QTACObject::moduleInit (void *data, int *objtype)
 {
-  Q_UNUSED (QTACastFromConstVoid)
-
   int rslt;
   bool retval = true;
 

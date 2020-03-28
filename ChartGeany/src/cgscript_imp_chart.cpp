@@ -23,8 +23,6 @@
 extern "C" Q_DECL_EXPORT int
 ChartWidth_imp (const void *ptr) NOEXCEPT
 {
-  Q_UNUSED (QTACastFromConstVoid)
-
   const QTAChartCore *core =  static_cast <const QTAChartCore *> (ptr);
 
   return static_cast <int> (qAbs (core->chartrightmost - core->chartleftmost));

@@ -24,8 +24,6 @@
 extern "C" Q_DECL_EXPORT BarData_t
 Bar_imp (const void *ptr, Candle_t ct, TimeFrame_t tf, int shift)
 {
-  Q_UNUSED (QTACastFromConstVoid)
-
   QString TF;
   const QTAChartCore *core = static_cast <const QTAChartCore *> (ptr);
   BarData_t rslt;

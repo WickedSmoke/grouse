@@ -25,8 +25,6 @@
 DebugDialog::DebugDialog (QWidget * parent):
   QDialog (parent), ui (new Ui::DebugDialog)
 {
-  Q_UNUSED (QTACastFromConstVoid)
-
   ui->setupUi (this);
   ui->debugPlainTextEdit->verticalScrollBar ()->
     setStyleSheet (QStringLiteral ("background: transparent; background-color:lightgray;"));

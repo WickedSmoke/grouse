@@ -19,12 +19,21 @@
 #include "qtachart_core.h"
 #include "cgscript.h"
 
+QTACObject *
+QTACastFromConstVoid (const void *ptr)
+{
+  QObject *obj = static_cast <QObject *> (const_cast <void *> (ptr));
+
+  if (obj->metaObject()->className() == QStringLiteral ("QTACObject"))
+    return qobject_cast <QTACObject *> (obj);
+
+  return nullptr;
+}
+
 // GetParentTitle
 extern "C" Q_DECL_EXPORT String_t
 GetParentTitle_imp (const void *ptr)
 {
-  Q_UNUSED (QTACastFromConstVoid)
-
   const QTAChartCore *core =  static_cast <const QTAChartCore *> (ptr);
   String_t rslt;
 

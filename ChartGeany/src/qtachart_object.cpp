@@ -67,8 +67,6 @@ SubChartButton::getOwner () NOEXCEPT
 // constructor for modules
 QTACObject::QTACObject (void *data, QString modpath, QString modname)
 {
-  Q_UNUSED (QTACastFromConstVoid)
-
   sanitizer = new ObjectSanitizer (static_cast <const void *> (this));
   int objtype;
 

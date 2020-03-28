@@ -46,8 +46,6 @@ RegisterError (ErrCode_t code, QString message)
 void
 fill_error_registry ()
 {
-  Q_UNUSED (QTACastFromConstVoid)
-
   RegisterError (CGSERR_OK, QStringLiteral (" No error "));
   RegisterError (CGSERR_INITIALIZATION_FAILED, QStringLiteral (" Initialization failed "));
   RegisterError (CGSERR_RUNTIME_ERROR, QStringLiteral (" Run-time error "));
