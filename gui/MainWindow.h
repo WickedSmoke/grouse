@@ -22,11 +22,11 @@ public:
 
     MainWindow();
 
-    CG_ERR_RESULT addChart( TableDataVector& );
+    CG_ERR_RESULT addChart( const TableDataVector& );
     bool expandedChart() const;
     void setExpandChart( bool );
 
-    QStringList getTabKeys( QString type );
+    QStringList getTabKeys( const QString& type );
 
     void enableTickerButton();
     void disableTickerButton();
@@ -55,6 +55,7 @@ private slots:
     void save();
     void saveAs();
     void showDataManager();
+    void closeTab(int);
 
 private:
 

@@ -15,8 +15,10 @@
 #include <QTabWidget>
 #include "MainWindow.h"
 #include "chartapp.h"
+#include "common.h"
 #include "progressdialog.h"
 #include "DataManager.h"
+#include "qtachart.h"
 
 
 #define CREATE_DIALOG(ptr,T) \
@@ -34,7 +36,10 @@ MainWindow::MainWindow() :
     createTools();
 
     _tabWidget = new QTabWidget;
+    _tabWidget->setTabsClosable(true);
     setCentralWidget( _tabWidget );
+    connect( _tabWidget, SIGNAL(tabCloseRequested(int)),
+             this, SLOT(closeTab(int)));
 
     QSettings pref(APPDIR, APPNAME);
     QSize size = pref.value("main-window-size", QSize()).toSize();
@@ -50,9 +55,85 @@ MainWindow::MainWindow() :
 }
 
 
-CG_ERR_RESULT MainWindow::addChart(TableDataVector& /*datavector*/)
+CG_ERR_RESULT MainWindow::addChart( const TableDataVector& datavector )
 {
-    return CG_ERR_OK;   // TODO
+    QTAChart *tachart;
+    QTAChartData Data;
+    QString SQLCmd, title, subtitle;
+    CG_ERR_RESULT result = CG_ERR_OK;
+
+    tachart = new (std::nothrow) QTAChart(_tabWidget);
+    if (!tachart)
+    {
+        result = CG_ERR_NOMEM;
+        goto fail;
+    }
+
+    if (tachart->getClassError() != CG_ERR_OK)
+    {
+        result = tachart->getClassError ();
+        goto fail_chart;
+    }
+
+    foreach(const TableDataClass tdc, datavector)
+    {
+        tachart->loadFrames(tdc.tablename);
+        if (tachart->getClassError() != CG_ERR_OK)
+        {
+            result = tachart->getClassError ();
+            goto fail_chart;
+        }
+    }
+
+    tachart->setSymbolKey(datavector[0].tablename);
+    tachart->setObjectName("Chart");
+
+    // load data
+    result = gDatabase->loadChartData(datavector[0].base, &Data);
+    if( result != CG_ERR_OK )
+    {
+        delete tachart;
+        showMessage( QStringLiteral("Symbol ") % datavector[0].symbol %
+                     ": " % errorMessage(result), this );
+        return result;
+    }
+
+    tachart->loadData(Data);
+    tachart->setSymbol(datavector[0].symbol);
+    tachart->setFeed(datavector[0].source);
+    title = datavector[0].symbol;
+    subtitle = datavector[0].name;
+
+    tachart->setAlwaysRedraw (true);
+    tachart->setTitle (title, subtitle);
+
+    {
+    QString text = datavector[0].symbol % QStringLiteral(" ") %
+                    (datavector[0].adjusted == QStringLiteral("NO") ?
+                        QStringLiteral("RAW") : QStringLiteral("ADJ"));
+
+    _tabWidget->addTab( tachart, text );
+    _tabWidget->setCurrentIndex( _tabWidget->count() - 1 );
+    tachart->setTabText( text );
+    }
+
+#if 0
+    // remove tooltip from close tab buttons
+    QList<QAbstractButton*> allPButtons;
+    allPButtons = _tabWidget->findChildren<QAbstractButton*> ();
+    for (int ind = 0; ind < allPButtons.size(); ind++)
+        if (allPButtons.at(ind)->inherits("CloseButton"))
+            allPButtons.at(ind)->setToolTip(QStringLiteral (""));
+#endif
+
+    return result;
+
+fail_chart:
+    delete tachart;
+fail:
+    setGlobalError(result, __FILE__, __LINE__);
+    showMessage(errorMessage(result), this);
+    return result;
 }
 
 
@@ -68,9 +149,35 @@ void MainWindow::setExpandChart(bool)
 }
 
 
-QStringList MainWindow::getTabKeys(QString /*type*/)
+QStringList MainWindow::getTabKeys( const QString& type )
 {
-    return QStringList();   // TODO
+    static QStringList keys;
+    int max = _tabWidget->count();
+
+    keys.clear ();
+    if (max == 0)
+        return keys;
+
+    for (qint32 counter = 0; counter < max; counter ++)
+    {
+        QWidget *wid = _tabWidget->widget(counter);
+        if( wid->objectName() == type && type == QLatin1String("Chart") )
+        {
+            QTAChart* chart = qobject_cast <QTAChart *> (wid);
+            keys += chart->getSymbolKey();
+        }
+/*
+        else if( wid->objectName() == type &&
+                 type == QLatin1String("Portfolio") )
+        {
+            Portfolio* portfolio = qobject_cast <Portfolio *> (wid);
+            keys += QString::number(portfolio->id());
+        }
+*/
+        else
+            keys += QStringLiteral("");
+    }
+    return keys;
 }
 
 
@@ -213,6 +320,17 @@ void MainWindow::showDataManager()
 }
 
 
+void MainWindow::closeTab(int index)
+{
+    if(_tabWidget->count() == 1 )
+        setExpandChart(false);
+
+    QWidget* wid = _tabWidget->widget(index);
+    _tabWidget->removeTab(index);
+    delete wid;
+}
+
+
 //----------------------------------------------------------------------------
 
 
@@ -271,6 +389,10 @@ int main( int argc, char **argv )
         return 1;
     }
     }
+
+    loadAppOptions(Application_Options);
+
+    ResourceMutex = new QMutex(QMutex::NonRecursive);
 
     downloaddatadialog = new DownloadDataDialog(&w);
     progressdialog  = new ProgressDialog(&w);
