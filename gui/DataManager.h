@@ -20,8 +20,7 @@
 
 
 #include <QDialog>
-#include "defs.h"
-#include "databrowserdialog.h"
+#include "idb.h"
 
 
 class QToolButton;
@@ -29,6 +28,7 @@ class QTableWidget;
 class QFrame;
 class QLabel;
 class QComboBox;
+class DataBrowserDialog;
 
 class DataManager : public QDialog
 {
@@ -57,14 +57,6 @@ public:
     QStringList sqlite_master_type; // type columnt of sqlite_master table
     TableDataVector TDVector; // vector of TableDataClass
 
-    TableDataVector getTableDataVector (QString key, QString adjusted)
-    {
-        int rc = fillTableDataVector (key, adjusted);
-        if (rc != CG_ERR_OK)
-          TDVector.clear ();
-        return TDVector;
-    };
-
 protected:
     virtual void closeEvent(QCloseEvent *event);
     virtual void showEvent(QShowEvent * event);
@@ -83,7 +75,6 @@ private slots:
 private:
     void reloadSymbols();
     void fillcolumn(QStringList list, int col);
-    CG_ERR_RESULT fillTableDataVector(QString key, QString adjusted);
     void cleartable();
     QString formSQLDropSentence(QString table, qint32 *nentries);
 

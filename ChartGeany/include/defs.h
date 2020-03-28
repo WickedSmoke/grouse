@@ -243,24 +243,6 @@ typedef struct
   bool devmode;                 // default setting for developer mode
 } AppOptions;
 
-// table data for symbols
-typedef struct
-{
-  QString tablename;
-  QString symbol;
-  QString source;
-  QString timeframe;
-  QString name;
-  QString adjusted;
-  QString base;
-  QString market;
-  QString lastupdate;
-  QString currency;
-} TableDataClass;
-
-Q_DECLARE_TYPEINFO (TableDataClass, Q_MOVABLE_TYPE);
-typedef QVector < TableDataClass > TableDataVector;
-
 // toolchain record type
 typedef struct
 {

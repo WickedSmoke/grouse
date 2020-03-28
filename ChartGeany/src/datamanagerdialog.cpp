@@ -649,67 +649,6 @@ DataManagerDialog::browserButton_clicked ()
   browser->show ();
 }
 
-// callback for sqlite3_exec
-static int
-sqlcb_table_data (void *classptr, int argc, char **argv, char **column)
-{
-  DataManagerDialog *dmd = static_cast <DataManagerDialog *> (classptr);
-  TableDataClass tdc;
-
-  for (qint32 counter = 0; counter < argc; counter ++)
-  {
-    QString colname = QString::fromUtf8(column[counter]);
-    colname = colname.toUpper ();
-    // key, symbol,  timeframe, description, adjusted, base, market, source
-    if (colname == QLatin1String ("KEY"))
-      tdc.tablename = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("SYMBOL"))
-      tdc.symbol = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("TIMEFRAME"))
-      tdc.timeframe = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("DESCRIPTION"))
-      tdc.name = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("ADJUSTED"))
-      tdc.adjusted = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("BASE"))
-      tdc.base = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("MARKET"))
-      tdc.market = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("SOURCE"))
-      tdc.source = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("LASTUPDATE"))
-      tdc.lastupdate = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("CURRENCY"))
-      tdc.currency = QString (argv[counter]);
-  }
-  dmd->TDVector += tdc;
-
-  return 0;
-}
-
-// fill the TableDataVector
-CG_ERR_RESULT
-DataManagerDialog::fillTableDataVector (QString base, QString adjusted)
-{
-  QString query;
-  int rc;
-
-  query = QStringLiteral ("SELECT key, symbol,  timeframe, description, adjusted, base, market, source, ") %
-          QStringLiteral ("lastupdate, currency FROM symbols WHERE base = '") % base % QStringLiteral ("' AND ") %
-          QStringLiteral ("ADJUSTED = '") % adjusted % QStringLiteral ("' ORDER BY tfresolution ASC;");
-
-  TDVector.clear ();
-  rc = selectfromdb(query.toUtf8(), sqlcb_table_data, this);
-  if (rc != SQLITE_OK)
-  {
-    setGlobalError(CG_ERR_DBACCESS, __FILE__, __LINE__);
-    showMessage (errorMessage (CG_ERR_DBACCESS), this);
-    return CG_ERR_DBACCESS;
-  }
-
-  return CG_ERR_OK;
-}
-
 // chartButton_clicked ()
 void
 DataManagerDialog::chartButton_clicked ()
@@ -742,8 +681,13 @@ DataManagerDialog::chartButton_clicked ()
     QStringList symkeys;
     int index = -1;
 
-    if (fillTableDataVector (base.at (row), adjusted.at (row)) != CG_ERR_OK)
+    int rc = gDatabase->loadTableData (base.at(row), adjusted.at(row),
+                                       &TDVector);
+    if (rc != CG_ERR_OK)
+    {
+      showMessage(errorMessage(rc), this);
       return;
+    }
 
     symkeys = (qobject_cast <MainWindow*> (parent ())->getTabKeys ("Chart"));
     if (symkeys.size () != 0)

@@ -12,6 +12,7 @@
 #include <QMessageBox>
 #include <QProgressBar>
 #include <QSettings>
+#include <QTabWidget>
 #include "MainWindow.h"
 #include "chartapp.h"
 #include "progressdialog.h"
@@ -19,10 +20,10 @@
 
 
 #define CREATE_DIALOG(ptr,T) \
-    if(! ptr) { \
-        ptr = new T(this); \
-        if(! ptr) return; \
-    }
+  if(! ptr) { \
+    ptr = new T(this); \
+    if(! ptr) return; \
+  }
 
 
 MainWindow::MainWindow() :
@@ -31,6 +32,9 @@ MainWindow::MainWindow() :
     createActions();
     createMenus();
     createTools();
+
+    _tabWidget = new QTabWidget;
+    setCentralWidget( _tabWidget );
 
     QSettings pref(APPDIR, APPNAME);
     QSize size = pref.value("main-window-size", QSize()).toSize();

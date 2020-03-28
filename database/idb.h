@@ -107,6 +107,25 @@ typedef struct
 } SymbolEntry;
 
 
+// table data for symbols
+typedef struct
+{
+    QString tablename;
+    QString symbol;
+    QString source;
+    QString timeframe;
+    QString name;
+    QString adjusted;
+    QString base;
+    QString market;
+    QString lastupdate;
+    QString currency;
+} TableDataClass;
+
+Q_DECLARE_TYPEINFO (TableDataClass, Q_MOVABLE_TYPE);
+typedef QVector<TableDataClass> TableDataVector;
+
+
 // fundamenta data as loaded from sqlite table
 typedef struct
 {
@@ -135,6 +154,8 @@ public:
     bool openFile( const QString& filename, const char** err );
     bool disableModules();
     int loadChartData( const QString& base, QTAChartData* data );
+    int loadTableData( const QString& base, const QString& adjusted,
+                       TableDataVector* data );
     void reset();
     int dbVersion();
 
@@ -151,6 +172,7 @@ private:
 };
 
 
+extern InstrumentDatabase* gDatabase;
 extern QAtomicInt GlobalError;      // global error code
 extern QString RunCounter, UID;
 
@@ -168,9 +190,6 @@ extern int selectfromdb(const char *sql,
 
 // select count (*) query. returns the counter or -1 on error
 extern int selectcount(QString &SQL);
-
-// reset database
-extern void resetDatabase();
 
 // random http header
 extern QByteArray httpHeader();

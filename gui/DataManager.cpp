@@ -27,8 +27,10 @@
 #include <QTableWidget>
 #include <QToolButton>
 #include <QDateTime>
+#include "MainWindow.h"
 #include "DataManager.h"
 #include "common.h"
+#include "databrowserdialog.h"
 #include "feedyahoo.h"
 #include "feedav.h"
 #include "feediex.h"
@@ -455,8 +457,10 @@ void DataManager::updateButton_clicked ()
   }
 
   if (!updateBeforeOpen)
+  {
     if (showOkCancel ("Update selected entries?", this) == false)
       return;
+  }
 
   GlobalProgressBar = progressdialog->getProgressBar ();
   GlobalProgressBar->setValue (0);
@@ -613,9 +617,11 @@ void DataManager::updateButton_clicked ()
 
   progressdialog->hide();
   if (!updateBeforeOpen)
+  {
     showMessage (QStringLiteral ("Update completed with ") +
                  QString::number (errcounter) % QStringLiteral (" errors."),
                  this);
+  }
   refreshButton_clicked ();
 }
 
@@ -659,129 +665,77 @@ void DataManager::browserButton_clicked ()
 }
 
 
-static int sqlcb_table_data(void *classptr, int argc, char **argv,
-                            char **column)
-{
-  DataManager *dmd = static_cast <DataManager *> (classptr);
-  TableDataClass tdc;
-
-  for (qint32 counter = 0; counter < argc; counter ++)
-  {
-    QString colname = QString::fromUtf8(column[counter]);
-    colname = colname.toUpper ();
-    // key, symbol,  timeframe, description, adjusted, base, market, source
-    if (colname == QLatin1String ("KEY"))
-      tdc.tablename = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("SYMBOL"))
-      tdc.symbol = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("TIMEFRAME"))
-      tdc.timeframe = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("DESCRIPTION"))
-      tdc.name = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("ADJUSTED"))
-      tdc.adjusted = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("BASE"))
-      tdc.base = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("MARKET"))
-      tdc.market = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("SOURCE"))
-      tdc.source = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("LASTUPDATE"))
-      tdc.lastupdate = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("CURRENCY"))
-      tdc.currency = QString (argv[counter]);
-  }
-  dmd->TDVector += tdc;
-
-  return 0;
-}
-
-
-CG_ERR_RESULT DataManager::fillTableDataVector(QString base, QString adjusted)
-{
-  QString query;
-  int rc;
-
-  query = QStringLiteral ("SELECT key, symbol,  timeframe, description, adjusted, base, market, source, ") %
-          QStringLiteral ("lastupdate, currency FROM symbols WHERE base = '") % base % QStringLiteral ("' AND ") %
-          QStringLiteral ("ADJUSTED = '") % adjusted % QStringLiteral ("' ORDER BY tfresolution ASC;");
-
-  TDVector.clear ();
-  rc = selectfromdb(query.toUtf8(), sqlcb_table_data, this);
-  if (rc != SQLITE_OK)
-  {
-    setGlobalError(CG_ERR_DBACCESS, __FILE__, __LINE__);
-    showMessage (errorMessage (CG_ERR_DBACCESS), this);
-    return CG_ERR_DBACCESS;
-  }
-
-  return CG_ERR_OK;
-}
-
-
 void DataManager::chartButton_clicked()
 {
-  QStringList tablename, symbol, timeframe, name, adjusted, base;
-  int row, maxrow;
+    MainWindow* view;
+    QStringList tablename, symbol, timeframe, name, adjusted, base;
+    int row, maxrow;
 
-  maxrow = tableWidget->rowCount ();
-  for (row = 0; row < maxrow; row ++)
-    if (tableWidget->item (row, 0)->isSelected ())
+    maxrow = tableWidget->rowCount ();
+    for (row = 0; row < maxrow; row ++)
     {
-      tablename << tableWidget->item (row, 8)->text ();
-      symbol << tableWidget->item (row, 0)->text ();
-      name << tableWidget->item (row, 1)->text ();
-      timeframe << tableWidget->item (row, 4)->text ();
-      adjusted << tableWidget->item (row, 9)->text ();
-      base << tableWidget->item (row, 10)->text ();
+        if (tableWidget->item (row, 0)->isSelected ())
+        {
+            tablename << tableWidget->item(row, 8)->text();
+            symbol    << tableWidget->item(row, 0)->text();
+            name      << tableWidget->item(row, 1)->text();
+            timeframe << tableWidget->item(row, 4)->text();
+            adjusted  << tableWidget->item(row, 9)->text();
+            base      << tableWidget->item(row, 10)->text();
+        }
     }
 
-  maxrow = tablename.size ();
-  if (maxrow == 0)
-  {
-    showMessage ("Select symbols first please.", this);
-    return;
-  }
-
-#if 0
-  updateBeforeOpen = true;
-  for (row = 0; row < maxrow; row ++)
-  {
-    QStringList symkeys;
-    int index = -1;
-
-    if (fillTableDataVector (base.at (row), adjusted.at (row)) != CG_ERR_OK)
-      return;
-
-    symkeys = (qobject_cast <MainWindow*> (parent ())->getTabKeys ("Chart"));
-    if (symkeys.size () != 0)
+    maxrow = tablename.size();
+    if (maxrow == 0)
     {
-      for (qint32 counter = 0; counter < symkeys.size (); counter ++)
-        if (TDVector[0].tablename == symkeys[counter])
-          index = counter;
+        showMessage("Select symbols first please.", this);
+        return;
     }
 
-    if (index != -1)
+    view = qobject_cast<MainWindow*>( parent() );
+    if( ! view )
+        return;
+
+    updateBeforeOpen = true;
+    for (row = 0; row < maxrow; row ++)
     {
-      hide();
-      (qobject_cast <MainWindow*> (parent ()))->tabWidget->setCurrentIndex (index);
-    }
-    else
-    {
-      if (qAbs (TDVector[0].lastupdate.toLongLong () -
+        QStringList symkeys;
+        int index = -1;
+
+        int rc = gDatabase->loadTableData( base.at(row), adjusted.at(row),
+                                           &TDVector );
+        if (rc != CG_ERR_OK)
+        {
+            showMessage(errorMessage(rc), this);
+            return;
+        }
+
+        symkeys = view->getTabKeys("Chart");
+        if (symkeys.size() != 0)
+        {
+          for (qint32 counter = 0; counter < symkeys.size(); counter ++)
+            if (TDVector[0].tablename == symkeys[counter])
+              index = counter;
+        }
+
+        if (index != -1)
+        {
+            hide();
+            view->_tabWidget->setCurrentIndex(index);
+        }
+        else
+        {
+            if( qAbs(TDVector[0].lastupdate.toLongLong() -
                 (QDateTime::currentMSecsSinceEpoch() / 1000)) > 7200 &&
-          Application_Options->autoupdate)
-        updateButton_clicked ();
-      hide();
+                Application_Options->autoupdate )
+                updateButton_clicked();
+            hide();
+            view->addChart(TDVector);
+        }
 
-      //KR emit addChart();
-      (qobject_cast <MainWindow*> (parent ()))->addChart (TDVector);
+        qApp->processEvents(QEventLoop::ExcludeUserInputEvents, 100);
     }
-
-    qApp->processEvents(QEventLoop::ExcludeUserInputEvents, 100);
-  }
-#endif
-  updateBeforeOpen = false;
+    updateBeforeOpen = false;
 }
 
 

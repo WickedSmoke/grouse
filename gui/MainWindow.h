@@ -12,6 +12,7 @@
 
 
 class DataManager;
+class QTabWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -21,11 +22,11 @@ public:
 
     MainWindow();
 
-    CG_ERR_RESULT addChart (TableDataVector & datavector);
+    CG_ERR_RESULT addChart( TableDataVector& );
     bool expandedChart() const;
-    void setExpandChart(bool);
+    void setExpandChart( bool );
 
-    QStringList getTabKeys(QString type);
+    QStringList getTabKeys( QString type );
 
     void enableTickerButton();
     void disableTickerButton();
@@ -68,10 +69,13 @@ private:
     QAction* _actManageData;
 
     DataManager* _dataManager;
+    QTabWidget*  _tabWidget;
 
     // Disabled copy constructor and operator=
     MainWindow( const MainWindow & ) : QMainWindow( 0 ) {}
     MainWindow &operator=( const MainWindow & ) { return *this; }
+
+    friend class DataManager;   // To access _tabWidget.
 };
 
 

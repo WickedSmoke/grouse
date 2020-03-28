@@ -1656,11 +1656,19 @@ Portfolio::expandButton_clicked (void)
   return;
 }
 
+static int getTableDataVector( TableDataVector& td, const QString& key,
+                               const QString& adjusted )
+{
+    int rc = gDatabase->loadTableData (key, adjusted, &td);
+    if (rc != CG_ERR_OK)
+        td.clear ();
+    return rc;
+}
+
 // chart button
 void
 Portfolio::chartButton_clicked (void)
 {
-  DataManagerDialog dmd;
   TableDataVector tdv;
   QString symbol = "", tablename;
   CG_ERR_RESULT result;
@@ -1696,7 +1704,7 @@ Portfolio::chartButton_clicked (void)
       return;
     }
 
-    tdv = dmd.getTableDataVector (YF.getTableName (), "NO");
+    getTableDataVector (tdv, YF.getTableName (), "NO");
   }
   else
   if (feed == "IEX")
@@ -1716,7 +1724,7 @@ Portfolio::chartButton_clicked (void)
       return;
     }
 
-    tdv = dmd.getTableDataVector (EF.getTableName (), "NO");
+    getTableDataVector (tdv, EF.getTableName (), "NO");
   }
   else
   if (feed == "ALPHAVANTAGE")
@@ -1736,7 +1744,7 @@ Portfolio::chartButton_clicked (void)
       return;
     }
 
-    tdv = dmd.getTableDataVector (AF.getTableName (), "NO");
+    getTableDataVector (tdv, AF.getTableName (), "NO");
   }
   else
     return;

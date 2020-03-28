@@ -50,7 +50,7 @@ int selectfromdb(sqlite3 *db, const char *sql,
 extern CG_ERR_RESULT dbman(int dbversion, sqlite3*);
 
 QAtomicInt GlobalError;
-static InstrumentDatabase* gDatabase = nullptr;
+InstrumentDatabase* gDatabase = nullptr;
 QString UID, RunCounter;
 
 
@@ -555,6 +555,72 @@ int InstrumentDatabase::loadChartData( const QString& base, QTAChartData* dat )
     }
     return CG_ERR_OK;
 }
+
+
+static int sqlcb_table_data(void *user, int argc, char **argv,
+                            char **column)
+{
+  TableDataClass tdc;
+
+  for (qint32 counter = 0; counter < argc; counter ++)
+  {
+    QString colname = QString::fromUtf8(column[counter]);
+    colname = colname.toUpper ();
+    // key, symbol,  timeframe, description, adjusted, base, market, source
+    if (colname == QLatin1String ("KEY"))
+      tdc.tablename = QString (argv[counter]).toUpper ();
+    if (colname == QLatin1String ("SYMBOL"))
+      tdc.symbol = QString (argv[counter]).toUpper ();
+    if (colname == QLatin1String ("TIMEFRAME"))
+      tdc.timeframe = QString (argv[counter]).toUpper ();
+    if (colname == QLatin1String ("DESCRIPTION"))
+      tdc.name = QString (argv[counter]).toUpper ();
+    if (colname == QLatin1String ("ADJUSTED"))
+      tdc.adjusted = QString (argv[counter]).toUpper ();
+    if (colname == QLatin1String ("BASE"))
+      tdc.base = QString (argv[counter]).toUpper ();
+    if (colname == QLatin1String ("MARKET"))
+      tdc.market = QString (argv[counter]).toUpper ();
+    if (colname == QLatin1String ("SOURCE"))
+      tdc.source = QString (argv[counter]).toUpper ();
+    if (colname == QLatin1String ("LASTUPDATE"))
+      tdc.lastupdate = QString (argv[counter]).toUpper ();
+    if (colname == QLatin1String ("CURRENCY"))
+      tdc.currency = QString (argv[counter]);
+  }
+  ((TableDataVector*) user)->push_back(tdc);
+
+  return 0;
+}
+
+
+/**
+  \param data   Vector to fill with data.  It will be cleared before the
+                database select operation is done.
+*/
+int InstrumentDatabase::loadTableData( const QString& base,
+                                       const QString& adjusted,
+                                       TableDataVector* data )
+{
+    QString query;
+    int rc;
+
+    query = QStringLiteral(
+        "SELECT key, symbol, timeframe, description, adjusted, base, market,"
+        " source, lastupdate, currency FROM symbols WHERE base = '") % base %
+        QStringLiteral("' AND ADJUSTED = '") % adjusted %
+        QStringLiteral("' ORDER BY tfresolution ASC;");
+
+    data->clear();
+    rc = selectfromdb(query.toUtf8(), sqlcb_table_data, data);
+    if (rc != SQLITE_OK)
+    {
+        setGlobalError(CG_ERR_DBACCESS, __FILE__, __LINE__);
+        return CG_ERR_DBACCESS;
+    }
+    return CG_ERR_OK;
+}
+
 
 int sqlcb_dbversion(void *versionptr, int argc, char **argv, char **column);
 

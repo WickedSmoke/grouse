@@ -20,7 +20,7 @@
 #define DATAMANAGERDIALOG_H
 
 #include <QDialog>
-#include "defs.h"
+#include "idb.h"
 #include "databrowserdialog.h"
 
 namespace Ui
@@ -55,17 +55,6 @@ public:
   QStringList sqlite_master_type; // type columnt of sqlite_master table
   TableDataVector TDVector; // vector of TableDataClass
 
-  TableDataVector getTableDataVector (QString key, // get TableDataVector
-                                      QString adjusted)
-  {
-    int rc;
-    rc = fillTableDataVector (key, adjusted);
-    if (rc != CG_ERR_OK)
-      TDVector.clear ();
-
-    return TDVector;
-  };
-
 private:
   Ui::DataManagerDialog * ui;
 
@@ -74,8 +63,6 @@ private:
   bool updateBeforeOpen; // update data before open the chart
   void reloadSymbols (void);	// reload all symbols
   void fillcolumn (QStringList list, int col); // fill table column
-  CG_ERR_RESULT fillTableDataVector (QString key, // fill TableDataVector
-                                     QString adjusted);
   void cleartable (void); // clear table
   QString formSQLDropSentence (QString table, qint32 *nentries); // form a drop sql sentence
 
