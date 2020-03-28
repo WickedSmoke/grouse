@@ -206,6 +206,9 @@ MainWindow::MainWindow (QWidget * parent):
 #endif
   }
 
+  // initialize SQL statements
+  idb.initializeListQueries( comboitems );
+
   ticker = nullptr;
   expandedChartFlag = false;
   tickerVisible = false;
@@ -302,15 +305,6 @@ MainWindow::MainWindow (QWidget * parent):
     QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
     delay (3);
   }
-
-  // initialize SQL statements
-  strcpy (comboitems.formats_query, "select FORMAT from FORMATS");
-  strcpy (comboitems.timeframes_query, "select TIMEFRAME from TIMEFRAMES_ORDERED");
-  strcpy (comboitems.currencies_query, "select SYMBOL from CURRENCIES");
-  strcpy (comboitems.markets_query, "select MARKET from MARKETS");
-  strcpy (comboitems.datafeeds_query, "select * from DATAFEEDS order by FEEDNAME");
-  strcpy (comboitems.transactiontypes_query, "select * from TRANSACTIONTYPES");
-  strcpy (comboitems.commissiontypes_query, "select * from COMMISSIONTYPES");
 
   // create widgets
   downloaddatadlg = new DownloadDataDialog (this);

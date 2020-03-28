@@ -53,28 +53,27 @@ typedef QList < RTPrice > RTPriceList;
 Q_DECLARE_METATYPE (RTPriceList);
 
 
-#define QSTR_SIZE   128
-
 // Lists populated by SQL statements
 typedef struct
 {
-    QStringList formatList;       // list of supported formats
-    QStringList timeframeList;    // list of supported timeframes
-    QStringList currencyList;     // list of supported currencies
-    QStringList marketList;       // list of supported markets
-    QStringList datafeedsList;    // list of supported datafeeds
-    QStringList realtimeList;     // list of real time flags for datafeeds
-    QStringList symlistList;      // list of symlist tables for datafeeds
-    QStringList symlisturlList;   // list of symlist urls for datafeeds
+    QStringList formatList;             // list of supported formats
+    QStringList timeframeList;          // list of supported timeframes
+    QStringList currencyList;           // list of supported currencies
+    QStringList marketList;             // list of supported markets
+    QStringList datafeedsList;          // list of supported datafeeds
+    QStringList realtimeList;           // list of real time flags for datafeeds
+    QStringList symlistList;            // list of symlist tables for datafeeds
+    QStringList symlisturlList;         // list of symlist urls for datafeeds
     QStringList transactiontypeList;    // list of portfolio transaction types
     QStringList commissiontypeList;     // list of commission type
-    char formats_query[QSTR_SIZE];      // "select FORMAT from FORMATS"
-    char timeframes_query[QSTR_SIZE];   // "select TIMEFRAME from TIMEFRAMES_ORDERED"
-    char currencies_query[QSTR_SIZE];   // "select SYMBOL from CURRENCIES"
-    char markets_query[QSTR_SIZE];      // "select MARKET from MARKETS"
-    char datafeeds_query[QSTR_SIZE];    // "select * from DATAFEEDS"
-    char transactiontypes_query[QSTR_SIZE]; // "select * from TRANSACTIONTYPES"
-    char commissiontypes_query[QSTR_SIZE];  // "select * from COMMISSIONTYPES"
+
+    const char* formats_query;
+    const char* timeframes_query;
+    const char* currencies_query;
+    const char* markets_query;
+    const char* datafeeds_query;
+    const char* transactiontypes_query;
+    const char* commissiontypes_query;
 } SQLists;
 
 
@@ -152,6 +151,7 @@ public:
     ~InstrumentDatabase();
 
     bool openFile( const QString& filename, const char** err );
+    void initializeListQueries( SQLists& );
     bool disableModules();
     int loadChartData( const QString& base, QTAChartData* data );
     int loadTableData( const QString& base, const QString& adjusted,

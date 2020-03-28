@@ -520,6 +520,18 @@ create_fail:
 }
 
 
+void InstrumentDatabase::initializeListQueries( SQLists& lists )
+{
+    lists.formats_query          = "select FORMAT from FORMATS";
+    lists.timeframes_query       = "select TIMEFRAME from TIMEFRAMES_ORDERED";
+    lists.currencies_query       = "select SYMBOL from CURRENCIES";
+    lists.markets_query          = "select MARKET from MARKETS";
+    lists.datafeeds_query        = "select * from DATAFEEDS order by FEEDNAME";
+    lists.transactiontypes_query = "select * from TRANSACTIONTYPES";
+    lists.commissiontypes_query  = "select * from COMMISSIONTYPES";
+}
+
+
 bool InstrumentDatabase::disableModules()
 {
     QString cmd;

@@ -338,8 +338,8 @@ void MainWindow::closeTab(int index)
 AppOptions _options;
 AppOptions *Application_Options = &_options;
 
-SQLists _comboitems;
-SQLists *ComboItems = &_comboitems;
+SQLists _sqLists;
+SQLists *ComboItems = &_sqLists;
 
 QProgressBar *GlobalProgressBar = nullptr;
 QMutex *ResourceMutex = nullptr;
@@ -384,6 +384,7 @@ int main( int argc, char **argv )
     }
     }
 
+    idb.initializeListQueries( _sqLists );
     loadAppOptions(Application_Options);
 
     ResourceMutex = new QMutex(QMutex::NonRecursive);
