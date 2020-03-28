@@ -41,14 +41,19 @@ extern int
 sqlcb_symbol_table(void *classptr, int argc, char **argv, char **column);
 
 
-static QToolButton* _toolButton(QBoxLayout* lo, const char* iconName)
+static QToolButton* _toolButton(QBoxLayout* lo, const char* iconName,
+                                const char* tip)
 {
     QToolButton* btn = new QToolButton;
+
     QIcon icon;
     icon.addFile( QString(":/png/images/icons/PNG/%1").arg(iconName),
                   QSize(), QIcon::Normal, QIcon::Off );
     btn->setIcon(icon);
     btn->setIconSize(QSize(35, 35));
+
+    if( tip )
+        btn->setToolTip(QApplication::translate("DataManager", tip));
 
     lo->addWidget(btn);
     return btn;
@@ -86,13 +91,13 @@ DataManager::DataManager(QWidget* parent) :
     QBoxLayout* lt = new QHBoxLayout;
     lo->addLayout( lt );
 
-    importButton   = _toolButton(lt, "File_Upload.png");
-    downloadButton = _toolButton(lt, "Internet_Download.png");
-    trashButton    = _toolButton(lt, "Trash_Delete.png");
-    refreshButton  = _toolButton(lt, "Button_Sync.png");
-    updateButton   = _toolButton(lt, "Update_Button.png");
-    chartButton    = _toolButton(lt, "Chart_Graph.png");
-    browserButton  = _toolButton(lt, "File_Table.png");
+    chartButton    = _toolButton(lt, "Chart_Graph.png",   "Open Chart");
+    downloadButton = _toolButton(lt, "Internet_Download.png", "Download Data");
+    importButton   = _toolButton(lt, "File_Upload.png",   "Import XLS/CSV");
+    updateButton   = _toolButton(lt, "Update_Button.png", "Update");
+    refreshButton  = _toolButton(lt, "Button_Sync.png",   "Refresh");
+    browserButton  = _toolButton(lt, "File_Table.png",    "Quote Browser");
+    trashButton    = _toolButton(lt, "Trash_Delete.png",  "Delete");
 
     // connect to signals
     //connect( importButton, SIGNAL(clicked()), parent,
