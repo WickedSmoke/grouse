@@ -12,6 +12,7 @@ DEFINES *= QT_USE_QSTRINGBUILDER	# For feed*.cpp
 INCLUDEPATH += ../ChartGeany/include \
 	../ChartGeany/ui \
 	../ChartGeany/cgscript/include \
+	../chart \
 	../database \
 	../3rdparty/simplecrypt \
 	../3rdparty/ta-lib/include \
@@ -38,21 +39,22 @@ HEADERS += MainWindow.h \
 	../ChartGeany/include/netservice.h \
 	../ChartGeany/include/stockticker.h \
 	../ChartGeany/include/waitdialog.h \
-	../ChartGeany/include/qtachart.h \
-	../ChartGeany/include/qtachart_core.h \
-	../ChartGeany/include/qtachart_eventfilters.h \
-	../ChartGeany/include/qtachart_data.h \
-	../ChartGeany/include/qtachart_draw.h \
-	../ChartGeany/include/qtachart_functions.h \
-	../ChartGeany/include/qtachart_help.h \
-	../ChartGeany/include/qtachart_object.h \
-	../ChartGeany/include/qtachart_objects.h \
-	../ChartGeany/include/qtachart_properties.h \
-	../ChartGeany/include/qtcgraphicsitem.h \
-	../ChartGeany/include/qtcgraphicsscene.h \
+	../chart/qtachart.h \
+	../chart/qtachart_core.h \
+	../chart/qtachart_eventfilters.h \
+	../chart/qtachart_data.h \
+	../chart/qtachart_draw.h \
+	../chart/qtachart_functions.h \
+	../chart/qtachart_help.h \
+	../chart/qtachart_object.h \
+	../chart/qtachart_objects.h \
+	../chart/qtachart_properties.h \
+	../chart/qtcgraphicsitem.h \
+	../chart/qtcgraphicsscene.h \
 	../database/feedav.h \
 	../database/feediex.h \
 	../database/feedyahoo.h
+
 
 SOURCES += MainWindow.cpp \
 	DataManager.cpp \
@@ -85,28 +87,28 @@ SOURCES += MainWindow.cpp \
 	../ChartGeany/src/cgscript_imp_object.cpp \
 	../ChartGeany/src/cgscript_imp_strings.cpp \
 	../ChartGeany/src/cgscript_imp_tafunc.cpp \
-	../ChartGeany/src/qtachart_core_barchart.cpp \
-	../ChartGeany/src/qtachart_core_candlechart.cpp \
-	../ChartGeany/src/qtachart_core.cpp \
-	../ChartGeany/src/qtachart_core_drawbar.cpp \
-	../ChartGeany/src/qtachart_core_drawcandle.cpp \
-	../ChartGeany/src/qtachart_core_draw.cpp \
-	../ChartGeany/src/qtachart_core_drawpriceline.cpp \
-	../ChartGeany/src/qtachart.cpp \
-	../ChartGeany/src/qtachart_data.cpp \
-	../ChartGeany/src/qtachart_draw.cpp \
-	../ChartGeany/src/qtachart_eventfilters.cpp \
-	../ChartGeany/src/qtachart_functions.cpp \
-	../ChartGeany/src/qtachart_help.cpp \
-	../ChartGeany/src/qtachart_methods.cpp \
-	../ChartGeany/src/qtachart_object.cpp \
-	../ChartGeany/src/qtachart_object_draw.cpp \
-	../ChartGeany/src/qtachart_object_modules.cpp \
-	../ChartGeany/src/qtachart_object_sanitizer.cpp \
-	../ChartGeany/src/qtachart_objects.cpp \
-	../ChartGeany/src/qtachart_properties.cpp \
-	../ChartGeany/src/qtachart_utilities.cpp \
-	../ChartGeany/src/qtcgraphicsitem.cpp \
+	../chart/qtachart_core_barchart.cpp \
+	../chart/qtachart_core_candlechart.cpp \
+	../chart/qtachart_core.cpp \
+	../chart/qtachart_core_drawbar.cpp \
+	../chart/qtachart_core_drawcandle.cpp \
+	../chart/qtachart_core_draw.cpp \
+	../chart/qtachart_core_drawpriceline.cpp \
+	../chart/qtachart.cpp \
+	../chart/qtachart_data.cpp \
+	../chart/qtachart_draw.cpp \
+	../chart/qtachart_eventfilters.cpp \
+	../chart/qtachart_functions.cpp \
+	../chart/qtachart_help.cpp \
+	../chart/qtachart_methods.cpp \
+	../chart/qtachart_object.cpp \
+	../chart/qtachart_object_draw.cpp \
+	../chart/qtachart_object_modules.cpp \
+	../chart/qtachart_object_sanitizer.cpp \
+	../chart/qtachart_objects.cpp \
+	../chart/qtachart_properties.cpp \
+	../chart/qtachart_utilities.cpp \
+	../chart/qtcgraphicsitem.cpp \
 	../database/idb.cpp \
 	../database/csv.cpp \
 	../database/dbman.cpp \

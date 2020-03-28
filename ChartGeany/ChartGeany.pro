@@ -173,6 +173,7 @@ DEFINES    *= QT_NO_WARNING_OUTPUT
 INCLUDEPATH += \
         include \
         cgscript/include \
+        ../chart \
         ../database \
         ../3rdparty/sqlite3/include \
         ../3rdparty/segvcatch/include \
@@ -223,28 +224,6 @@ SOURCES += \
         src/progressdialog.cpp \
         src/portfoliomanagerdialog.cpp \
         src/portfolio.cpp \
-        src/qtachart_core_barchart.cpp \
-        src/qtachart_core_candlechart.cpp \
-        src/qtachart_core.cpp \
-        src/qtachart_core_drawbar.cpp \
-        src/qtachart_core_drawcandle.cpp \
-        src/qtachart_core_draw.cpp \
-        src/qtachart_core_drawpriceline.cpp \
-        src/qtachart.cpp \
-        src/qtachart_data.cpp \
-        src/qtachart_draw.cpp \
-        src/qtachart_eventfilters.cpp \
-        src/qtachart_functions.cpp \
-        src/qtachart_help.cpp \
-        src/qtachart_methods.cpp \
-        src/qtachart_object.cpp \
-        src/qtachart_object_sanitizer.cpp \
-        src/qtachart_object_draw.cpp \
-        src/qtachart_object_modules.cpp \
-        src/qtachart_objects.cpp \
-        src/qtachart_properties.cpp \
-        src/qtachart_utilities.cpp \
-        src/qtcgraphicsitem.cpp \
         src/splashdialog.cpp \
         src/stockticker.cpp \
         src/symbollistdialog.cpp \
@@ -252,6 +231,28 @@ SOURCES += \
         src/textobjectdialog.cpp \
         src/unix_signals.cpp \
         src/waitdialog.cpp \
+        ../chart/qtachart_core_barchart.cpp \
+        ../chart/qtachart_core_candlechart.cpp \
+        ../chart/qtachart_core.cpp \
+        ../chart/qtachart_core_drawbar.cpp \
+        ../chart/qtachart_core_drawcandle.cpp \
+        ../chart/qtachart_core_draw.cpp \
+        ../chart/qtachart_core_drawpriceline.cpp \
+        ../chart/qtachart.cpp \
+        ../chart/qtachart_data.cpp \
+        ../chart/qtachart_draw.cpp \
+        ../chart/qtachart_eventfilters.cpp \
+        ../chart/qtachart_functions.cpp \
+        ../chart/qtachart_help.cpp \
+        ../chart/qtachart_methods.cpp \
+        ../chart/qtachart_object.cpp \
+        ../chart/qtachart_object_sanitizer.cpp \
+        ../chart/qtachart_object_draw.cpp \
+        ../chart/qtachart_object_modules.cpp \
+        ../chart/qtachart_objects.cpp \
+        ../chart/qtachart_properties.cpp \
+        ../chart/qtachart_utilities.cpp \
+        ../chart/qtcgraphicsitem.cpp \
         ../database/csv.cpp \
         ../database/dbman.cpp \
         ../database/feedav.cpp \
@@ -296,18 +297,6 @@ HEADERS  += \
         include/progressdialog.h \
         include/portfoliomanagerdialog.h \
         include/portfolio.h \
-        include/qtachart_core.h \
-        include/qtachart_data.h \
-        include/qtachart_draw.h \
-        include/qtachart_eventfilters.h \
-        include/qtachart_functions.h \
-        include/qtachart.h \
-        include/qtachart_help.h \
-        include/qtachart_object.h \
-        include/qtachart_objects.h \
-        include/qtachart_properties.h \
-        include/qtcgraphicsitem.h \
-        include/qtcgraphicsscene.h \
         include/splashdialog.h \
         include/stockticker.h \
         include/symbollistdialog.h \
@@ -315,6 +304,18 @@ HEADERS  += \
         include/textobjectdialog.h \
         include/unix_signals.h \
         include/waitdialog.h \
+        ../chart/qtachart_core.h \
+        ../chart/qtachart_data.h \
+        ../chart/qtachart_draw.h \
+        ../chart/qtachart_eventfilters.h \
+        ../chart/qtachart_functions.h \
+        ../chart/qtachart.h \
+        ../chart/qtachart_help.h \
+        ../chart/qtachart_object.h \
+        ../chart/qtachart_objects.h \
+        ../chart/qtachart_properties.h \
+        ../chart/qtcgraphicsitem.h \
+        ../chart/qtcgraphicsscene.h \
         ../database/feedav.h \
         ../database/feediex.h \
         ../database/feedyahoo.h
