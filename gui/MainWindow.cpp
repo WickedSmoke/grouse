@@ -231,12 +231,13 @@ void MainWindow::createActions()
 {
 #define CONNECT(act,slot)   connect(act,SIGNAL(triggered()),this,slot)
 
+/*
     _actOpen = new QAction( "&Open...", this );
     CONNECT( _actOpen, SLOT(open()) );
 
     _actSave = new QAction( "&Save", this );
     CONNECT( _actSave, SLOT(save()) );
-
+*/
     _actQuit = new QAction( "&Quit", this );
     _actQuit->setShortcut( QKeySequence::Quit );
     CONNECT( _actQuit, SLOT(close()) );
@@ -255,13 +256,14 @@ void MainWindow::createMenus()
     QMenuBar* bar = menuBar();
 
     QMenu* file = bar->addMenu( "&File" );
-    file->addAction( _actOpen );
-    file->addAction( _actSave );
+    //file->addAction( _actOpen );
+    //file->addAction( _actSave );
+    file->addAction( _actManageData );
     file->addSeparator();
     file->addAction( _actQuit );
 
-    QMenu* tools = bar->addMenu( "&Tool" );
-    tools->addAction( _actManageData );
+    //QMenu* tools = bar->addMenu( "&Tool" );
+    //tools->addAction( _actManageData );
 
     bar->addSeparator();
 
@@ -289,6 +291,7 @@ void MainWindow::open( const QString& file )
 }
 
 
+#if 0
 void MainWindow::open()
 {
     QString fn;
@@ -301,16 +304,7 @@ void MainWindow::open()
     if( ! fn.isEmpty() )
         open( fn );
 }
-
-
-void MainWindow::save()
-{
-}
-
-
-void MainWindow::saveAs()
-{
-}
+#endif
 
 
 void MainWindow::showDataManager()
@@ -401,8 +395,8 @@ int main( int argc, char **argv )
 
     w.show();
 
-    if( argc > 1 )
-        w.open( argv[1] );
+    //if( argc > 1 )
+    //    w.open( argv[1] );
 
     return app.exec();
 }

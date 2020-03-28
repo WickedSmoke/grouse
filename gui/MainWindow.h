@@ -51,9 +51,6 @@ protected:
 
 private slots:
 
-    void open();
-    void save();
-    void saveAs();
     void showDataManager();
     void closeTab(int);
 
