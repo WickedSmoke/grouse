@@ -24,7 +24,6 @@ LIBS += -ldl -lxlsreader
 HEADERS += MainWindow.h \
 	DataManager.h \
 	../ChartGeany/include/appColorDialog.h \
-	../ChartGeany/include/chartapp.h \
 	../ChartGeany/include/debugdialog.h \
 	../ChartGeany/include/databrowserdialog.h \
 	../ChartGeany/include/downloaddatadialog.h \
@@ -39,6 +38,7 @@ HEADERS += MainWindow.h \
 	../ChartGeany/include/netservice.h \
 	../ChartGeany/include/stockticker.h \
 	../ChartGeany/include/waitdialog.h \
+	../chart/chartapp.h \
 	../chart/qtachart.h \
 	../chart/qtachart_core.h \
 	../chart/qtachart_eventfilters.h \
@@ -59,7 +59,6 @@ HEADERS += MainWindow.h \
 SOURCES += MainWindow.cpp \
 	DataManager.cpp \
 	../ChartGeany/src/appColorDialog.cpp \
-	../ChartGeany/src/chartapp.cpp \
 	../ChartGeany/src/common.cpp \
 	../ChartGeany/src/debugdialog.cpp \
 	../ChartGeany/src/databrowserdialog.cpp \
@@ -87,6 +86,7 @@ SOURCES += MainWindow.cpp \
 	../ChartGeany/src/cgscript_imp_object.cpp \
 	../ChartGeany/src/cgscript_imp_strings.cpp \
 	../ChartGeany/src/cgscript_imp_tafunc.cpp \
+	../chart/chartapp.cpp \
 	../chart/qtachart_core_barchart.cpp \
 	../chart/qtachart_core_candlechart.cpp \
 	../chart/qtachart_core.cpp \

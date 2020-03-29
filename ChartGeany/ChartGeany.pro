@@ -196,7 +196,6 @@ SOURCES += \
         src/cgscript_imp_object.cpp \
         src/cgscript_imp_strings.cpp \
         src/cgscript_imp_tafunc.cpp \
-        src/chartapp.cpp \
         src/common.cpp \
         src/compile.cpp \
         src/create_portfolio_views.cpp \
@@ -231,6 +230,7 @@ SOURCES += \
         src/textobjectdialog.cpp \
         src/unix_signals.cpp \
         src/waitdialog.cpp \
+        ../chart/chartapp.cpp \
         ../chart/qtachart_core_barchart.cpp \
         ../chart/qtachart_core_candlechart.cpp \
         ../chart/qtachart_core.cpp \
@@ -269,7 +269,6 @@ HEADERS  += \
         include/addportfoliodialog.h \
         include/addpricedialog.h \
         include/addtransactiondialog.h \
-        include/chartapp.h \
         include/common.h \
         include/compile.h \
         include/databrowserdialog.h \
@@ -302,6 +301,7 @@ HEADERS  += \
         include/textobjectdialog.h \
         include/unix_signals.h \
         include/waitdialog.h \
+        ../chart/chartapp.h \
         ../chart/qtachart_core.h \
         ../chart/qtachart_data.h \
         ../chart/qtachart_draw.h \
