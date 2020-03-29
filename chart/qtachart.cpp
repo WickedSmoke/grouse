@@ -30,6 +30,10 @@
 #include "mainwindow.h"
 #include "cgscript.h"
 
+#ifdef DEBUG
+#include <QElapsedTimer>
+#endif
+
 // constructor
 QTAChart::QTAChart (QWidget * parent):
   QWidget (parent), ui (new Ui::QTAChart)

@@ -74,7 +74,7 @@ createFinalScript (QString program,
 
 #ifdef DEBUG
 #ifndef CGTOOL
-  if (Application_Options.platform.contains ("linux"))
+  if (Application_Options->platform.contains ("linux"))
     TopFile.setFileName (QString::fromUtf8 ("ChartGeany/cgscript/include/top.h"));
 #endif
 #endif // DEBUG
@@ -98,7 +98,7 @@ createFinalScript (QString program,
 
 #ifdef DEBUG
 #ifndef CGTOOL
-  if (Application_Options.platform.contains (QStringLiteral ("linux")))
+  if (Application_Options->platform.contains (QStringLiteral ("linux")))
     BottomFile.setFileName (QString::fromUtf8 ("ChartGeany/cgscript/include/bottom.h"));
 #endif
 #endif  // DEBUG
