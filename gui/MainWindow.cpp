@@ -22,6 +22,9 @@
 #include "qtachart_object.h"
 
 
+#include "MainWindow_studies.cpp"
+
+
 #define CREATE_DIALOG(ptr,T) \
   if(! ptr) { \
     ptr = new T(this); \
@@ -255,7 +258,6 @@ void MainWindow::createActions()
 
 void MainWindow::createMenus()
 {
-    QAction* act;
     QMenuBar* bar = menuBar();
 
     QMenu* file = bar->addMenu( "&File" );
@@ -267,10 +269,7 @@ void MainWindow::createMenus()
 
     _studies = bar->addMenu( "&Studies" );
     _studies->setEnabled( false );
-    act = _studies->addAction( "MACD", this, SLOT(addStudy()) );
-    act->setData( 0 );
-    act = _studies->addAction( "SMA",  this, SLOT(addStudy()) );
-    act->setData( 1 );
+    addStudyItems();
 
     bar->addSeparator();
 
@@ -293,30 +292,9 @@ void MainWindow::addStudy()
         if( ! chart )
             return;
 
-        printf( "act %s %d\n",
-                act->text().toUtf8().constData(), act->data().toInt() );
         switch( act->data().toInt() )
         {
-            case 0:
-                chart->addStudyMACD( "MACD", 9, qRgb(200,255,200),
-                                     qRgb(255,200,0) );
-                chart->goBack();
-                break;
-            case 1:
-                chart->addStudySMA( "SMA", 50, qRgb(100,255,100) );
-                chart->goBack();
-#if 0
-            {
-                QTAChartCore* core = getData(chart);
-                QTACObject* st = new QTACObject(core, QTACHART_OBJ_CURVE);
-                st->setAttributes( QTACHART_CLOSE, 50 /*period*/,
-                                   QStringLiteral("Period"), SMA, 0, 0,
-                                   QColor(255,255,255)/*color*/,
-                                   QStringLiteral("Color") );
-                st->setTitle( act->text() );
-            }
-#endif
-                break;
+#include "MainWindow_addStudy.cpp"
         }
     }
 }

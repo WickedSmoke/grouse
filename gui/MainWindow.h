@@ -60,6 +60,7 @@ private:
     void createActions();
     void createMenus();
     void createTools();
+    void addStudyItems();
 
     QAction* _actOpen;
     QAction* _actSave;
