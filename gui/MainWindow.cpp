@@ -19,6 +19,7 @@
 #include "progressdialog.h"
 #include "DataManager.h"
 #include "qtachart.h"
+#include "qtachart_object.h"
 
 
 #define CREATE_DIALOG(ptr,T) \
@@ -114,6 +115,7 @@ CG_ERR_RESULT MainWindow::addChart( const TableDataVector& datavector )
 
     _tabWidget->addTab( tachart, text );
     _tabWidget->setCurrentIndex( _tabWidget->count() - 1 );
+    _studies->setEnabled(true);
     tachart->setTabText( text );
     }
 
@@ -253,6 +255,7 @@ void MainWindow::createActions()
 
 void MainWindow::createMenus()
 {
+    QAction* act;
     QMenuBar* bar = menuBar();
 
     QMenu* file = bar->addMenu( "&File" );
@@ -262,8 +265,12 @@ void MainWindow::createMenus()
     file->addSeparator();
     file->addAction( _actQuit );
 
-    //QMenu* tools = bar->addMenu( "&Tool" );
-    //tools->addAction( _actManageData );
+    _studies = bar->addMenu( "&Studies" );
+    _studies->setEnabled( false );
+    act = _studies->addAction( "MACD", this, SLOT(addStudy()) );
+    act->setData( 0 );
+    act = _studies->addAction( "SMA",  this, SLOT(addStudy()) );
+    act->setData( 1 );
 
     bar->addSeparator();
 
@@ -274,6 +281,44 @@ void MainWindow::createMenus()
 
 void MainWindow::createTools()
 {
+}
+
+
+void MainWindow::addStudy()
+{
+    QAction* act = qobject_cast<QAction*>( sender() );
+    if( act )
+    {
+        QTAChart* chart = qobject_cast<QTAChart*>(_tabWidget->currentWidget());
+        if( ! chart )
+            return;
+
+        printf( "act %s %d\n",
+                act->text().toUtf8().constData(), act->data().toInt() );
+        switch( act->data().toInt() )
+        {
+            case 0:
+                chart->addStudyMACD( "MACD", 9, qRgb(200,255,200),
+                                     qRgb(255,200,0) );
+                chart->goBack();
+                break;
+            case 1:
+                chart->addStudySMA( "SMA", 50, qRgb(100,255,100) );
+                chart->goBack();
+#if 0
+            {
+                QTAChartCore* core = getData(chart);
+                QTACObject* st = new QTACObject(core, QTACHART_OBJ_CURVE);
+                st->setAttributes( QTACHART_CLOSE, 50 /*period*/,
+                                   QStringLiteral("Period"), SMA, 0, 0,
+                                   QColor(255,255,255)/*color*/,
+                                   QStringLiteral("Color") );
+                st->setTitle( act->text() );
+            }
+#endif
+                break;
+        }
+    }
 }
 
 
@@ -317,7 +362,10 @@ void MainWindow::showDataManager()
 void MainWindow::closeTab(int index)
 {
     if(_tabWidget->count() == 1 )
+    {
         setExpandChart(false);
+        _studies->setEnabled(false);
+    }
 
     QWidget* wid = _tabWidget->widget(index);
     _tabWidget->removeTab(index);

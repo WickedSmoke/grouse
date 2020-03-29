@@ -1229,3 +1229,53 @@ QTAChart::showOnlinePrice (bool boolean)
 {
   ccore->show_onlineprice = boolean;
 }
+
+
+QTACObject* QTAChart::addStudyMACD( const QString& name, int period,
+                                    QRgb colorMACD, QRgb colorSignal )
+{
+    if( period < 1 )
+        return nullptr;
+
+    QTACObject* obj = new QTACObject(ccore, QTACHART_OBJ_SUBCHART);
+    obj->setAttributes(QTACHART_CLOSE, period, QStringLiteral("Period"),
+                       MACD, QREAL_MIN, QREAL_MAX,
+                       Qt::white, QStringLiteral(""));
+    obj->setTitle(name);
+
+    QTACObject* childobj;
+    childobj = new QTACObject(obj, QTACHART_OBJ_CURVE);
+    childobj->setAttributes(QTACHART_CLOSE, period, QStringLiteral("Period"),
+                            MACD, QREAL_MIN, QREAL_MAX,
+                            colorMACD, QStringLiteral("MACD color"));
+
+    childobj = new QTACObject(obj, QTACHART_OBJ_CURVE);
+    childobj->setAttributes(QTACHART_CLOSE, period, QStringLiteral("Period"),
+                            MACDSIGNAL, QREAL_MIN, QREAL_MAX,
+                            colorSignal, QStringLiteral("Signal color"));
+
+    childobj = new QTACObject(obj, QTACHART_OBJ_VBARS);
+    childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral("Period"),
+                             MACDHIST, QREAL_MIN, QREAL_MAX,
+                             Qt::white, QStringLiteral(""));
+
+    childobj = new QTACObject(obj, QTACHART_OBJ_HLINE);
+    childobj->setHLine(NULL, 0);
+    childobj->setAttributes(QTACHART_CLOSE, 0, QStringLiteral(""),
+                            DUMMY, 0, 0, Qt::black, QStringLiteral(""));
+
+    return obj;
+}
+
+
+QTACObject* QTAChart::addStudySMA( const QString& name, int period, QRgb color )
+{
+    if( period < 1 )
+        return nullptr;
+
+    QTACObject* obj = new QTACObject(ccore, QTACHART_OBJ_CURVE);
+    obj->setTitle(name);
+    obj->setAttributes(QTACHART_CLOSE, period, QStringLiteral("Period"),
+                       SMA, 0, 0, color, QStringLiteral("Color"));
+    return obj;
+}

@@ -172,6 +172,8 @@ QTACFunctions::addIndicator (DynParamsDialog *paramDialog)
   qint32 period;
   QColor color;
 
+#define PARAM(name)  paramDialog->getParam(QStringLiteral(name))
+
   if (core->CLOSE.size () == 0)
     return;
 
@@ -179,13 +181,8 @@ QTACFunctions::addIndicator (DynParamsDialog *paramDialog)
 
   if (fname == QLatin1String ("SMA"))
   {
-    period = (qint32) paramDialog->getParam (QStringLiteral ("Period"));
-    if (period < 1)
-      return;
-    color = paramDialog->getParam (QStringLiteral ("Color"));
-    indicator = new QTACObject (core, QTACHART_OBJ_CURVE);
-    indicator->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), SMA, 0, 0, color, QStringLiteral ("Color"));
-    indicator->setTitle (fname);
+    indicator = referencechart->addStudySMA( fname, (qint32) PARAM("Period"),
+                                             PARAM("Color") );
   }
 
   if (fname == QLatin1String ("EMA"))
@@ -337,25 +334,9 @@ QTACFunctions::addIndicator (DynParamsDialog *paramDialog)
 
   if (fname == QLatin1String ("MACD"))
   {
-    QColor colorMACD, colorSignal;
-    period = (qint32) paramDialog->getParam (QStringLiteral ("Period"));
-    if (period < 1)
-      return;
-
-    colorMACD = paramDialog->getParam (QStringLiteral ("MACD color"));
-    colorSignal = paramDialog->getParam (QStringLiteral ("Signal color"));
-    indicator = new QTACObject (core, QTACHART_OBJ_SUBCHART);
-    indicator->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), MACD, QREAL_MIN, QREAL_MAX, QColor (Qt::white).rgb (), QStringLiteral (""));
-    indicator->setTitle (fname);
-    childobj = new QTACObject (indicator, QTACHART_OBJ_CURVE);
-    childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), MACD, QREAL_MIN, QREAL_MAX, colorMACD, QStringLiteral ("MACD color"));
-    childobj = new QTACObject (indicator, QTACHART_OBJ_CURVE);
-    childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), MACDSIGNAL, QREAL_MIN, QREAL_MAX, colorSignal, QStringLiteral ("Signal color"));
-    childobj = new QTACObject (indicator, QTACHART_OBJ_VBARS);
-    childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), MACDHIST, QREAL_MIN, QREAL_MAX, QColor (Qt::white).rgb (), QStringLiteral (""));
-    childobj = new QTACObject (indicator, QTACHART_OBJ_HLINE);
-    childobj->setHLine (NULL, 0);
-    childobj->setAttributes (QTACHART_CLOSE, 0, QStringLiteral (""), DUMMY, 0, 0, color, QStringLiteral (""));
+    indicator = referencechart->addStudyMACD( fname, (qint32) PARAM("Period"),
+                                              PARAM("MACD color"),
+                                              PARAM("Signal color") );
   }
 
   if (fname == QLatin1String ("Bollinger Bands"))

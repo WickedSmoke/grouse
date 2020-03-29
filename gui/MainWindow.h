@@ -51,6 +51,7 @@ protected:
 
 private slots:
 
+    void addStudy();
     void showDataManager();
     void closeTab(int);
 
@@ -65,6 +66,8 @@ private:
     QAction* _actQuit;
     QAction* _actAbout;
     QAction* _actManageData;
+
+    QMenu* _studies;
 
     DataManager* _dataManager;
     QTabWidget*  _tabWidget;

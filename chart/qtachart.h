@@ -67,6 +67,7 @@ namespace Ui
 }
 
 class QTAChartCore;
+class QTACObject;
 
 class QTAChart:public QWidget
 {
@@ -103,6 +104,10 @@ Q_OBJECT public:
   void showVolumes (bool);  // turn volumes show on/off
   void showOnlinePrice (bool);  // turn online price show on/off
   void showGrid (bool);     // turn grid on off
+
+  QTACObject* addStudyMACD( const QString& name, int period,
+                            QRgb colorMACD, QRgb colorSignal );
+  QTACObject* addStudySMA( const QString& name, int period, QRgb color );
 
 private:
   Ui::QTAChart * ui;
