@@ -204,10 +204,9 @@ QTACObject::QTACObject (void *data, QString modpath, QString modname)
 }
 
 // constuctor for objects on chart or subcharts
-QTACObject::QTACObject (void *data, QTAChartObjectType objtype)
+QTACObject::QTACObject (QTAChartCore *core, QTAChartObjectType objtype)
 {
   sanitizer = new ObjectSanitizer (static_cast <const void *> (this));
-  QTAChartCore *core = static_cast <QTAChartCore *> (data);
 
   modinit = nullptr;
   modloop = nullptr;
@@ -215,7 +214,7 @@ QTACObject::QTACObject (void *data, QTAChartObjectType objtype)
   modfinish = nullptr;
   modvset = nullptr;
   cgscriptdebug = false;
-  chartdata = data;
+  chartdata = core;
   type = objtype;
   period = 10;
   parentObject = nullptr;

@@ -135,7 +135,7 @@ class QTACObject : public QObject
 
 public:
 // functions
-  QTACObject (void *, QTAChartObjectType);              // constructor
+  QTACObject (QTAChartCore*, QTAChartObjectType);       // constructor
   QTACObject (QTACObject *, QTAChartObjectType);        // constructor
   QTACObject (void *, QString, QString);                // constructor
   ~QTACObject (void);                                   // destructor

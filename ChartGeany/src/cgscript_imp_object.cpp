@@ -46,7 +46,7 @@ ObjAddLabel_imp (void *ptr, ObjectHandler_t objptr)
   if (pobj->type == QTACHART_OBJ_SUBCHART)
     return nullptr;
 
-  obj = new (std::nothrow) QTACObject (ptr, QTACHART_OBJ_LABEL);
+  obj = new (std::nothrow) QTACObject (core, QTACHART_OBJ_LABEL);
   if (obj == nullptr)
     return nullptr;
 
@@ -86,7 +86,7 @@ ObjAddText_imp (void *ptr, ObjectHandler_t objptr)
   QTAChartCore *core = static_cast <QTAChartCore *> (ptr);
   QTACObject *pobj = static_cast <QTACObject *> (objptr);
 
-  QTACObject *obj = new (std::nothrow) QTACObject (ptr, QTACHART_OBJ_TEXT);
+  QTACObject *obj = new (std::nothrow) QTACObject (core, QTACHART_OBJ_TEXT);
   if (obj == nullptr)
     return nullptr;
 
@@ -131,7 +131,7 @@ ObjAddHorizonalLine_imp (void *ptr, ObjectHandler_t objptr)
   if (pobj->type == QTACHART_OBJ_SUBCHART)
     obj = new (std::nothrow) QTACObject (pobj, QTACHART_OBJ_HLINE);
   else
-    obj = new (std::nothrow) QTACObject (ptr, QTACHART_OBJ_HLINE);
+    obj = new (std::nothrow) QTACObject (static_cast<QTAChartCore*>(ptr), QTACHART_OBJ_HLINE);
 
   if (obj == nullptr)
     return nullptr;
@@ -163,7 +163,7 @@ ObjAddVerticalLine_imp (void *ptr, ObjectHandler_t objptr, const char *id)
   if (pobj->type == QTACHART_OBJ_SUBCHART)
     return nullptr;
 
-  obj = new (std::nothrow) QTACObject (ptr, QTACHART_OBJ_VLINE);
+  obj = new (std::nothrow) QTACObject (core, QTACHART_OBJ_VLINE);
 
   if (obj == nullptr)
     return nullptr;
@@ -205,7 +205,7 @@ ObjAddCurve_imp (void *ptr, ObjectHandler_t objptr)
   if (pobj->type == QTACHART_OBJ_SUBCHART)
     obj = new (std::nothrow) QTACObject (pobj, QTACHART_OBJ_CURVE);
   else
-    obj = new (std::nothrow) QTACObject (ptr, QTACHART_OBJ_CURVE);
+    obj = new (std::nothrow) QTACObject (static_cast<QTAChartCore*>(ptr), QTACHART_OBJ_CURVE);
 
   if (obj == nullptr)
     return nullptr;
