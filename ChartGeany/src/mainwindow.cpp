@@ -181,8 +181,6 @@ MainWindow::MainWindow (QWidget * parent):
   QDateTime datetime;
   QFile initcopy;
 
-  GlobalError = CG_ERR_OK;
-
   ui->setupUi (this);
   setWindowFlags( windowFlags() & ~Qt::WindowContextHelpButtonHint );
 

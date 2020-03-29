@@ -49,7 +49,7 @@ int selectfromdb(sqlite3 *db, const char *sql,
 
 extern CG_ERR_RESULT dbman(int dbversion, sqlite3*);
 
-QAtomicInt GlobalError;
+QAtomicInt GlobalError( CG_ERR_OK );
 InstrumentDatabase* gDatabase = nullptr;
 QString UID, RunCounter;
 
