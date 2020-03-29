@@ -166,7 +166,7 @@ public:
   {
     return text->font ();  // get object's font for label or text objects
   }
-  QColor  getColor (void); // get object's color for drawing objects
+  QColor  getColor (void) const; // get object's color for drawing objects
   void    getCoordinates (qreal *x1, qreal *y1,
                           qreal *x2, qreal *y2)
   {
@@ -185,6 +185,7 @@ public:
   {
     return period;  // get the period
   }
+  qreal paramValue (const QString& name) const;
 
   inline DynParamsDialog *getParamDialog () const NOEXCEPT
   {
@@ -362,6 +363,7 @@ private:
   {
     (qobject_cast <ChartApp *> (qApp))->moduleUnlock (this);
   }
+  void modifyFromDialog( DynParamsDialog* );
 
 private slots:
   void modification_accepted(void);

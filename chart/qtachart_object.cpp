@@ -724,7 +724,7 @@ QTACObject::getTrailerCandleText2 (void)
 
 // get color
 QColor
-QTACObject::getColor (void)
+QTACObject::getColor (void) const
 {
   if (type == QTACHART_OBJ_LINE || type == QTACHART_OBJ_FIBO)
     return hvline->pen ().color ();
@@ -984,6 +984,28 @@ QTACObject::setForDelete (void)
   }
 }
 
+// Return DynParam value of the given name.  Returns 0.0 if name is not found.
+qreal QTACObject::paramValue( const QString& name ) const
+{
+    if( name == periodParamName )
+        return (qreal) getPeriod();
+    if( name == colorParamName )
+        return (qreal) getColor().rgb();
+
+    const QTACObject *child;
+    foreach (child, children)
+    {
+        if( name == child->periodParamName )
+            return (qreal) child->getPeriod();
+        if( name == child->colorParamName )
+            return (qreal) child->getColor().rgb();
+    }
+
+    return 0.0;
+}
+
+#include "ObjectParameters.cpp"
+
 // modify technical indicator;
 bool
 QTACObject::modifyIndicator ()
@@ -993,9 +1015,29 @@ QTACObject::modifyIndicator ()
 
   int xperiod = period;
 
-  paramDialog->setWindowFlags(Qt::FramelessWindowHint|Qt::Dialog);
-  paramDialog->exec ();
-  QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
+  if( paramDialog.isNull() )
+  {
+      // Create temporary dialog on the fly.
+      ParamVector pvector;
+      _objectParameters(this, pvector);
+      DynParamsDialog* pd = new DynParamsDialog(pvector, objectName());
+      if( pd )
+      {
+          pd->setColorDialog (new appColorDialog);
+          if( pd->exec() == QDialog::Accepted )
+          {
+             modifyFromDialog( pd );
+          }
+          delete pd;
+      }
+  }
+  else
+  {
+      paramDialog->setWindowFlags(Qt::FramelessWindowHint|Qt::Dialog);
+      paramDialog->exec ();
+      QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
+  }
+
   if (deleteit == true)
   {
     return false;
@@ -1538,7 +1580,6 @@ QTACObject::setParamDialog (ParamVector pvector, QString title, QObject *parent)
   appColorDialog *colorDialog = new appColorDialog;
   paramDialog->setColorDialog (colorDialog);
   paramDialog->setVisible (false);
-  paramDialog->setModal (true);
 
   connect(paramDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(modification_accepted()));
   connect(paramDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(modification_rejected()));
@@ -1799,15 +1840,12 @@ QTACObject::minmax ()
   rangemin = ((rangemin >= 0)?rangemin * 1.05:(qAbs (rangemin) * 1.05) * -1);
 }
 
-// slots
-void
-QTACObject::modification_accepted()
+void QTACObject::modifyFromDialog( DynParamsDialog* pd )
 {
-  QPen pen;
   QTACObject *child;
 
-  paramDialog->setVisible (false);
-  if (paramDialog->removeCheckBox->checkState () == Qt::Checked)
+  pd->setVisible (false);
+  if (pd->removeCheckBox->checkState () == Qt::Checked)
   {
     clearITEMS ();
     title->setVisible (false);
@@ -1820,22 +1858,22 @@ QTACObject::modification_accepted()
     return;
   }
 
-  if (colorParamName != QLatin1String (""))
-    forecolor = paramDialog->getParam (colorParamName);
+  if (! colorParamName.isEmpty())
+    forecolor = pd->getParam (colorParamName);
 
-  if (periodParamName != QLatin1String (""))
-    period = (int) paramDialog->getParam (periodParamName);
+  if (! periodParamName.isEmpty())
+    period = (int) pd->getParam (periodParamName);
 
   if (children.size () > 0)
   {
     foreach (child, children)
     {
       if (child->type == QTACHART_OBJ_HLINE)
-        child->setHLine (child->hvline, paramDialog->getParam (child->periodParamName));
-      else if (child->colorParamName != QLatin1String (""))
-        child->forecolor = paramDialog->getParam (child->colorParamName);
-      else if (child->periodParamName != QLatin1String (""))
-        child->period = (int) paramDialog->getParam (child->periodParamName);
+        child->setHLine (child->hvline, pd->getParam (child->periodParamName));
+      else if (! child->colorParamName.isEmpty())
+        child->forecolor = pd->getParam (child->colorParamName);
+      else if (! child->periodParamName.isEmpty())
+        child->period = (int) pd->getParam (child->periodParamName);
     }
   }
 
@@ -1846,6 +1884,13 @@ QTACObject::modification_accepted()
     valueSet ();
 
   drawObject (this);
+}
+
+// slots
+void
+QTACObject::modification_accepted()
+{
+  modifyFromDialog( paramDialog );
 }
 
 void

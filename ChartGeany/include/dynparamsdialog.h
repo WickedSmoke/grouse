@@ -74,6 +74,9 @@ typedef QVector <QPixmap *> PixmapVector;
 typedef QVector <QIcon *> IconVector;
 typedef QVector <DPColorButton *> ButtonVector;
 
+extern DynParam* addParameter( ParamVector&, const QString& name, qint32 type,
+                               qreal value );
+
 namespace Ui
 {
   class DynParamsDialog;
