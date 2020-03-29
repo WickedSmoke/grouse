@@ -55,7 +55,6 @@ private:
   QTAChart *referencechart;                 // reference chart
 
   // functions
-  QPushButton *addButton (QString text);    // add a button
   void createButtons (void);
 
 private slots:

@@ -44,239 +44,95 @@ ButtonCmp(const QPushButton *b1, const QPushButton *b2)
   return b1->text() < b2->text();
 }
 
+struct ButtonInitData
+{
+  QWidget* parent;
+  QList< QPushButton *> *list;
+  QSize size;
+};
+
+// add a button (used in FuncParamDialogs.cpp)
+static QPushButton *
+_addButton (const ButtonInitData& bd, QString text)
+{
+  QFont fnt;
+  QPushButton *btn;
+  QString stylesheet;
+
+  stylesheet =
+    QStringLiteral ("background: transparent; border: 1px solid transparent;border-color: darkgray;");
+
+  btn = new QPushButton (text, bd.parent);
+  btn->setFixedSize (bd.size);
+  fnt = btn->font ();
+  fnt.setPixelSize (16);
+  fnt.setBold (true);
+  btn->setFont (fnt);
+  btn->setStyleSheet (stylesheet);
+  btn->setAutoFillBackground (false);
+  btn->setFocusPolicy (Qt::NoFocus);
+  btn->setObjectName ("Indicator Button");
+
+  bd.list->append (btn);
+  return btn;
+}
+
+/*
+-ChartParam-
+
+SMA:            Period 14  Color 0,255,255
+EMA:            Period 14  Color 0,255,255
+MACD:           Period 14  MACD-color 255,255,0  Signal-color 255,0,0
+MFI:            Period 14  High-level 80   Medium-level 50  Low-level 20
+                           Color 0,255,255
+ROC:            Period 10  Level 0  Color 0,255,255
+RSI:            Period 14  High-level 70   Low-level 30  Color 0,255,255
+Slow-Stoch:     Period  5  High-level 80   Medium-level 50  Low-level 20
+                           "%K color" 0,255,255  "%D color" 255,255,0
+Fast-Stoch:     Period  5  High-level 80   Medium-level 50  Low-level 20
+                           "%K color" 0,255,255  "%D color" 255,255,0
+W_percent_R:    Period 14  High-level -20  Low-level -80  Color 0,255,255
+Bollinger-Bands:Period 20  Color 255,0,255
+Parabolic-SAR:             Color 0,255,255
+ADX:            Period 13  Weak 25  Strong 50  Very-strong 75  Color 0,255,255
+Aroon:          Period 25  High-level 70  Medium-level 50  Low-level 30
+                           Up-color 0,255,0  Down-color 255,0,0
+CCI:            Period 20  High-level 100  Low-level -100  Color 0,255,255
+STDDEV:         Period 10  Color 0,255,255
+Momentum:       Period 12  Level 0  Color 0,255,255
+DMI:            Period 13  Weak 25  Strong 50  Very-strong 75  Color 0,255,255
+ATR:            Period 14  Color 0,255,255
+*/
+
+// This file is generated from the above data.
+#include "FuncParamDialogs.cpp"
+
 void
 QTACFunctions::createButtons (void)
 {
-  QPushButton *btn;
-  appColorDialog *colorDialog;
-  DynParamsDialog *ParamDialog;
+   ButtonInitData bd;
+   bd.parent = this;
+   bd.list   = &Button;
+   bd.size   = QSize(button_width, button_height);
 
-  btn = addButton (QStringLiteral ("SMA"));
-  connect (btn, SIGNAL (clicked ()), this, SLOT (button_clicked ()));
-  ParamDialog = new DynParamsDialog (QStringLiteral (""), btn);
-  colorDialog = new appColorDialog;
-  ParamDialog->setColorDialog (colorDialog);
-  ParamDialog->addParam (QStringLiteral ("Period"), QStringLiteral ("Period"), DPT_INT, 14.0);
-  ParamDialog->addParam (QStringLiteral ("Color"), QStringLiteral ("Color"), DPT_COLOR, (qreal) QColor (Qt::cyan).rgb ());
-  ParamDialog->setObjectName (QStringLiteral ("ParamDialog"));
-  connect(ParamDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
-  connect(ParamDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
-
-  btn = addButton (QStringLiteral ("EMA"));
-  connect (btn, SIGNAL (clicked ()), this, SLOT (button_clicked ()));
-  ParamDialog = new DynParamsDialog (QStringLiteral (""), btn);
-  colorDialog = new appColorDialog;
-  ParamDialog->setColorDialog (colorDialog);
-  ParamDialog->addParam (QStringLiteral ("Period"), QStringLiteral ("Period"), DPT_INT, 14.0);
-  ParamDialog->addParam (QStringLiteral ("Color"), QStringLiteral ("Color"), DPT_COLOR, (qreal) QColor (Qt::cyan).rgb ());
-  ParamDialog->setObjectName (QStringLiteral ("ParamDialog"));
-  connect(ParamDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
-  connect(ParamDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
-
-  btn = addButton (QStringLiteral ("MACD"));
-  connect (btn, SIGNAL (clicked ()), this, SLOT (button_clicked ()));
-  ParamDialog = new DynParamsDialog (QStringLiteral (""), btn);
-  colorDialog = new appColorDialog;
-  ParamDialog->setColorDialog (colorDialog);
-  ParamDialog->addParam (QStringLiteral ("Period"), QStringLiteral ("Period"), DPT_INT, 9.0);
-  ParamDialog->addParam (QStringLiteral ("MACD color"), QStringLiteral ("MACD color"), DPT_COLOR, (qreal) QColor (Qt::yellow).rgb ());
-  ParamDialog->addParam (QStringLiteral ("Signal color"), QStringLiteral ("Signal color"), DPT_COLOR, (qreal) QColor (Qt::red).rgb ());
-  ParamDialog->setObjectName (QStringLiteral ("ParamDialog"));
-  connect(ParamDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
-  connect(ParamDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
-
-  btn = addButton (QStringLiteral ("MFI"));
-  connect (btn, SIGNAL (clicked ()), this, SLOT (button_clicked ()));
-  ParamDialog = new DynParamsDialog (QStringLiteral (""), btn);
-  colorDialog = new appColorDialog;
-  ParamDialog->setColorDialog (colorDialog);
-  ParamDialog->addParam (QStringLiteral ("Period"), QStringLiteral ("Period"), DPT_INT, 14.0);
-  ParamDialog->addParam (QStringLiteral ("High level"), QStringLiteral ("High level"), DPT_INT, 80);
-  ParamDialog->addParam (QStringLiteral ("Medium level"), QStringLiteral ("Medium level"), DPT_INT, 50);
-  ParamDialog->addParam (QStringLiteral ("Low level"), QStringLiteral ("Low level"), DPT_INT, 20);
-  ParamDialog->addParam (QStringLiteral ("Color"), QStringLiteral ("Color"), DPT_COLOR, (qreal) QColor (Qt::cyan).rgb ());
-  ParamDialog->setObjectName (QStringLiteral ("ParamDialog"));
-  connect(ParamDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
-  connect(ParamDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
-
-  btn = addButton (QStringLiteral ("ROC"));
-  connect (btn, SIGNAL (clicked ()), this, SLOT (button_clicked ()));
-  ParamDialog = new DynParamsDialog (QStringLiteral (""), btn);
-  colorDialog = new appColorDialog;
-  ParamDialog->setColorDialog (colorDialog);
-  ParamDialog->addParam (QStringLiteral ("Period"), QStringLiteral ("Period"), DPT_INT, 10.0);
-  ParamDialog->addParam (QStringLiteral ("Level"), QStringLiteral ("Level"), DPT_INT, 0);
-  ParamDialog->addParam (QStringLiteral ("Color"), QStringLiteral ("Color"), DPT_COLOR, (qreal) QColor (Qt::cyan).rgb ());
-  ParamDialog->setObjectName (QStringLiteral ("ParamDialog"));
-  connect(ParamDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
-  connect(ParamDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
-
-  btn = addButton (QStringLiteral ("RSI"));
-  connect (btn, SIGNAL (clicked ()), this, SLOT (button_clicked ()));
-  ParamDialog = new DynParamsDialog (QStringLiteral (""), btn);
-  colorDialog = new appColorDialog;
-  ParamDialog->setColorDialog (colorDialog);
-  ParamDialog->addParam (QStringLiteral ("Period"), QStringLiteral ("Period"), DPT_INT, 14.0);
-  ParamDialog->addParam (QStringLiteral ("High level"), QStringLiteral ("High level"), DPT_INT, 70);
-  ParamDialog->addParam (QStringLiteral ("Low level"), QStringLiteral ("Low level"), DPT_INT, 30);
-  ParamDialog->addParam (QStringLiteral ("Color"), QStringLiteral ("Color"), DPT_COLOR, (qreal) QColor (Qt::cyan).rgb ());
-  ParamDialog->setObjectName (QStringLiteral ("ParamDialog"));
-  connect(ParamDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
-  connect(ParamDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
-
-  btn = addButton (QStringLiteral ("Slow Stoch"));
-  connect (btn, SIGNAL (clicked ()), this, SLOT (button_clicked ()));
-  ParamDialog = new DynParamsDialog (QStringLiteral (""), btn);
-  colorDialog = new appColorDialog;
-  ParamDialog->setColorDialog (colorDialog);
-  ParamDialog->addParam (QStringLiteral ("Period"), QStringLiteral ("Period"), DPT_INT, 5.0);
-  ParamDialog->addParam (QStringLiteral ("High level"), QStringLiteral ("High level"), DPT_INT, 80);
-  ParamDialog->addParam (QStringLiteral ("Medium level"), QStringLiteral ("Medium level"), DPT_INT, 50);
-  ParamDialog->addParam (QStringLiteral ("Low level"), QStringLiteral ("Low level"), DPT_INT, 20);
-  ParamDialog->addParam (QStringLiteral ("%K color"), QStringLiteral ("%K Color"), DPT_COLOR, (qreal) QColor (Qt::cyan).rgb ());
-  ParamDialog->addParam (QStringLiteral ("%D color"), QStringLiteral ("%D Color"), DPT_COLOR, (qreal) QColor (Qt::yellow).rgb ());
-  ParamDialog->setObjectName (QStringLiteral ("ParamDialog"));
-  connect(ParamDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
-  connect(ParamDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
-
-  btn = addButton (QStringLiteral ("Fast Stoch"));
-  connect (btn, SIGNAL (clicked ()), this, SLOT (button_clicked ()));
-  ParamDialog = new DynParamsDialog (QStringLiteral (""), btn);
-  colorDialog = new appColorDialog;
-  ParamDialog->setColorDialog (colorDialog);
-  ParamDialog->addParam (QStringLiteral ("Period"), QStringLiteral ("Period"), DPT_INT, 5.0);
-  ParamDialog->addParam (QStringLiteral ("High level"), QStringLiteral ("High level"), DPT_INT, 80);
-  ParamDialog->addParam (QStringLiteral ("Medium level"), QStringLiteral ("Medium level"), DPT_INT, 50);
-  ParamDialog->addParam (QStringLiteral ("Low level"), QStringLiteral ("Low level"), DPT_INT, 20);
-  ParamDialog->addParam (QStringLiteral ("%K color"), QStringLiteral ("%K Color"), DPT_COLOR, (qreal) QColor (Qt::cyan).rgb ());
-  ParamDialog->addParam (QStringLiteral ("%D color"), QStringLiteral ("%D Color"), DPT_COLOR, (qreal) QColor (Qt::yellow).rgb ());
-  ParamDialog->setObjectName (QStringLiteral ("ParamDialog"));
-  connect(ParamDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
-  connect(ParamDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
-
-  btn = addButton (QStringLiteral ("W%R"));
-  connect (btn, SIGNAL (clicked ()), this, SLOT (button_clicked ()));
-  ParamDialog = new DynParamsDialog (QStringLiteral (""), btn);
-  colorDialog = new appColorDialog;
-  ParamDialog->setColorDialog (colorDialog);
-  ParamDialog->addParam (QStringLiteral ("Period"), QStringLiteral ("Period"), DPT_INT, 14.0);
-  ParamDialog->addParam (QStringLiteral ("High level"), QStringLiteral ("High level"), DPT_INT, -20);
-  ParamDialog->addParam (QStringLiteral ("Low level"), QStringLiteral ("Low level"), DPT_INT, -80);
-  ParamDialog->addParam (QStringLiteral ("Color"), QStringLiteral ("Color"), DPT_COLOR, (qreal) QColor (Qt::cyan).rgb ());
-  ParamDialog->setObjectName (QStringLiteral ("ParamDialog"));
-  connect(ParamDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
-  connect(ParamDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
-
-  btn = addButton (QStringLiteral ("Bollinger Bands"));
-  connect (btn, SIGNAL (clicked ()), this, SLOT (button_clicked ()));
-  ParamDialog = new DynParamsDialog (QStringLiteral (""), btn);
-  colorDialog = new appColorDialog;
-  ParamDialog->setColorDialog (colorDialog);
-  ParamDialog->addParam (QStringLiteral ("Period"), QStringLiteral ("Period"), DPT_INT, 20.0);
-  ParamDialog->addParam (QStringLiteral ("Color"), QStringLiteral ("Color"), DPT_COLOR, (qreal) QColor (Qt::magenta).rgb ());
-  ParamDialog->setObjectName (QStringLiteral ("ParamDialog"));
-  connect(ParamDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
-  connect(ParamDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
-
-  btn = addButton (QStringLiteral ("Parabolic SAR"));
-  connect (btn, SIGNAL (clicked ()), this, SLOT (button_clicked ()));
-  ParamDialog = new DynParamsDialog (QStringLiteral (""), btn);
-  colorDialog = new appColorDialog;
-  ParamDialog->setColorDialog (colorDialog);
-  ParamDialog->addParam (QStringLiteral ("Color"), QStringLiteral ("Color"), DPT_COLOR, (qreal) QColor (Qt::cyan).rgb ());
-  ParamDialog->setObjectName (QStringLiteral ("ParamDialog"));
-  connect(ParamDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
-  connect(ParamDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
-
-  btn = addButton (QStringLiteral ("ADX"));
-  connect (btn, SIGNAL (clicked ()), this, SLOT (button_clicked ()));
-  ParamDialog = new DynParamsDialog (QStringLiteral (""), btn);
-  colorDialog = new appColorDialog;
-  ParamDialog->setColorDialog (colorDialog);
-  ParamDialog->addParam (QStringLiteral ("Period"), QStringLiteral ("Period"), DPT_INT, 13.0);
-  ParamDialog->addParam (QStringLiteral ("Weak"), QStringLiteral ("Weak"), DPT_INT, 25);
-  ParamDialog->addParam (QStringLiteral ("Strong"), QStringLiteral ("Strong"), DPT_INT, 50);
-  ParamDialog->addParam (QStringLiteral ("Very strong"), QStringLiteral ("Very strong"), DPT_INT, 75);
-  ParamDialog->addParam (QStringLiteral ("Color"), QStringLiteral ("Color"), DPT_COLOR, (qreal) QColor (Qt::cyan).rgb ());
-  ParamDialog->setObjectName (QStringLiteral ("ParamDialog"));
-  connect(ParamDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
-  connect(ParamDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
-
-  btn = addButton (QStringLiteral ("Aroon"));
-  connect (btn, SIGNAL (clicked ()), this, SLOT (button_clicked ()));
-  ParamDialog = new DynParamsDialog (QStringLiteral (""), btn);
-  colorDialog = new appColorDialog;
-  ParamDialog->setColorDialog (colorDialog);
-  ParamDialog->addParam (QStringLiteral ("Period"), QStringLiteral ("Period"), DPT_INT, 25.0);
-  ParamDialog->addParam (QStringLiteral ("High level"), QStringLiteral ("High level"), DPT_INT, 70);
-  ParamDialog->addParam (QStringLiteral ("Medium level"), QStringLiteral ("Medium level"), DPT_INT, 50);
-  ParamDialog->addParam (QStringLiteral ("Low level"), QStringLiteral ("Low level"), DPT_INT, 30);
-  ParamDialog->addParam (QStringLiteral ("Up color"), QStringLiteral ("Up Color"), DPT_COLOR, (qreal) QColor (Qt::green).rgb ());
-  ParamDialog->addParam (QStringLiteral ("Down color"), QStringLiteral ("Down Color"), DPT_COLOR, (qreal) QColor (Qt::red).rgb ());
-  ParamDialog->setObjectName (QStringLiteral ("ParamDialog"));
-  connect(ParamDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
-  connect(ParamDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
-
-  btn = addButton (QStringLiteral ("CCI"));
-  connect (btn, SIGNAL (clicked ()), this, SLOT (button_clicked ()));
-  ParamDialog = new DynParamsDialog (QStringLiteral (""), btn);
-  colorDialog = new appColorDialog;
-  ParamDialog->setColorDialog (colorDialog);
-  ParamDialog->addParam (QStringLiteral ("Period"), QStringLiteral ("Period"), DPT_INT, 20.0);
-  ParamDialog->addParam (QStringLiteral ("High level"), QStringLiteral ("High level"), DPT_INT, 100);
-  ParamDialog->addParam (QStringLiteral ("Low level"), QStringLiteral ("Low level"), DPT_INT, -100);
-  ParamDialog->addParam (QStringLiteral ("Color"), QStringLiteral ("Color"), DPT_COLOR, (qreal) QColor (Qt::cyan).rgb ());
-  ParamDialog->setObjectName (QStringLiteral ("ParamDialog"));
-  connect(ParamDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
-  connect(ParamDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
-
-  btn = addButton (QStringLiteral ("STDDEV"));
-  connect (btn, SIGNAL (clicked ()), this, SLOT (button_clicked ()));
-  ParamDialog = new DynParamsDialog (QStringLiteral (""), btn);
-  colorDialog = new appColorDialog;
-  ParamDialog->setColorDialog (colorDialog);
-  ParamDialog->addParam (QStringLiteral ("Period"), QStringLiteral ("Period"), DPT_INT, 10.0);
-  ParamDialog->addParam (QStringLiteral ("Color"), QStringLiteral ("Color"), DPT_COLOR, (qreal) QColor (Qt::cyan).rgb ());
-  ParamDialog->setObjectName (QStringLiteral ("ParamDialog"));
-  connect(ParamDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
-  connect(ParamDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
-
-  btn = addButton (QStringLiteral ("Momentum"));
-  connect (btn, SIGNAL (clicked ()), this, SLOT (button_clicked ()));
-  ParamDialog = new DynParamsDialog (QStringLiteral (""), btn);
-  colorDialog = new appColorDialog;
-  ParamDialog->setColorDialog (colorDialog);
-  ParamDialog->addParam (QStringLiteral ("Period"), QStringLiteral ("Period"), DPT_INT, 12.0);
-  ParamDialog->addParam (QStringLiteral ("Level"), QStringLiteral ("Level"), DPT_INT, 0);
-  ParamDialog->addParam (QStringLiteral ("Color"), QStringLiteral ("Color"), DPT_COLOR, (qreal) QColor (Qt::cyan).rgb ());
-  ParamDialog->setObjectName (QStringLiteral ("ParamDialog"));
-  connect(ParamDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
-  connect(ParamDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
-
-  btn = addButton (QStringLiteral ("DMI"));
-  connect (btn, SIGNAL (clicked ()), this, SLOT (button_clicked ()));
-  ParamDialog = new DynParamsDialog (QStringLiteral (""), btn);
-  colorDialog = new appColorDialog;
-  ParamDialog->setColorDialog (colorDialog);
-  ParamDialog->addParam (QStringLiteral ("Period"), QStringLiteral ("Period"), DPT_INT, 13.0);
-  ParamDialog->addParam (QStringLiteral ("Weak"), QStringLiteral ("Weak"), DPT_INT, 25);
-  ParamDialog->addParam (QStringLiteral ("Strong"), QStringLiteral ("Strong"), DPT_INT, 50);
-  ParamDialog->addParam (QStringLiteral ("Very strong"), QStringLiteral ("Very strong"), DPT_INT, 75);
-  ParamDialog->addParam (QStringLiteral ("Color"), QStringLiteral ("Color"), DPT_COLOR, (qreal) QColor (Qt::cyan).rgb ());
-  ParamDialog->setObjectName (QStringLiteral ("ParamDialog"));
-  connect(ParamDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
-  connect(ParamDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
-
-  btn = addButton (QStringLiteral ("ATR"));
-  connect (btn, SIGNAL (clicked ()), this, SLOT (button_clicked ()));
-  ParamDialog = new DynParamsDialog (QStringLiteral (""), btn);
-  colorDialog = new appColorDialog;
-  ParamDialog->setColorDialog (colorDialog);
-  ParamDialog->addParam (QStringLiteral ("Period"), QStringLiteral ("Period"), DPT_INT, 14.0);
-  ParamDialog->addParam (QStringLiteral ("Color"), QStringLiteral ("Color"), DPT_COLOR, (qreal) QColor (Qt::cyan).rgb ());
-  ParamDialog->setObjectName (QStringLiteral ("ParamDialog"));
-  connect(ParamDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
-  connect(ParamDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
+  _paramDialogSMA(bd);
+  _paramDialogEMA(bd);
+  _paramDialogMACD(bd);
+  _paramDialogMFI(bd);
+  _paramDialogROC(bd);
+  _paramDialogRSI(bd);
+  _paramDialogSlowStoch(bd);
+  _paramDialogFastStoch(bd);
+  _paramDialogW_percent_R(bd);
+  _paramDialogBollingerBands(bd);
+  _paramDialogParabolicSAR(bd);
+  _paramDialogADX(bd);
+  _paramDialogAroon(bd);
+  _paramDialogCCI(bd);
+  _paramDialogSTDDEV(bd);
+  _paramDialogMomentum(bd);
+  _paramDialogDMI(bd);
+  _paramDialogATR(bd);
 
   // sort buttons
   qSort(Button.begin(), Button.end(), ButtonCmp);
@@ -288,33 +144,7 @@ QTACFunctions::createButtons (void)
 // destructor
 QTACFunctions::~QTACFunctions ()
 {
-
   delete ui;
-}
-
-// add a button
-QPushButton *
-QTACFunctions::addButton (QString text)
-{
-  QFont fnt;
-  QPushButton *btn;
-  QString stylesheet;
-
-  stylesheet =
-    QStringLiteral ("background: transparent; border: 1px solid transparent;border-color: darkgray;");
-
-  btn = new QPushButton (text, this);
-  btn->setFixedSize (QSize (button_width, button_height));
-  fnt = btn->font ();
-  fnt.setPixelSize (16);
-  fnt.setBold (true);
-  btn->setFont (fnt);
-  btn->setStyleSheet (stylesheet);
-  btn->setAutoFillBackground (false);
-  btn->setFocusPolicy (Qt::NoFocus);
-  btn->setObjectName ("Indicator Button");
-  Button += btn;
-  return btn;
 }
 
 // set the reference chart
