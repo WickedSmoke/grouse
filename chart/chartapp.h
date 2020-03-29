@@ -20,7 +20,9 @@
 #define CHARTAPP_H
 
 #include <QApplication>
-#include <QMutex>
+#include "idb.h"
+
+class QMutex;
 
 class ChartApp : public QApplication
 {
@@ -30,13 +32,25 @@ public:
   ChartApp(int& argc, char ** argv) ;
   ~ChartApp();
 
+  bool openDatabase ();
   void moduleLock (QObject *obj);
   void moduleUnlock (QObject *obj);
 
 private:
+  InstrumentDatabase idb;
   QObject *lockholder;  // the object that holds the lock
   QMutex *modmutex;     // mutex for modules
 };
+
+extern SQLists *ComboItems;     // QStringLists used as combo box items and more
+extern QMutex *ResourceMutex;   // mutex to protect shared resources
+extern int NCORES;              // number of active cores
+
+// show a message box
+extern void showMessage (const QString& message, QWidget* parent = nullptr);
+
+// show an Ok/Cancel question box
+extern bool showOkCancel (const QString& message, QWidget* parent = nullptr);
 
 
 #endif // CHARTAPP_H

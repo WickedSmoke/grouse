@@ -338,11 +338,7 @@ void MainWindow::closeTab(int index)
 AppOptions _options;
 AppOptions *Application_Options = &_options;
 
-SQLists _sqLists;
-SQLists *ComboItems = &_sqLists;
-
 QProgressBar *GlobalProgressBar = nullptr;
-QMutex *ResourceMutex = nullptr;
 QString Year, Month, Day;
 
 DownloadDataDialog *downloaddatadialog;
@@ -351,7 +347,6 @@ ProgressDialog *progressdialog;
 DebugDialog *debugdialog;
 
 size_t CGScriptFunctionRegistrySize;
-int NCORES;
 
 const char DEFAULT_FONT_FAMILY[] = "Tahoma";
 #ifdef Q_OS_MAC
@@ -367,27 +362,13 @@ const int  CHART_FONT_SIZE_PAD = 3;
 int main( int argc, char **argv )
 {
     ChartApp app( argc, argv );
-    InstrumentDatabase idb;
     MainWindow w;
 
     CGScriptFunctionRegistrySize = cgscript_init();
 
-    {
-    const char* openError;
-    QString fn = QDir::homePath() % QDir::separator() %
-        QStringLiteral(".config") % QDir::separator() % APPDIR %
-        QDir::separator() % DBNAME;
-    if( ! idb.openFile( fn, &openError ) )
-    {
-        showMessage( openError );
+    if( ! app.openDatabase() )
         return 1;
-    }
-    }
-
-    idb.initializeListQueries( _sqLists );
     loadAppOptions(Application_Options);
-
-    ResourceMutex = new QMutex(QMutex::NonRecursive);
 
     downloaddatadialog = new DownloadDataDialog(&w);
     progressdialog  = new ProgressDialog(&w);

@@ -16,30 +16,90 @@
  *
  */
 
+#include <QDir>
+#include <QMutex>
+#include <QMessageBox>
+#include <QThread>
 #include "chartapp.h"
+#include "defs.h"
+#include "idb.h"
+
+
+static SQLists _sqLists;
+SQLists *ComboItems = &_sqLists;
+
+QMutex *ResourceMutex = nullptr;
+
+int NCORES;
+
 
 ChartApp::ChartApp (int & argc, char **argv): QApplication(argc, argv)
 {
   modmutex = new QMutex;
+  ResourceMutex = new QMutex(QMutex::NonRecursive);
+
+#ifdef Q_OS_MAC
+  NCORES = 1;
+#else
+  NCORES = QThread::idealThreadCount();
+  if (NCORES == -1)
+    NCORES = 1;
+#endif
 }
 
 ChartApp::~ChartApp ()
 {
   delete modmutex;
+  delete ResourceMutex;
 }
 
-void
-ChartApp::moduleLock (QObject *obj)
+bool ChartApp::openDatabase ()
+{
+  const char* openError;
+  QString fn = QDir::homePath() % QDir::separator() %
+      QStringLiteral(".config") % QDir::separator() % APPDIR %
+      QDir::separator() % DBNAME;
+
+  if( ! idb.openFile( fn, &openError ) )
+  {
+    showMessage( QString(openError).append(" Application quits.") );
+    return false;
+  }
+
+  idb.initializeListQueries( _sqLists );
+  return true;
+}
+
+void ChartApp::moduleLock (QObject *obj)
 {
   modmutex->lock ();
   lockholder = obj;
 }
 
-void
-ChartApp::moduleUnlock (QObject *obj)
+void ChartApp::moduleUnlock (QObject *obj)
 {
   Q_UNUSED (obj)
 
   modmutex->unlock ();
   lockholder = nullptr;
+}
+
+
+// show message box
+void showMessage (const QString& message, QWidget* parent)
+{
+  QMessageBox::question(parent, QStringLiteral("Message"),
+                        message % QStringLiteral("           "),
+                        QMessageBox::Ok);
+}
+
+// show Ok/Cancel message box
+bool showOkCancel (const QString& message, QWidget* parent)
+{
+  QMessageBox::StandardButton btn;
+  btn = QMessageBox::question(parent, QStringLiteral("Question"),
+                            message,
+                            QMessageBox::Ok | QMessageBox::Cancel,
+                            QMessageBox::Cancel);
+  return( btn == QMessageBox::Ok );
 }

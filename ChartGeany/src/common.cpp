@@ -62,15 +62,6 @@ delay(int secs)
     QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
 
-// show message box
-void
-showMessage (const QString& message, QWidget* parent)
-{
-  QMessageBox::question(parent, QStringLiteral("Message"),
-                        message % QStringLiteral("           "),
-                        QMessageBox::Ok);
-}
-
 // show download message box
 bool
 showDownloadMessage ()
@@ -103,18 +94,6 @@ showDownloadMessage ()
 
   delete msgBox;
   return result;
-}
-
-// show Ok/Cancel message box
-bool
-showOkCancel (const QString& message, QWidget* parent)
-{
-  QMessageBox::StandardButton btn;
-  btn = QMessageBox::question(parent, QStringLiteral("Question"),
-                            message,
-                            QMessageBox::Ok | QMessageBox::Cancel,
-                            QMessageBox::Cancel);
-  return( btn == QMessageBox::Ok );
 }
 
 // full operating system description

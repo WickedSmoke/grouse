@@ -59,7 +59,6 @@ const int  FONT_PIXELSIZE_PAD = 1;
 const int  CHART_FONT_SIZE_PAD = 3;
 
 AppOptions *Application_Options;
-SQLists *ComboItems;
 DownloadDataDialog *downloaddatadialog;
 TemplateManagerDialog *templatemanager;
 ProgressDialog *progressdialog;
@@ -67,10 +66,8 @@ DebugDialog *debugdialog;
 QProgressBar *GlobalProgressBar;
 static SplashDialog *splash = nullptr;
 QString Year, Month, Day;
-QMutex *ResourceMutex = nullptr;
 size_t CGScriptFunctionRegistrySize;
 
-int NCORES;
 bool FULL = false;
 
 
@@ -183,20 +180,14 @@ MainWindow::MainWindow (QWidget * parent):
     QStringLiteral ("background: transparent; background-color: white; color:black");
   QDateTime datetime;
   QFile initcopy;
-  const char* openError;
 
   GlobalError = CG_ERR_OK;
-  ResourceMutex = new QMutex (QMutex::NonRecursive);
 
   ui->setupUi (this);
   setWindowFlags( windowFlags() & ~Qt::WindowContextHelpButtonHint );
 
-
-  // set the db path
-  QString dbfile = QDir::homePath() % QDir::separator() % QStringLiteral(".config") % QDir::separator() % APPDIR % QDir::separator() % DBNAME;
-  if( ! idb.openFile( dbfile, &openError ) )
+  if (! static_cast <ChartApp*> (qApp)->openDatabase())
   {
-    showMessage ( QString(openError).append(" Application quits.") );
     qApp->exit (1);
 
 #if defined (Q_OS_WIN) || defined (Q_OS_MAC)
@@ -205,9 +196,6 @@ MainWindow::MainWindow (QWidget * parent):
     quick_exit (1);
 #endif
   }
-
-  // initialize SQL statements
-  idb.initializeListQueries( comboitems );
 
   ticker = nullptr;
   expandedChartFlag = false;
@@ -281,9 +269,6 @@ MainWindow::MainWindow (QWidget * parent):
   // export application settings
   Application_Options = &options;
 
-  // export classes and variables
-  ComboItems = &comboitems;
-
   // load application's options
   loadAppOptions (Application_Options);
 
@@ -351,19 +336,11 @@ MainWindow::MainWindow (QWidget * parent):
 
   waitdlg->setMessage (QString::fromUtf8 ("Exiting. Please wait..."));
 
-#ifdef Q_OS_MAC
-  NCORES = 1;
-#else
-  NCORES = QThread::idealThreadCount ();
-  if (NCORES == -1)
-    NCORES = 1;
-#endif // Q_OS_MAC
-
   correctWidgetFonts (this);
   if (Application_Options->showsplashscreen == true)
     splash->hide ();
 
-  idb.disableModules();
+  gDatabase->disableModules();
 
   // initialize cgscript
   CGScriptFunctionRegistrySize = cgscript_init ();
@@ -490,7 +467,7 @@ MainWindow::addChart (TableDataVector & datavector)
   tachart->setObjectName ("Chart");
 
   // load data
-  result = idb.loadChartData(datavector[0].base, &Data);
+  result = gDatabase->loadChartData(datavector[0].base, &Data);
   if( result != CG_ERR_OK )
   {
     delete tachart;

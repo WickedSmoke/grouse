@@ -22,16 +22,14 @@
 // Qt, third party and system headers
 #include <math.h>
 #include <limits>
-#include <QtGlobal>
-#include <QMutex>
 #include <QMessageBox>
 #include <QDialogButtonBox>
-#include <QMainWindow>
 
 #include "defs.h"
 #include "debug.h"
 
 // extern classes
+#include "chartapp.h"
 #include "loadcsvdialog.h"
 #include "datamanagerdialog.h"
 #include "modulemanagerdialog.h"
@@ -50,10 +48,7 @@ extern DownloadDataDialog *downloaddatadialog;  // dialog to download data
 extern ProgressDialog *progressdialog;          // dialog to show progress
 extern DebugDialog *debugdialog;                // debug console
 extern TemplateManagerDialog *templatemanager;  // template manager dialog
-extern QMutex *ResourceMutex;                   // mutex to protect shared resources
-extern SQLists *ComboItems;             // QStringLists used as combo box items and more
 extern QString installationPath;        // the path ChartGeany binary is installed
-extern int NCORES;                      // number of active cores
 extern const char DEFAULT_FONT_FAMILY[];
 extern const int  FONT_POINTSIZE_PAD;
 extern const int  FONT_PIXELSIZE_PAD;
@@ -64,14 +59,6 @@ extern "C" void * CGScriptFunctionRegistry_ptr ();
 extern size_t CGScriptFunctionRegistrySize;
 
 // extern functions
-
-// show a message box
-extern void
-showMessage (const QString& message, QWidget* parent = nullptr);
-
-// show an Ok/Cancel question box
-extern bool
-showOkCancel (const QString& message, QWidget* parent = nullptr);
 
 // show download message box
 extern bool

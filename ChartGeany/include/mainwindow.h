@@ -20,6 +20,7 @@
 #define MAINWINDOW_H
 
 // #include <QSessionManager>
+#include <QMainWindow>
 #include "common.h"
 #include "optionsdialog.h"
 #include "infodialog.h"
@@ -70,9 +71,7 @@ public slots:
 
 private:
   Ui::MainWindow *ui;
-  InstrumentDatabase idb;
   AppOptions options;                   // application setting
-  SQLists comboitems;                   // string lists used to populate
   //   various comboboxes
   LoadCSVDialog *loadcsvdlg;            // dialog to load CSV file
   DownloadDataDialog *downloaddatadlg;  // dialog to download data
