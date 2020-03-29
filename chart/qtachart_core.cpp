@@ -203,7 +203,6 @@ QTAChartCore::QTAChartCore (QWidget * parent)
 
   drawScr->setReferenceChart (parent);
   functionScr->setReferenceChart (parent);
-  propScr->setReferenceChart (parent);
   objectsScr->setReferenceChart (parent);
   return;
 
@@ -1880,3 +1879,25 @@ QTAChartCore::yOnPrice (qreal price) const
 }
 
 /// Zz
+
+// max decimal points
+qreal
+maxfractionals (FrameVector *HLOC) NOEXCEPT
+{
+  qreal maxd = 0;
+
+  foreach (const QTAChartFrame Frame, *HLOC)
+  {
+    maxd = qMax (maxd, (qreal) fracdig (Frame.High));
+    maxd = qMax (maxd, (qreal) fracdig (Frame.Low));
+  }
+
+  return (qreal) ((qreal) 1 / qPow ((qreal) 10, (qreal) maxd));
+}
+
+// get chart's data
+QTAChartCore *
+getData (QTAChart * chart) NOEXCEPT
+{
+  return chart ? chart->ccore : nullptr;
+}

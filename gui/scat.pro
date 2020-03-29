@@ -107,7 +107,6 @@ SOURCES += MainWindow.cpp \
 	../chart/qtachart_object_sanitizer.cpp \
 	../chart/qtachart_objects.cpp \
 	../chart/qtachart_properties.cpp \
-	../chart/qtachart_utilities.cpp \
 	../chart/qtcgraphicsitem.cpp \
 	../database/idb.cpp \
 	../database/csv.cpp \

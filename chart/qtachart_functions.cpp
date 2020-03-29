@@ -321,8 +321,7 @@ QTACFunctions::addButton (QString text)
 void
 QTACFunctions::setReferenceChart (void *chart)
 {
-  referencechart = chart;
-  parentchart = static_cast <QTAChart *> (chart);
+  referencechart = static_cast <QTAChart *> (chart);
   createButtons ();
 }
 
@@ -337,8 +336,7 @@ QTACFunctions::getReferenceChart (void)
 void
 QTACFunctions::addIndicator (DynParamsDialog *paramDialog)
 {
-  QTAChart *chart = static_cast <QTAChart *> (referencechart);
-  QTAChartCore *core = static_cast <QTAChartCore *> (getData (chart));
+  QTAChartCore *core = getData (referencechart);
   QTACObject *indicator = NULL, *childobj;
   QString fname;
   qint32 period;

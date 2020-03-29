@@ -251,7 +251,6 @@ SOURCES += \
         ../chart/qtachart_object_modules.cpp \
         ../chart/qtachart_objects.cpp \
         ../chart/qtachart_properties.cpp \
-        ../chart/qtachart_utilities.cpp \
         ../chart/qtcgraphicsitem.cpp \
         ../database/csv.cpp \
         ../database/dbman.cpp \

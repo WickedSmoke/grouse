@@ -94,7 +94,6 @@ private:
   appColorDialog *foreColorDialog;
   appColorDialog *backColorDialog;
   QFrame *frame;
-  void *referencechart;                     // reference chart
 
 private slots:
   void lineColorButton_clicked (void);

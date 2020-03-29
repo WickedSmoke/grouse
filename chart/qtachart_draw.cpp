@@ -99,8 +99,7 @@ QTACDraw::addButton (QString text)
 void
 QTACDraw::createTHVLineObject (QTAChartObjectType type)
 {
-  QTAChart *chart = static_cast <QTAChart *> (referencechart);
-  QTAChartCore *core = static_cast <QTAChartCore *> (getData (chart));
+  QTAChartCore *core = getData (referencechart);
   QColor color;
   bool ok;
 
@@ -109,7 +108,7 @@ QTACDraw::createTHVLineObject (QTAChartObjectType type)
   if (!ok)
     return;
 
-  chart->goBack ();
+  referencechart->goBack ();
   core->object_drag = true;
   core->dragged_obj_type = type;
   core->hvline = new QGraphicsLineItem ();
@@ -124,15 +123,14 @@ QTACDraw::createTHVLineObject (QTAChartObjectType type)
 void
 QTACDraw::createTextObject (QTAChartObjectType type)
 {
-  QTAChart *chart = static_cast <QTAChart *> (referencechart);
-  QTAChartCore *core = static_cast <QTAChartCore *> (getData (chart));
+  QTAChartCore *core = getData (referencechart);
 
   core->textobjectdialog->create ();
   textLbl = core->textobjectdialog->getLabel ();
 
   if (textLbl->text().size () != 0)
   {
-    chart->goBack ();
+    referencechart->goBack ();
     core->object_drag = true;
     core->dragged_obj_type = type;
     core->textitem = new QGraphicsTextItem ();
@@ -150,7 +148,7 @@ QTACDraw::createTextObject (QTAChartObjectType type)
 void
 QTACDraw::setReferenceChart (void *chart)
 {
-  referencechart = chart;
+  referencechart = static_cast <QTAChart*> (chart);
 }
 
 // resize

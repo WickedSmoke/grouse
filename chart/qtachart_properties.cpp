@@ -328,13 +328,6 @@ QTACProperties::OnlinePrice (void) const
   return false;
 }
 
-// set the reference chart
-void
-QTACProperties::setReferenceChart (void *chart)
-{
-  referencechart = chart;
-}
-
 // get volumes
 bool
 QTACProperties::Volumes (void) const

@@ -46,14 +46,13 @@ private:
   Ui::QTACFunctions * ui;
 
   // variables
-  QTAChart *parentchart;
   QGridLayout *layout;
   QList < QPushButton *> Button;            // the list of buttons
   QLabel *textLbl;                          // QLabel that holds label/text
   int button_width;                         // width of button
   int button_height;                        // height of button
   bool init;                                // true initialized, otherwise false
-  void *referencechart;                     // reference chart
+  QTAChart *referencechart;                 // reference chart
 
   // functions
   QPushButton *addButton (QString text);    // add a button

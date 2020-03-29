@@ -383,6 +383,6 @@ private slots:
 extern qreal maxfractionals (FrameVector *HLOC) NOEXCEPT GNUHOT;
 
 // returns of core data of QTAChart
-extern void *getData (QTAChart *) NOEXCEPT;
+extern QTAChartCore *getData (QTAChart *) NOEXCEPT;
 
 #endif // QTACHART_CORE_H

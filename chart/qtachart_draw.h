@@ -30,6 +30,8 @@ namespace Ui
   class QTACDraw;
 }
 
+class QTAChart;
+
 class QTACDraw:public QWidget
 {
 Q_OBJECT public:
@@ -45,7 +47,7 @@ private:
   QList < QPushButton *> Button;			// the list of buttons
   QLabel *textLbl;							// QLabel that holds label/text
   appColorDialog *colorDialog;				// color dialog
-  void *referencechart;						// reference chart
+  QTAChart *referencechart;					// reference chart
   int button_width;							// width of button
   int button_height;						// height of button
 

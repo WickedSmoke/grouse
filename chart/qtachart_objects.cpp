@@ -80,15 +80,14 @@ QTACObjects::~QTACObjects ()
 void
 QTACObjects::setReferenceChart (void *chart)
 {
-  referencechart = chart;
+  referencechart = static_cast <QTAChart*> (chart);
 }
 
 //
 void
 QTACObjects::loadObjectVector ()
 {
-  QTAChart *chart = static_cast <QTAChart *> (referencechart);
-  QTAChartCore *core = static_cast <QTAChartCore *> (getData (chart));
+  QTAChartCore *core = getData (referencechart);
 
   while (ui->listWidget->count () > 0)
     delete ui->listWidget->takeItem(0);
@@ -141,8 +140,7 @@ QTACObjects::upButton_clicked (void)
 void
 QTACObjects::editButton_clicked (void)
 {
-  QTAChart *chart = static_cast <QTAChart *> (referencechart);
-  QTAChartCore *core = static_cast <QTAChartCore *> (getData (chart));
+  QTAChartCore *core = getData (referencechart);
   QTACObject *object;
   int nobj;
 
@@ -207,8 +205,7 @@ QTACObjects::editButton_clicked (void)
 void
 QTACObjects::clearButton_clicked (void)
 {
-  QTAChart *chart = static_cast <QTAChart *> (referencechart);
-  QTAChartCore *core = static_cast <QTAChartCore *> (getData (chart));
+  QTAChartCore *core = getData (referencechart);
 
   if (core->Object.size () < 1)
     return;

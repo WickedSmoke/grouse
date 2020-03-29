@@ -39,7 +39,7 @@ Q_OBJECT public:
 private:
   Ui::QTACObjects * ui;
 
-  void *referencechart;						// reference chart
+  QTAChart *referencechart;					// reference chart
   ObjectVector Object;						// vector of objects
 
   void loadObjectVector ();					// load the Object Vector

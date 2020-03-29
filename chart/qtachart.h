@@ -125,7 +125,7 @@ private slots:
   void functionBtn_clicked (void);
   void objectsBtn_clicked (void);
 
-  friend void *getData (QTAChart *) NOEXCEPT;   // internal use
+  friend QTAChartCore *getData (QTAChart *) NOEXCEPT;   // internal use
 protected:
   // functions
   virtual void resizeEvent (QResizeEvent * event);
