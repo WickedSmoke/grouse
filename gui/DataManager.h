@@ -30,6 +30,7 @@ class QLabel;
 class QComboBox;
 class DataBrowserDialog;
 class DownloadDataDialog;
+class LoadCSVDialog;
 
 class DataManager : public QDialog
 {
@@ -65,6 +66,7 @@ protected:
     virtual void keyPressEvent(QKeyEvent * event);
 
 private slots:
+    void showCsvDialog();
     void refreshButton_clicked();
     void trashButton_clicked();
     void downloadButton_clicked();
@@ -82,6 +84,7 @@ private:
     QString symFilter;              // symbol filter;
     DataBrowserDialog *browser;     // data browser
     DownloadDataDialog *downloadDialog;
+    LoadCSVDialog *loadCsvDialog;
     bool updateBeforeOpen;          // update data before open the chart
 
     QToolButton *importButton;

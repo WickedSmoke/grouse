@@ -32,6 +32,7 @@
 #include "common.h"
 #include "databrowserdialog.h"
 #include "downloaddatadialog.h"
+#include "loadcsvdialog.h"
 #include "feedyahoo.h"
 #include "feedav.h"
 #include "feediex.h"
@@ -40,6 +41,12 @@ static const int NCOLUMNS = 14;
 
 extern int
 sqlcb_symbol_table(void *classptr, int argc, char **argv, char **column);
+
+#define CREATE_DIALOG(ptr,T) \
+  if(! ptr) { \
+    ptr = new T(this); \
+    if(! ptr) return; \
+  }
 
 
 static QToolButton* _toolButton(QBoxLayout* lo, const char* iconName,
@@ -63,7 +70,7 @@ static QToolButton* _toolButton(QBoxLayout* lo, const char* iconName,
 
 // constructor
 DataManager::DataManager(QWidget* parent) :
-    QDialog(parent), downloadDialog(nullptr)
+    QDialog(parent), downloadDialog(nullptr), loadCsvDialog(nullptr)
 {
     QStringList colHeaders, filter;
 
@@ -101,20 +108,20 @@ DataManager::DataManager(QWidget* parent) :
     trashButton    = _toolButton(lt, "Trash_Delete.png",  "Delete");
 
     // connect to signals
-    //connect( importButton, SIGNAL(clicked()), parent,
-    //         SLOT(showCsvDialog()));
-    connect( downloadButton, SIGNAL(clicked ()), this,
-             SLOT(downloadButton_clicked()) );
-    connect( trashButton, SIGNAL(clicked()), this,
-             SLOT(trashButton_clicked()) );
-    connect( refreshButton, SIGNAL(clicked()), this,
-             SLOT(refreshButton_clicked()) );
-    connect( updateButton, SIGNAL(clicked()), this,
-             SLOT(updateButton_clicked()) );
     connect( chartButton, SIGNAL(clicked()), this,
              SLOT(chartButton_clicked()) );
+    connect( downloadButton, SIGNAL(clicked ()), this,
+             SLOT(downloadButton_clicked()) );
+    connect( importButton, SIGNAL(clicked()), this,
+             SLOT(showCsvDialog()));
+    connect( updateButton, SIGNAL(clicked()), this,
+             SLOT(updateButton_clicked()) );
+    connect( refreshButton, SIGNAL(clicked()), this,
+             SLOT(refreshButton_clicked()) );
     connect( browserButton, SIGNAL(clicked()), this,
              SLOT(browserButton_clicked()) );
+    connect( trashButton, SIGNAL(clicked()), this,
+             SLOT(trashButton_clicked()) );
 
     tableWidget = new QTableWidget(this);
     tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -276,15 +283,16 @@ void DataManager::reloadSymbols()
 
 void DataManager::downloadButton_clicked()
 {
-    if( ! downloadDialog )
-    {
-        downloadDialog = new DownloadDataDialog( this );
-        if( ! downloadDialog )
-            return;
-    }
-
+    CREATE_DIALOG( downloadDialog, DownloadDataDialog )
     tableWidget->clearSelection();
     downloadDialog->show();
+}
+
+
+void DataManager::showCsvDialog()
+{
+    CREATE_DIALOG( loadCsvDialog, LoadCSVDialog )
+    loadCsvDialog->show();
 }
 
 

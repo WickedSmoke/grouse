@@ -173,7 +173,7 @@ MainWindow::checkNewVersion ()
 // constructor
 MainWindow::MainWindow (QWidget * parent):
   QMainWindow (parent), ui (new Ui::MainWindow),
-  loadcsvdlg(nullptr), portfoliomanagerdlg(nullptr),
+  portfoliomanagerdlg(nullptr),
   optionsdlg(nullptr), infodlg(nullptr)
 {
   const QString stylesheet =
@@ -607,12 +607,6 @@ MainWindow::setExpandChart (bool expandflag)
       ui->tabWidget->widget(counter)->resize (ui->tabWidget->width () - 2,
                                               ui->tabWidget->height () - 20);
   }
-}
-
-void MainWindow::showCsvDialog()
-{
-  CREATE_DIALOG( loadcsvdlg, LoadCSVDialog )
-  loadcsvdlg->show();
 }
 
 // set developer's mode

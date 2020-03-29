@@ -42,7 +42,6 @@
 // extern variables
 extern QProgressBar *GlobalProgressBar;         // progress bar proxy
 extern QTAChart *chartwidget;                   // widget of the chart
-extern LoadCSVDialog *loadcsvdialog;            // dialog to load CSV file
 extern ProgressDialog *progressdialog;          // dialog to show progress
 extern DebugDialog *debugdialog;                // debug console
 extern TemplateManagerDialog *templatemanager;  // template manager dialog

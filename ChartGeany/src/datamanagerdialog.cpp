@@ -35,9 +35,16 @@ static const int NCOLUMNS = 14;
 extern int
 sqlcb_symbol_table(void *classptr, int argc, char **argv, char **column);
 
+#define CREATE_DIALOG(ptr,T) \
+  if(! ptr) { \
+    ptr = new T(this); \
+    if(! ptr) return; \
+  }
+
 // constructor
 DataManagerDialog::DataManagerDialog (QWidget * parent):
-  QDialog (parent), ui (new Ui::DataManagerDialog), downloadDialog(nullptr)
+  QDialog (parent), ui (new Ui::DataManagerDialog),
+    downloadDialog(nullptr), loadCsvDialog(nullptr)
 {
   const QString
   stylesheet = QStringLiteral ("background: transparent; background-color: white;"),
@@ -116,7 +123,7 @@ DataManagerDialog::DataManagerDialog (QWidget * parent):
            SLOT (chartButton_clicked ()));
   connect (ui->importButton, SIGNAL (clicked ()), ui->tableWidget,
            SLOT (clearSelection()));
-  connect (ui->importButton, SIGNAL (clicked ()), parent,
+  connect (ui->importButton, SIGNAL (clicked ()), this,
            SLOT (showCsvDialog()));
   connect (ui->downloadButton, SIGNAL (clicked ()), this,
            SLOT (downloadButton_clicked ()));
@@ -249,15 +256,16 @@ DataManagerDialog::reloadSymbols ()
 void
 DataManagerDialog::downloadButton_clicked ()
 {
-  if( ! downloadDialog )
-  {
-    downloadDialog = new DownloadDataDialog(this);
-    if( ! downloadDialog )
-      return;
-  }
-
+  CREATE_DIALOG( downloadDialog, DownloadDataDialog )
   ui->tableWidget->clearSelection ();
   downloadDialog->show ();
+}
+
+void
+DataManagerDialog::showCsvDialog()
+{
+  CREATE_DIALOG( loadCsvDialog, LoadCSVDialog )
+  loadCsvDialog->show();
 }
 
 // refreshButton_clicked ()

@@ -29,6 +29,7 @@ namespace Ui
 
 class DataBrowserDialog;
 class DownloadDataDialog;
+class LoadCSVDialog;
 
 class DataManagerDialog : public QDialog
 {
@@ -63,6 +64,7 @@ private:
   QString symFilter; // symbol filter;
   DataBrowserDialog *browser; // data browser
   DownloadDataDialog *downloadDialog;
+  LoadCSVDialog *loadCsvDialog; // dialog to load CSV file
   bool updateBeforeOpen; // update data before open the chart
   void reloadSymbols (void);	// reload all symbols
   void fillcolumn (QStringList list, int col); // fill table column
@@ -74,6 +76,7 @@ private slots:
   void exitButton_clicked (void);
   void trashButton_clicked (void);
   void downloadButton_clicked (void);
+  void showCsvDialog();
   void updateButton_clicked (void);
   void browserButton_clicked (void);
   void chartButton_clicked (void);

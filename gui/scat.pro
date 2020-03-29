@@ -27,6 +27,7 @@ HEADERS += MainWindow.h \
 	../ChartGeany/include/debugdialog.h \
 	../ChartGeany/include/databrowserdialog.h \
 	../ChartGeany/include/downloaddatadialog.h \
+	../ChartGeany/include/loadcsvdialog.h \
 	../ChartGeany/include/dynparamsdialog.h \
 	../ChartGeany/include/symbollistdialog.h \
 	../ChartGeany/include/textobjectdialog.h \
@@ -63,6 +64,7 @@ SOURCES += MainWindow.cpp \
 	../ChartGeany/src/debugdialog.cpp \
 	../ChartGeany/src/databrowserdialog.cpp \
 	../ChartGeany/src/downloaddatadialog.cpp \
+	../ChartGeany/src/loadcsvdialog.cpp \
 	../ChartGeany/src/dynparamsdialog.cpp \
 	../ChartGeany/src/symbollistdialog.cpp \
 	../ChartGeany/src/textobjectdialog.cpp \

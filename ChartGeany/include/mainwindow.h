@@ -66,14 +66,10 @@ public:
   }; // returns stock ticker
   bool expandedChart () const NOEXCEPT;
 
-public slots:
-  void showCsvDialog();
-
 private:
   Ui::MainWindow *ui;
   AppOptions options;                   // application setting
   //   various comboboxes
-  LoadCSVDialog *loadcsvdlg;            // dialog to load CSV file
   PortfolioManagerDialog *portfoliomanagerdlg;  // portfolio manager
   TemplateManagerDialog *templatemanagerdlg; // template manager
   ModuleManagerDialog *modulemanagerdlg; // module manager
