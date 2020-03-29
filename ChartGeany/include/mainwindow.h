@@ -74,7 +74,6 @@ private:
   AppOptions options;                   // application setting
   //   various comboboxes
   LoadCSVDialog *loadcsvdlg;            // dialog to load CSV file
-  DownloadDataDialog *downloaddatadlg;  // dialog to download data
   PortfolioManagerDialog *portfoliomanagerdlg;  // portfolio manager
   TemplateManagerDialog *templatemanagerdlg; // template manager
   ModuleManagerDialog *modulemanagerdlg; // module manager

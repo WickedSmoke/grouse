@@ -31,6 +31,7 @@
 #include "DataManager.h"
 #include "common.h"
 #include "databrowserdialog.h"
+#include "downloaddatadialog.h"
 #include "feedyahoo.h"
 #include "feedav.h"
 #include "feediex.h"
@@ -62,7 +63,7 @@ static QToolButton* _toolButton(QBoxLayout* lo, const char* iconName,
 
 // constructor
 DataManager::DataManager(QWidget* parent) :
-    QDialog(parent)
+    QDialog(parent), downloadDialog(nullptr)
 {
     QStringList colHeaders, filter;
 
@@ -275,8 +276,15 @@ void DataManager::reloadSymbols()
 
 void DataManager::downloadButton_clicked()
 {
+    if( ! downloadDialog )
+    {
+        downloadDialog = new DownloadDataDialog( this );
+        if( ! downloadDialog )
+            return;
+    }
+
     tableWidget->clearSelection();
-    downloaddatadialog->show();
+    downloadDialog->show();
 }
 
 

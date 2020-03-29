@@ -35,7 +35,6 @@
 #include "modulemanagerdialog.h"
 #include "debugdialog.h"
 #include "templatemanagerdialog.h"
-#include "downloaddatadialog.h"
 #include "progressdialog.h"
 #include "waitdialog.h"
 #include "qtachart.h"
@@ -44,7 +43,6 @@
 extern QProgressBar *GlobalProgressBar;         // progress bar proxy
 extern QTAChart *chartwidget;                   // widget of the chart
 extern LoadCSVDialog *loadcsvdialog;            // dialog to load CSV file
-extern DownloadDataDialog *downloaddatadialog;  // dialog to download data
 extern ProgressDialog *progressdialog;          // dialog to show progress
 extern DebugDialog *debugdialog;                // debug console
 extern TemplateManagerDialog *templatemanager;  // template manager dialog

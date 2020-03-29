@@ -290,7 +290,6 @@ MainWindow::MainWindow (QWidget * parent):
   }
 
   // create widgets
-  downloaddatadlg = new DownloadDataDialog (this);
   datamanagerdlg = new DataManagerDialog (this);
   debugdlg = new DebugDialog (this);
   modulemanagerdlg = new ModuleManagerDialog (this);
@@ -302,7 +301,6 @@ MainWindow::MainWindow (QWidget * parent):
   loadFonts ();
 
   // export classes and variables
-  downloaddatadialog = downloaddatadlg;
   progressdialog = progressdlg;
   templatemanager = templatemanagerdlg;
   debugdialog = debugdlg;

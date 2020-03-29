@@ -29,6 +29,7 @@ class QFrame;
 class QLabel;
 class QComboBox;
 class DataBrowserDialog;
+class DownloadDataDialog;
 
 class DataManager : public QDialog
 {
@@ -80,6 +81,7 @@ private:
 
     QString symFilter;              // symbol filter;
     DataBrowserDialog *browser;     // data browser
+    DownloadDataDialog *downloadDialog;
     bool updateBeforeOpen;          // update data before open the chart
 
     QToolButton *importButton;

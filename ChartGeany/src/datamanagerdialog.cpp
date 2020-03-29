@@ -24,6 +24,8 @@
 #include "ui_datamanagerdialog.h"
 #include "mainwindow.h"
 #include "common.h"
+#include "databrowserdialog.h"
+#include "downloaddatadialog.h"
 #include "feedyahoo.h"
 #include "feedav.h"
 #include "feediex.h"
@@ -35,7 +37,7 @@ sqlcb_symbol_table(void *classptr, int argc, char **argv, char **column);
 
 // constructor
 DataManagerDialog::DataManagerDialog (QWidget * parent):
-  QDialog (parent), ui (new Ui::DataManagerDialog)
+  QDialog (parent), ui (new Ui::DataManagerDialog), downloadDialog(nullptr)
 {
   const QString
   stylesheet = QStringLiteral ("background: transparent; background-color: white;"),
@@ -247,8 +249,15 @@ DataManagerDialog::reloadSymbols ()
 void
 DataManagerDialog::downloadButton_clicked ()
 {
+  if( ! downloadDialog )
+  {
+    downloadDialog = new DownloadDataDialog(this);
+    if( ! downloadDialog )
+      return;
+  }
+
   ui->tableWidget->clearSelection ();
-  downloaddatadialog->show ();
+  downloadDialog->show ();
 }
 
 // refreshButton_clicked ()

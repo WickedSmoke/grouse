@@ -17,6 +17,7 @@
  */
 
 #include <QDateTime>
+#include "downloaddatadialog.h"
 #include "ui_downloaddatadialog.h"
 #include "common.h"
 #include "feedyahoo.h"

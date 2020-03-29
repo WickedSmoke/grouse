@@ -21,12 +21,14 @@
 
 #include <QDialog>
 #include "idb.h"
-#include "databrowserdialog.h"
 
 namespace Ui
 {
   class DataManagerDialog;
 }
+
+class DataBrowserDialog;
+class DownloadDataDialog;
 
 class DataManagerDialog : public QDialog
 {
@@ -60,6 +62,7 @@ private:
 
   QString symFilter; // symbol filter;
   DataBrowserDialog *browser; // data browser
+  DownloadDataDialog *downloadDialog;
   bool updateBeforeOpen; // update data before open the chart
   void reloadSymbols (void);	// reload all symbols
   void fillcolumn (QStringList list, int col); // fill table column
