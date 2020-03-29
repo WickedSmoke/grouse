@@ -1,3 +1,13 @@
+                        Scat Change Log
+
+Version 1.0.0 - 29 Mar 2020
+  * Desktop oriented GUI added (work in progress).
+  * Eliminated delays in program startup and shutdown.
+  * Main window size is now preserved between runs.
+  * Dialogs now appear over parent windows.
+
+                    Chart Geany Change Log
+
 Version 6.1.5
 - Mac OS X binaries are now build with Qt 5.7.1 
 - Mac OS X minimum supported version upgraded to 10.11 (El Capitan)
