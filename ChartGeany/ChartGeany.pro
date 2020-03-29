@@ -244,7 +244,6 @@ SOURCES += \
         ../chart/qtachart_eventfilters.cpp \
         ../chart/qtachart_functions.cpp \
         ../chart/qtachart_help.cpp \
-        ../chart/qtachart_methods.cpp \
         ../chart/qtachart_object.cpp \
         ../chart/qtachart_object_sanitizer.cpp \
         ../chart/qtachart_object_draw.cpp \
