@@ -200,6 +200,11 @@ QTAChartCore::QTAChartCore (QWidget * parent)
               QStringLiteral ("NOV") << QStringLiteral ("DEC");
 
   setSizeChanged ();
+
+  drawScr->setReferenceChart (parent);
+  functionScr->setReferenceChart (parent);
+  propScr->setReferenceChart (parent);
+  objectsScr->setReferenceChart (parent);
   return;
 
 constructor_failed:
@@ -1159,15 +1164,6 @@ QTAChartCore::hideAllItems (void)
 }
 
 /// Ii
-// initialize the core
-void
-QTAChartCore::init ()
-{
-  drawScr->setReferenceChart (static_cast <void*> (this->parent ()));
-  functionScr->setReferenceChart (static_cast <void*> (this->parent ()));
-  propScr->setReferenceChart (static_cast <void*> (this->parent ()));
-  objectsScr->setReferenceChart (static_cast <void*> (this->parent ()));
-}
 /// Jj
 /// Kk
 /// Ll

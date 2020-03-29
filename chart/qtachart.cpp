@@ -53,8 +53,7 @@ QTAChart::QTAChart (QWidget * parent):
     return;
   }
 
-  core->init ();
-  chartdata = static_cast <void*> (core);
+  ccore = core;
   tabText = QStringLiteral ("Default");
 
   ui->setupUi (this);
@@ -382,7 +381,7 @@ QTAChart::~QTAChart ()
   if (classError == CG_ERR_NOMEM)
     return;
 
-  const QTAChartCore *core =  static_cast <const QTAChartCore *> (chartdata);
+  const QTAChartCore *core = ccore;
 
   if (core->VOLUME.size () > 0)
     core->saveSettings ();
@@ -397,7 +396,7 @@ QTAChart::~QTAChart ()
 void
 QTAChart::goBack (void)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = ccore;
 
   if (core->gridstep <= 1)
     return;
@@ -461,7 +460,7 @@ QTAChart::goBack (void)
 void
 QTAChart::resizeEvent (QResizeEvent * event)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = ccore;
 
   if (event->oldSize () == event->size ())
     return;
@@ -497,7 +496,7 @@ QTAChart::resizeEvent (QResizeEvent * event)
 void
 QTAChart::showEvent (QShowEvent * event)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = ccore;
 
   if (event->spontaneous ())
     return;
@@ -516,7 +515,7 @@ QTAChart::showEvent (QShowEvent * event)
 void
 QTAChart::keyPressEvent (QKeyEvent * event)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = ccore;
 
   if (core->object_drag)
     return;
@@ -700,7 +699,7 @@ QTAChart::backBtn_clicked (void)
 void
 QTAChart::propertiesBtn_clicked (void)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = ccore;
 
   if (core->object_drag)
     return;
@@ -712,7 +711,7 @@ QTAChart::propertiesBtn_clicked (void)
 void
 QTAChart::expandBtn_clicked (void)
 {
-  const QTAChartCore *core = static_cast <const QTAChartCore *> (chartdata);
+  const QTAChartCore *core = ccore;
   MainWindow *mainwindow;
 
   if (core->object_drag)
@@ -738,7 +737,7 @@ QTAChart::expandBtn_clicked (void)
 void
 QTAChart::helpBtn_clicked (void)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = ccore;
 
   if (core->object_drag)
     return;
@@ -756,7 +755,7 @@ QTAChart::helpBtn_clicked (void)
 void
 QTAChart::dataBtn_clicked (void)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = ccore;
 
   if (core->object_drag)
     return;
@@ -774,7 +773,7 @@ QTAChart::dataBtn_clicked (void)
 void
 QTAChart::zoomInBtn_clicked (void)
 {
-  const QTAChartCore *core = static_cast <const QTAChartCore *> (chartdata);
+  const QTAChartCore *core = ccore;
 
   if (core->object_drag)
     return;
@@ -788,7 +787,7 @@ QTAChart::zoomInBtn_clicked (void)
 void
 QTAChart::zoomOutBtn_clicked (void)
 {
-  const QTAChartCore *core = static_cast <const QTAChartCore *> (chartdata);
+  const QTAChartCore *core = ccore;
 
   if (core->object_drag)
     return;
@@ -801,7 +800,7 @@ QTAChart::zoomOutBtn_clicked (void)
 void
 QTAChart::drawBtn_clicked (void)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = ccore;
 
   if (core->object_drag)
     return;
@@ -813,7 +812,7 @@ QTAChart::drawBtn_clicked (void)
 void
 QTAChart::functionBtn_clicked (void)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = ccore;
 
   if (core->object_drag)
     return;
@@ -825,7 +824,7 @@ QTAChart::functionBtn_clicked (void)
 void
 QTAChart::objectsBtn_clicked (void)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = ccore;
 
   if (core->object_drag)
     return;

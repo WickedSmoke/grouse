@@ -66,6 +66,8 @@ namespace Ui
   class QTAChart;
 }
 
+class QTAChartCore;
+
 class QTAChart:public QWidget
 {
 Q_OBJECT public:
@@ -107,7 +109,7 @@ private:
 
   // variables
   QString tabText;              // parent tab's label
-  const void *chartdata;        // chart's data area
+  QTAChartCore *ccore;          // chart's data area
   int classError;               // class error
 
   // functions

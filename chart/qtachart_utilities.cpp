@@ -38,8 +38,5 @@ maxfractionals (FrameVector *HLOC) NOEXCEPT
 void *
 getData (QTAChart * chart) NOEXCEPT
 {
-  if (chart == NULL)
-    return NULL;
-
-  return static_cast <void *> ((void *) chart->chartdata);
+  return chart ? chart->ccore : nullptr;
 }

@@ -179,8 +179,6 @@ public:
 
   void hideAllItems (void); // hide all the objects on a chart
 
-  void init (void); // initialize the core
-
   void loadSettings (void); // load chart settings
 
   void manageObjects (void); // manage objects

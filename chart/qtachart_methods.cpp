@@ -38,9 +38,7 @@
 QString
 QTAChart::getSymbolKey ()
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
-
-  return core->SymbolKey;
+  return ccore->SymbolKey;
 }
 
 /// Hh
@@ -142,7 +140,7 @@ QTAChart::loadFrames (QString tablename)
   QString btext, SQLCommand;
   QStringList ymd;
   QTAChartFrame frame, haframe, prevframe;
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = ccore;
   qreal excess_drag_width = 0;
   qint32 nframes, startbar = 0;
   int rc;
@@ -348,7 +346,6 @@ loadFrames_end:
 void
 QTAChart::loadData (QTAChartData data)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
   QString textdata = QStringLiteral ("");
 
   textdata += QStringLiteral ("Book Value:  ") % data.bv % QStringLiteral ("\n\n") %
@@ -362,7 +359,7 @@ QTAChart::loadData (QTAChartData data)
               QStringLiteral ("Earnings/Share:  ") % data.es % QStringLiteral ("\n\n") %
               QStringLiteral ("Price/Sales:  ") % data.ps % QStringLiteral ("\n\n") %
               QStringLiteral ("Price/Book:  ") % data.pbv % QStringLiteral ("\n\n");
-  core->dataScr->setData (textdata);
+  ccore->dataScr->setData (textdata);
 }
 
 /// Mm
@@ -380,8 +377,7 @@ QTAChart::loadData (QTAChartData data)
 void
 QTAChart::restoreBottomText ()
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
-  core->restoreBottomText ();
+  ccore->restoreBottomText ();
 }
 
 /// Ss
@@ -390,91 +386,71 @@ QTAChart::restoreBottomText ()
 void
 QTAChart::setAlwaysRedraw (bool boolean)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
-
-  core->always_redraw = boolean;
+  ccore->always_redraw = boolean;
 }
 
 // set chart's symbol
 void
 QTAChart::setSymbol (QString symbol)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
-
-  core->Symbol = symbol;
+  ccore->Symbol = symbol;
 }
 
 // set chart's symbol key
 void
 QTAChart::setSymbolKey (QString key)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
-
-  core->SymbolKey = key;
-
-  // load setting
-  core->loadSettings ();
+  ccore->SymbolKey = key;
+  ccore->loadSettings ();
 }
 
 // set symbol's feed
 void
 QTAChart::setFeed (QString feed)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
-
-  core->Feed = feed;
+  ccore->Feed = feed;
 }
 
 // set chart's title
 void
 QTAChart::setTitle (QString title, QString subtitle)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
-  core->setTitle (title, subtitle);
+  ccore->setTitle (title, subtitle);
 }
 
 // set the bottom text to custom string
 void
 QTAChart::setCustomBottomText (QString string)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
-  core->setCustomBottomText (string);
+  ccore->setCustomBottomText (string);
 }
 
 // set linear chart on/off
 void
 QTAChart::setLinear (bool boolean)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
-
-  core->setLinearScale (boolean);
+  ccore->setLinearScale (boolean);
 }
 
 // set chart volumes on/off
 void
 QTAChart::showVolumes (bool boolean)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
-
-  core->show_volumes = boolean;
+  ccore->show_volumes = boolean;
 }
 
 // set chart grid on/off
 void
 QTAChart::showGrid (bool boolean)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
-
-  core->show_grid = boolean;
+  ccore->show_grid = boolean;
 }
 
 // set online price on/off
 void
 QTAChart::showOnlinePrice (bool boolean)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
-
-  core->show_onlineprice = boolean;
+  ccore->show_onlineprice = boolean;
 }
 
 /// Tt
