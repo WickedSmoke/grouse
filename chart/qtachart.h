@@ -108,6 +108,37 @@ Q_OBJECT public:
   QTACObject* addStudyMACD( const QString& name, int period,
                             QRgb colorMACD, QRgb colorSignal );
   QTACObject* addStudySMA( const QString& name, int period, QRgb color );
+  QTACObject* addStudyEMA( const QString& name, int period, QRgb color );
+  QTACObject* addStudyMFI( const QString& name, int period, QRgb color,
+                           int highLevel, int lowLevel, int mediumLevel );
+  QTACObject* addStudyROC( const QString& name, int period, int Level,
+                           QRgb color );
+  QTACObject* addStudyRSI( const QString& name, int period, int Highlevel,
+                           int Lowlevel, QRgb color );
+  QTACObject* addStudySlowStoch( const QString& name, int period,
+                                 int Highlevel, int Mediumlevel, int Lowlevel,
+                                 QRgb Kcolor, QRgb Dcolor );
+  QTACObject* addStudyFastStoch( const QString& name, int period,
+                                 int Highlevel, int Mediumlevel, int Lowlevel,
+                                 QRgb Kcolor, QRgb Dcolor );
+  QTACObject* addStudyW_percent_R( const QString& name, int period,
+                                   int Highlevel, int Lowlevel, QRgb color );
+  QTACObject* addStudyBollingerBands( const QString& name, int period,
+                                      QRgb color );
+  QTACObject* addStudyParabolicSAR( const QString& name, QRgb color );
+  QTACObject* addStudyADX( const QString& name, int period, int Weak,
+                           int Strong, int Verystrong, QRgb color );
+  QTACObject* addStudyAroon( const QString& name, int period,
+                             int Highlevel, int Mediumlevel, int Lowlevel,
+                             QRgb UpColor, QRgb DownColor );
+  QTACObject* addStudyCCI( const QString& name, int period,
+                           int Highlevel, int Lowlevel, QRgb color );
+  QTACObject* addStudySTDDEV( const QString& name, int period, QRgb color );
+  QTACObject* addStudyMomentum( const QString& name, int period,
+                                int Level, QRgb color );
+  QTACObject* addStudyDMI( const QString& name, int period, int Weak,
+                           int Strong, int veryStrong, QRgb color );
+  QTACObject* addStudyATR( const QString& name, int period, QRgb color );
 
 private:
   Ui::QTAChart * ui;
