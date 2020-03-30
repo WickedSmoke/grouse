@@ -98,6 +98,7 @@ DynParamsDialog::DynParamsDialog_constructor_body ()
   lblstylesheet = QStringLiteral ("background-color: lightgray; color: black; border: 1px solid transparent;border-color: lightgray;"),
   chkbxstylesheet = QStringLiteral ("border: 1px solid transparent; border-color: lightgray; color: black;");
 
+  setWindowFlags(Qt::FramelessWindowHint|Qt::Dialog);
   setModal(true);
   ui->setupUi (this);
   ui->buttonBox->setStyleSheet (boxstylesheet);
@@ -139,18 +140,6 @@ DynParamsDialog::~DynParamsDialog ()
     delete colorDialog;
 
   delete ui;
-}
-
-DynParam*
-addParameter( ParamVector& vec, const QString& name, qint32 type,
-              qreal value )
-{
-  DynParam *param = new DynParam (name);
-  param->type = type;
-  param->defvalue = value;
-  param->value = value;
-  vec.push_back( param );
-  return param;
 }
 
 // add a parameter

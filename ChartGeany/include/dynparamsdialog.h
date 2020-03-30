@@ -25,37 +25,8 @@
 #include <QDialogButtonBox>
 #include <QCheckBox>
 #include <QIcon>
-
 #include "appColorDialog.h"
-#include "debug.h"
-
-// paramenter types
-typedef enum
-{
-  DPT_INT,      // integer input mask
-  DPT_REAL,     // real input mask
-  DPT_COLOR     // color dialog
-} PARAM_TYPES;
-
-// dynamic parameter
-class DynParam
-{
-public:
-  explicit DynParam (QString name)
-  {
-    label = paramName = name;
-    callback_var = NULL;
-    show = false;
-  }
-
-  QString paramName;    // parameter's name
-  QString label;        // parameter's label
-  qint32  type;         // parameter's type
-  qreal defvalue;       // parameter's default value
-  qreal value;          // parameter's current value
-  bool show;            // parameter's show flag
-  void *callback_var;   // parameter's callback variable (default NULL if none)
-};
+#include "DynParam.h"
 
 class DPColorButton : public QPushButton
 {
@@ -69,13 +40,9 @@ public:
   int buttonidx;
 };
 
-typedef QVector <DynParam *> ParamVector;
 typedef QVector <QPixmap *> PixmapVector;
 typedef QVector <QIcon *> IconVector;
 typedef QVector <DPColorButton *> ButtonVector;
-
-extern DynParam* addParameter( ParamVector&, const QString& name, qint32 type,
-                               qreal value );
 
 namespace Ui
 {

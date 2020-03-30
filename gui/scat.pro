@@ -8,6 +8,7 @@ CONFIG += qt debug
 QT += widgets network webenginewidgets
 
 DEFINES *= QT_USE_QSTRINGBUILDER	# For feed*.cpp
+DEFINES += GUI_DESKTOP
 
 INCLUDEPATH += ../ChartGeany/include \
 	../ChartGeany/ui \
@@ -23,12 +24,12 @@ LIBS += -ldl -lxlsreader
 
 HEADERS += MainWindow.h \
 	DataManager.h \
+	ParameterDialog.h \
 	../ChartGeany/include/appColorDialog.h \
 	../ChartGeany/include/debugdialog.h \
 	../ChartGeany/include/databrowserdialog.h \
 	../ChartGeany/include/downloaddatadialog.h \
 	../ChartGeany/include/loadcsvdialog.h \
-	../ChartGeany/include/dynparamsdialog.h \
 	../ChartGeany/include/symbollistdialog.h \
 	../ChartGeany/include/textobjectdialog.h \
 	../ChartGeany/include/templatemanagerdialog.h \
@@ -59,13 +60,13 @@ HEADERS += MainWindow.h \
 
 SOURCES += MainWindow.cpp \
 	DataManager.cpp \
+	ParameterDialog.cpp \
 	../ChartGeany/src/appColorDialog.cpp \
 	../ChartGeany/src/common.cpp \
 	../ChartGeany/src/debugdialog.cpp \
 	../ChartGeany/src/databrowserdialog.cpp \
 	../ChartGeany/src/downloaddatadialog.cpp \
 	../ChartGeany/src/loadcsvdialog.cpp \
-	../ChartGeany/src/dynparamsdialog.cpp \
 	../ChartGeany/src/symbollistdialog.cpp \
 	../ChartGeany/src/textobjectdialog.cpp \
 	../ChartGeany/src/templatemanagerdialog.cpp \

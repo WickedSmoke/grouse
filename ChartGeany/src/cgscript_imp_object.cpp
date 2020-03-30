@@ -21,6 +21,11 @@
 
 #include "qtachart_core.h"
 #include "cgscript.h"
+#ifdef GUI_DESKTOP
+#include "ParameterDialog.h"
+#else
+#include "dynparamsdialog.h"
+#endif
 
 // ObjDestroy_imp
 extern "C" Q_DECL_EXPORT void

@@ -31,8 +31,8 @@
 #include "qtachart_eventfilters.h"
 #include "qtachart_object_sanitizer.h"
 #include "function_dataset.h"
-#include "dynparamsdialog.h"
 #include "chartapp.h"
+#include "DynParam.h"
 
 
 // object types
@@ -127,6 +127,8 @@ private:
   QTACObject *owner;
 };
 Q_DECLARE_TYPEINFO (SubChartButton, Q_MOVABLE_TYPE);
+
+class DynParamsDialog;
 
 // object class
 class QTACObject : public QObject
@@ -308,7 +310,7 @@ public:
   QGraphicsProxyWidget *prxeditBtn; // proxy to editBtn
   QGraphicsLineItem *bottomline; // subchart's bottom line
   QTCGraphicsScene *scene;          // ptr on chartdata->Scene
-  QPointer <DynParamsDialog> paramDialog; // indicators' parameters dialog
+  DynParamsDialog* paramDialog; // indicators' parameters dialog
   QTACObject *parentObject;     // parent subchart
   QTACObject *parentModule;     // parentModule
   DataSet (*TAfunc) (const DataSet, int); // function to be used

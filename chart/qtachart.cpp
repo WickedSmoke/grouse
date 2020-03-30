@@ -1231,6 +1231,18 @@ QTAChart::showOnlinePrice (bool boolean)
 }
 
 
+DynParam* addParameter( ParamVector& vec, const QString& name, qint32 type,
+                        qreal value )
+{
+    DynParam *param = new DynParam(name);
+    param->type = type;
+    param->defvalue = value;
+    param->value = value;
+    vec.push_back( param );
+    return param;
+}
+
+
 QTACObject* QTAChart::addStudyMACD( const QString& name, int period,
                                     QRgb colorMACD, QRgb colorSignal )
 {

@@ -24,12 +24,13 @@
 #include <QLabel>
 #include <QGridLayout>
 #include "qtachart.h"
-#include "dynparamsdialog.h"
 
 namespace Ui
 {
   class QTACFunctions;
 }
+
+class DynParamsDialog;
 
 class QTACFunctions:public QWidget
 {

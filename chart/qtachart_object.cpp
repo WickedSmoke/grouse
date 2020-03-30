@@ -27,6 +27,11 @@
 #include "qtachart.h"
 #include "cgscript.h"
 #include "debug.h"
+#ifdef GUI_DESKTOP
+#include "ParameterDialog.h"
+#else
+#include "dynparamsdialog.h"
+#endif
 
 // constructor of line edge class
 LineEdge::LineEdge () NOEXCEPT
@@ -65,7 +70,8 @@ SubChartButton::getOwner () NOEXCEPT
 }
 
 // constructor for modules
-QTACObject::QTACObject (void *data, QString modpath, QString modname)
+QTACObject::QTACObject (void *data, QString modpath, QString modname) :
+  paramDialog(nullptr)
 {
   sanitizer = new ObjectSanitizer (static_cast <const void *> (this));
   int objtype;
@@ -274,7 +280,7 @@ QTACObject::QTACObject_constructor_common ()
   TAfunc = nullptr;
   TAfunc2 = nullptr;
   dynvset = nullptr;
-  // paramDialog = nullptr;
+  paramDialog = nullptr;
   ITEMS = nullptr;
   visibleitems = 0;
   ITEMSsize = 0;
@@ -474,8 +480,7 @@ QTACObject::QTACObject_destructor_common ()
   if (valueset != nullptr)
     delete valueset;
 
-  if (!paramDialog.isNull ())
-    delete paramDialog;
+  delete paramDialog;
 
   core->clearITEMS ();
 
@@ -1009,7 +1014,7 @@ QTACObject::modifyIndicator ()
 
   int xperiod = period;
 
-  if( paramDialog.isNull() )
+  if( ! paramDialog )
   {
       // Create temporary dialog on the fly.
       ParamVector pvector;
@@ -1027,7 +1032,6 @@ QTACObject::modifyIndicator ()
   }
   else
   {
-      paramDialog->setWindowFlags(Qt::FramelessWindowHint|Qt::Dialog);
       paramDialog->exec ();
       QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
   }
@@ -1567,8 +1571,7 @@ QTACObject::setText(QGraphicsTextItem *textitem, QString candleText, qreal prc)
 void
 QTACObject::setParamDialog (ParamVector pvector, QString title, QObject *parent)
 {
-  if (!paramDialog.isNull ())
-    delete paramDialog;
+  delete paramDialog;
 
   paramDialog = new DynParamsDialog (pvector, title);
   appColorDialog *colorDialog = new appColorDialog;

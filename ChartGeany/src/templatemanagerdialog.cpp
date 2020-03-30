@@ -26,6 +26,11 @@
 #include "templatemanagerdialog.h"
 #include "ui_templatemanagerdialog.h"
 #include "simplecrypt.h"
+#ifdef GUI_DESKTOP
+#include "ParameterDialog.h"
+#else
+#include "dynparamsdialog.h"
+#endif
 
 // keep indicator data localy
 struct Lindicator

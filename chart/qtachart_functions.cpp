@@ -21,6 +21,11 @@
 #include "qtachart_core.h"
 #include "ui_qtacfunctions.h"
 #include "qtachart_functions.h"
+#ifdef GUI_DESKTOP
+#include "ParameterDialog.h"
+#else
+#include "dynparamsdialog.h"
+#endif
 
 // constructor
 QTACFunctions::QTACFunctions (QWidget * parent):
@@ -224,7 +229,6 @@ QTACFunctions::button_clicked (void)
     paramDialog->setReferenceChart (referencechart);
     paramDialog->move ((width () - paramDialog->width ()) / 2, 25);
     // paramDialog->exec ();
-    paramDialog->setWindowFlags(Qt::FramelessWindowHint|Qt::Dialog);
     paramDialog->open ();
     qApp->processEvents(QEventLoop::AllEvents, 10);
   }
