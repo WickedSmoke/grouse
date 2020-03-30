@@ -230,10 +230,6 @@ drawObject (QTACObject *object)
       (object->period > 0?QString::number (object->period, 'f', 0):"") % "):" % object->datastr);
     */
 
-    // hide edit button if there is no parameters' dialog
-    if (object->paramDialog.isNull ())
-      object->editBtn->setVisible (false);
-
     // bottom line's pen
     pen.setColor (Qt::darkYellow);
     pen.setStyle (Qt::SolidLine);

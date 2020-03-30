@@ -175,8 +175,8 @@ public:
     *y1 = Y1;
     *y2 = Y2;
   }
-  qreal   getPrice (void); // return the price level
-  qreal   getPrice2 (void); // return the price level
+  qreal   getPrice (void) const; // return the price level
+  qreal   getPrice2 (void) const; // return the price level
   qreal   getPad (void); // get the edge's pad
   qreal   getPad2 (void); // get the edge's pad
   qint16  getTxtDirection (void); // get text's direction of label

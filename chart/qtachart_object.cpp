@@ -347,9 +347,6 @@ QTACObject::QTACObject_constructor_common ()
     editBtn->setStyleSheet (QStringLiteral ("background: transparent; border: 1px solid transparent;border-color: darkgray;color: white; font: 9px;"));
     prxeditBtn = scene->qtcAddWidget (editBtn, Qt::Widget);
 
-    if (paramDialog.isNull ())
-      editBtn->setVisible (false);
-
     // no tooltip for title
     title->setToolTip (QStringLiteral (""));
   }
@@ -729,12 +726,12 @@ QTACObject::getColor (void) const
   if (type == QTACHART_OBJ_LINE || type == QTACHART_OBJ_FIBO)
     return hvline->pen ().color ();
 
-  return text->defaultTextColor ();
+  return forecolor;
 }
 
 // get the price
 qreal
-QTACObject::getPrice (void)
+QTACObject::getPrice (void) const
 {
   if (type == QTACHART_OBJ_LINE || type == QTACHART_OBJ_FIBO)
   {
@@ -747,7 +744,7 @@ QTACObject::getPrice (void)
 }
 
 qreal
-QTACObject::getPrice2 (void)
+QTACObject::getPrice2 (void) const
 {
   if (type == QTACHART_OBJ_LINE || type == QTACHART_OBJ_FIBO)
   {
@@ -996,7 +993,11 @@ qreal QTACObject::paramValue( const QString& name ) const
     foreach (child, children)
     {
         if( name == child->periodParamName )
+        {
+            if( child->type == QTACHART_OBJ_HLINE )
+                return child->getPrice();
             return (qreal) child->getPeriod();
+        }
         if( name == child->colorParamName )
             return (qreal) child->getColor().rgb();
     }
