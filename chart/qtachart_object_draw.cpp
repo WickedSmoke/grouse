@@ -23,7 +23,7 @@
 void
 drawObject (QTACObject *object)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> ((void *) object->chartdata);
+  QTAChartCore *core = object->chartdata;
   QTACObject *child;
   QString timeframe = QStringLiteral ("");
   qint32 max;
@@ -285,7 +285,7 @@ QTACObject::drawLabel ()
     return;
 
   QRectF rect;
-  const QTAChartCore *core = static_cast <const QTAChartCore *> (chartdata);
+  const QTAChartCore *core = chartdata;
   qreal x, y, width, height;
 
   text->setVisible (false);
@@ -324,7 +324,7 @@ void
 QTACObject::drawText ()
 {
   QRectF rect;
-  const QTAChartCore *core = static_cast <const QTAChartCore *> (chartdata);
+  const QTAChartCore *core = chartdata;
   qreal x = -1, y = 0;
   int found = -1;
 
@@ -393,7 +393,7 @@ QTACObject::drawVBars ()
 {
   QPen pen;
   QTCGraphicsItem *item;
-  const QTAChartCore *core = static_cast <const QTAChartCore *> (chartdata);
+  const QTAChartCore *core = chartdata;
   qreal x, y, w, h, y0;
   int type = RectItemType, icounter = 0;
 
@@ -444,7 +444,7 @@ void
 QTACObject::drawCurve ()
 {
   QPen pen;
-  const QTAChartCore *core = static_cast <const QTAChartCore *> (chartdata);
+  const QTAChartCore *core = chartdata;
   QTCGraphicsItem *item;
   qreal x1, x2, y1, y2;
   int type = LineItemType, icounter = 0;
@@ -523,7 +523,7 @@ QTACObject::drawDot ()
 {
   QPen pen;
   QTCGraphicsItem *item;
-  const QTAChartCore *core = static_cast <const QTAChartCore *> (chartdata);
+  const QTAChartCore *core = chartdata;
   qreal x1, y1;
   int type = EllipseItemType, icounter = 0;
 
@@ -581,7 +581,7 @@ void
 QTACObject::drawTLine ()
 {
   QRectF rectf;
-  const QTAChartCore *core = static_cast <const QTAChartCore *> (chartdata);
+  const QTAChartCore *core = chartdata;
   LineEdge *edge;
   qreal x1 = 0, x2 = 0, y1 = 0, y2 = 0;
   int found = -1;
@@ -731,7 +731,7 @@ QTACObject::drawFibo ()
 {
   QRectF rectf;
   QLineF line;
-  const QTAChartCore *core = static_cast <const QTAChartCore *> (chartdata);
+  const QTAChartCore *core = chartdata;
   LineEdge *edge;
   qreal x1 = 0, x2 = 0, y1 = 0, y2 = 0;
 
@@ -851,7 +851,7 @@ QTACObject::drawFibo ()
 void
 QTACObject::drawHVLine ()
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = chartdata;
   QRectF rectf;
   qreal x, y, top, bottom;
 

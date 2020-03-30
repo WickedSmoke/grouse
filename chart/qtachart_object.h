@@ -123,7 +123,7 @@ public:
 
 private:
   // variables
-  const void *chartdata;        // (QTAChartCore *) chartdata
+  QTAChartCore *chartdata;
   QTACObject *owner;
 };
 Q_DECLARE_TYPEINFO (SubChartButton, Q_MOVABLE_TYPE);
@@ -263,7 +263,7 @@ public:
     rmax = max;
   }; // set the range for subcharts
 // variables
-  const void *chartdata;     // (QTAChartCore *) chartdata
+  QTAChartCore *chartdata;
   QTCGraphicsItem **ITEMS;   // graphics items on screen
   QGraphicsLineItem *hvline; // horizontal or verical line
   QGraphicsTextItem *text;   // for label or text objects

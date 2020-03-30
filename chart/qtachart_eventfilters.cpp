@@ -555,8 +555,7 @@ QTACObjectEventFilter::QTACObjectEventFilter (QObject * parent)
     return;
 
   setParent (parent);
-  core = static_cast <QTAChartCore *>
-         (const_cast <void *> ((((qobject_cast <QTACObject *> (parent->parent ()))->chartdata))));
+  core = qobject_cast <QTACObject *> (parent->parent())->chartdata;
 }
 
 QTACObjectEventFilter::~QTACObjectEventFilter ()

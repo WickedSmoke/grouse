@@ -140,7 +140,7 @@ QTACObject::QTACObject (void *data, QString modpath, QString modname)
     return;
 
   QTAChartCore *core = static_cast <QTAChartCore *> (data);
-  chartdata = data;
+  chartdata = core;
   type = objtype;
   parentObject = nullptr;
   core->Object += this;
@@ -246,7 +246,7 @@ QTACObject::QTACObject (QTACObject *parentsubchart, QTAChartObjectType objtype)
 void
 QTACObject::QTACObject_constructor_common ()
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = chartdata;
   QFont font;
 
   parentModule = nullptr;
@@ -400,9 +400,7 @@ QTACObject::QTACObject_constructor_common ()
 void
 QTACObject::QTACObject_destructor_common ()
 {
-
-  QPen pen;
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = chartdata;
 
   if (type == QTACHART_OBJ_SUBCHART)
   {
@@ -524,10 +522,9 @@ QTACObject::~QTACObject ()
 void
 QTACObject::removeAllChildren ()
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
   foreach (QTACObject *obj1, Object)
   {
-    foreach (QTACObject *obj2, core->Object)
+    foreach (QTACObject *obj2, chartdata->Object)
     {
       if (obj1 == obj2)
         obj2->setForDelete ();
@@ -539,7 +536,6 @@ QTACObject::removeAllChildren ()
 void
 QTACObject::removeChild (QTACObject *child)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
   QTACObject *obj1 = nullptr;
   int nobjects = Object.size (), counter = 0;
 
@@ -551,7 +547,7 @@ QTACObject::removeChild (QTACObject *child)
   else
     return;
 
-  foreach (QTACObject *obj2, core->Object)
+  foreach (QTACObject *obj2, chartdata->Object)
     if (obj1 == obj2) obj2->setForDelete ();
 }
 
@@ -588,10 +584,9 @@ QTACObject::emitUpdateOnlinePrice (RTPrice rtprice)
   if (type != QTACHART_OBJ_LABEL)
     return;
 
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
-  QTAChart *chart = qobject_cast <QTAChart *> (core->parent ());
+  QTAChart *chart = qobject_cast <QTAChart *> (chartdata->parent ());
 
-  realTimeUpdates (rtprice, core->SymbolKey, chart);
+  realTimeUpdates (rtprice, chartdata->SymbolKey, chart);
   emit updateOnlinePrice (rtprice);
 }
 
@@ -601,7 +596,7 @@ QTACObject::updateOnlinePriceSlot (RTPrice rtprice)
   if (type != QTACHART_OBJ_LABEL)
     return;
 
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = chartdata;
 
   QString str = rtprice.price % QStringLiteral (" ") % rtprice.change %
                 QStringLiteral (" ") % rtprice.prcchange;
@@ -804,7 +799,7 @@ QTACObject::getTxtDirection2 ()
 DataSet
 QTACObject::getModVSet (int *sz)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = chartdata;
   PriceVector *result = nullptr;
   Array_t mvset = nullptr;
   qreal d = 0;
@@ -841,7 +836,7 @@ getModVSet_lbl10:
 DataSet
 QTACObject::valueSet ()
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = chartdata;
 
   // calculate the dataset using tafunc
   if (TAfunc != nullptr)
@@ -938,8 +933,6 @@ QTACObject::setForDelete (void)
   if (deleteit == true)
     return;
 
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
-
   deleteit = true;
 
   if (type == QTACHART_OBJ_LABEL || type == QTACHART_OBJ_TEXT)
@@ -954,7 +947,7 @@ QTACObject::setForDelete (void)
   // set for delete all children
   foreach (QTACObject *obj1, Object)
   {
-    foreach (QTACObject *obj2, core->Object)
+    foreach (QTACObject *obj2, chartdata->Object)
       if (obj1 == obj2)
         obj1->setForDelete ();
   }
@@ -962,7 +955,7 @@ QTACObject::setForDelete (void)
   // set for delete the parent
   if (dynamic)
   {
-    foreach (QTACObject *obj1, core->Object)
+    foreach (QTACObject *obj1, chartdata->Object)
     {
       if (obj1->modinit != nullptr)
       {
@@ -1054,7 +1047,7 @@ QTACObject::modifyIndicator ()
 void
 QTACObject::setHLine (QGraphicsLineItem *line, qreal value)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = chartdata;
   QRectF rectf;
   qreal y;
 
@@ -1108,7 +1101,7 @@ QTACObject::setHLine (QGraphicsLineItem *line, qreal value)
 void
 QTACObject::setVLine (QGraphicsLineItem *line)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = chartdata;
   QRectF rectf;
   qreal x;
 
@@ -1170,7 +1163,7 @@ QTACObject::setVLine (QGraphicsLineItem *line, QString text)
 void
 QTACObject::setTLine (QGraphicsLineItem *sline)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = chartdata;
   QLineF line;
   QRectF rectf;
   QString prcstr;
@@ -1274,7 +1267,7 @@ QTACObject::setTLine (QGraphicsLineItem *sline, LineEdge e1, LineEdge e2)
   if (Q_UNLIKELY (deleteit))
     return;
 
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = chartdata;
   title->setParent (this);
   hvline = sline;
 
@@ -1304,7 +1297,7 @@ QTACObject::setTLine (QGraphicsLineItem *sline, LineEdge e1, LineEdge e2)
 void
 QTACObject::setFibo (QGraphicsLineItem *sline)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = chartdata;
   QLineF line;
   QRectF rectf;
   QString prcstr;
@@ -1424,7 +1417,7 @@ QTACObject::setFibo (QGraphicsLineItem *sline, LineEdge e1, LineEdge e2)
   if (Q_UNLIKELY (deleteit))
     return;
 
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = chartdata;
   QString prcstr;
 
   title->setParent (this);
@@ -1483,7 +1476,7 @@ QTACObject::setFibo (QGraphicsLineItem *sline, LineEdge e1, LineEdge e2)
 void
 QTACObject::setText (QGraphicsTextItem *textitem, qreal x, qreal y)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = chartdata;
   qreal height, width, kx = x;
 
   if (core->object_drag == true && type == QTACHART_OBJ_TEXT)
@@ -1596,7 +1589,7 @@ QTACObject::setParamDialog (ParamVector pvector, QString title, QObject *parent)
 void
 QTACObject::setTitle (QString str)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = chartdata;
 
   titlestr = str;
   setObjectName (titlestr);
@@ -1642,7 +1635,7 @@ QTACObject::setAttributes_common (QTAChartDataSet dstype,
                                   qreal xmin, qreal xmax,
                                   QColor color, QString colParamName)
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = chartdata;
 
   dataset_type = dstype;
   forecolor = color;
@@ -1717,7 +1710,7 @@ QTACObject::setDataTitle (int x)
   if (!enabled)
     return;
 
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = chartdata;
 
   datastr = QStringLiteral ("");
   if (type == QTACHART_OBJ_SUBCHART)
@@ -1788,7 +1781,7 @@ QTACObject::setDataTitle (int x)
 void
 QTACObject::minmax ()
 {
-  QTAChartCore *core = static_cast <QTAChartCore *> (const_cast <void *> (chartdata));
+  QTAChartCore *core = chartdata;
   qreal ritem;
 
   if (valueset == nullptr)
