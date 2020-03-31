@@ -17,7 +17,6 @@
  */
 
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
@@ -54,16 +53,11 @@ DynParamsDialog::DynParamsDialog (QString title, QWidget * parent):
 {
   DynParamsDialog_constructor_body ();
 
-  if (title == QLatin1String (""))
-    ui->title->setText ((((QPushButton *) parent)->text ()));
-  else
-    ui->title->setText (title);
-
+  ui->title->setText (title);
   ui->removeLbl->setVisible (false);
   ui->removeCheckBox->setVisible (false);
 
   modify = false;
-  setParent (parent);
 
   correctWidgetFonts (this);
 }
@@ -120,7 +114,6 @@ DynParamsDialog::DynParamsDialog_constructor_body ()
   ncolorbuttons = 0;
   colorDialog = nullptr;
   connect (ui->buttonBox, SIGNAL(accepted()), this, SLOT(function_accepted()));
-  connect (ui->buttonBox, SIGNAL(rejected()), this, SLOT(function_rejected()));
 }
 
 // destructor
@@ -273,11 +266,9 @@ DynParamsDialog::color_clicked (void)
 
   DPColorButton *btn = qobject_cast <DPColorButton *> (QObject::sender());
   colorDialog->setCurrentColor (Param[btn->paramidx]->value);
-
-  colorDialog->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
-                           colorDialog->size(), qApp->desktop()->availableGeometry()));
   colorDialog->show ();
   colorDialog->open ();
+
   paramidx = btn->paramidx;
   cbidx = btn->buttonidx;
 }
@@ -332,13 +323,6 @@ DynParamsDialog::function_accepted (void)
       }
     }
   }
-}
-
-// function rejected
-void
-DynParamsDialog::function_rejected (void)
-{
-
 }
 
 void
@@ -414,17 +398,6 @@ DynParamsDialog::showEvent (QShowEvent * event)
       bidx ++;
     }
   }
-
-#ifdef Q_OS_MAC
-  if (parent () != NULL)
-  {
-    QWidget *p = (qobject_cast <QWidget*> (parent ()->parent ()));
-    move ((int) ((p->width () - width ()) / 2), 40);
-  }
-  else
-#endif
-    setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
-                                    this->size(), qApp->desktop()->availableGeometry(this)));
 }
 
 // resize event

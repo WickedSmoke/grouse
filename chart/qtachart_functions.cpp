@@ -52,22 +52,32 @@ ButtonCmp(const QPushButton *b1, const QPushButton *b2)
 struct ButtonInitData
 {
   QWidget* parent;
+  QWidget* wparent;
   QList< QPushButton *> *list;
   QSize size;
 };
 
+class ParamsDialogButton : public QPushButton
+{
+public:
+  ParamsDialogButton(const QString& label, QWidget* parent)
+      : QPushButton(label, parent) {}
+  DynParamsDialog* dialog;
+};
+
 // add a button (used in FuncParamDialogs.cpp)
 static QPushButton *
-_addButton (const ButtonInitData& bd, QString text)
+_addButton (const ButtonInitData& bd, QString text, DynParamsDialog* dlg)
 {
   QFont fnt;
-  QPushButton *btn;
+  ParamsDialogButton *btn;
   QString stylesheet;
 
   stylesheet =
     QStringLiteral ("background: transparent; border: 1px solid transparent;border-color: darkgray;");
 
-  btn = new QPushButton (text, bd.parent);
+  btn = new ParamsDialogButton (text, bd.parent);
+  btn->dialog = dlg;
   btn->setFixedSize (bd.size);
   fnt = btn->font ();
   fnt.setPixelSize (16);
@@ -79,7 +89,17 @@ _addButton (const ButtonInitData& bd, QString text)
   btn->setObjectName ("Indicator Button");
 
   bd.list->append (btn);
+
+  bd.parent->connect(btn, SIGNAL(clicked()), SLOT(button_clicked()));
+
   return btn;
+}
+
+static void _connectPDialog(DynParamsDialog* dlg, QObject* dest)
+{
+  dlg->setObjectName(QStringLiteral("ParamDialog"));
+  dest->connect(dlg, SIGNAL(accepted()), SLOT(function_accepted()));
+  dest->connect(dlg, SIGNAL(rejected()), SLOT(function_rejected()));
 }
 
 /*
@@ -117,8 +137,19 @@ QTACFunctions::createButtons (void)
 {
    ButtonInitData bd;
    bd.parent = this;
+   bd.wparent = nullptr;
    bd.list   = &Button;
    bd.size   = QSize(button_width, button_height);
+
+   const QWidgetList list = QApplication::topLevelWidgets();
+   for (QWidget* wp : list)
+   {
+     if (wp->inherits("QMainWindow"))
+     {
+       bd.wparent = wp;
+       break;
+     }
+   }
 
   _paramDialogSMA(bd);
   _paramDialogEMA(bd);
@@ -204,15 +235,9 @@ QTACFunctions::resizeEvent (QResizeEvent * event)
   layout->setGeometry (QRect (0, 0, w, h));
   for (counter = 0; counter < Button.size (); counter ++)
   {
-    DynParamsDialog *paramDialog;
     layout->setRowMinimumHeight (counter % 6, Button[counter]->height ());
     layout->setColumnMinimumWidth (counter/6, Button[counter]->width ());
     layout->addWidget (Button[counter], counter % 6, counter / 6, Qt::AlignHCenter);
-    paramDialog = Button[counter]->findChild<DynParamsDialog *> (QStringLiteral ("ParamDialog"));
-    if (paramDialog != NULL)
-    {
-      paramDialog->move ((width () - paramDialog->width ()) / 2, 25);
-    }
   }
 }
 
@@ -221,16 +246,12 @@ void
 QTACFunctions::button_clicked (void)
 {
   DynParamsDialog *paramDialog;
-  QPushButton *btn;
-  btn = qobject_cast <QPushButton *> (QObject::sender());
-  paramDialog = btn->findChild<DynParamsDialog *> (QStringLiteral ("ParamDialog"));
+  ParamsDialogButton *btn;
+
+  btn = static_cast <ParamsDialogButton *> (QObject::sender());
+  paramDialog = btn->dialog;
   if (paramDialog != NULL)
-  {
-    paramDialog->move ((width () - paramDialog->width ()) / 2, 25);
-    // paramDialog->exec ();
     paramDialog->open ();
-    qApp->processEvents(QEventLoop::AllEvents, 10);
-  }
 }
 
 // function accepted
@@ -240,7 +261,7 @@ QTACFunctions::function_accepted (void)
   QTAChart *chart = static_cast <QTAChart *> (referencechart);
   DynParamsDialog *paramDialog;
 
-  paramDialog = qobject_cast <DynParamsDialog *> (QObject::sender()->parent ());
+  paramDialog = qobject_cast <DynParamsDialog *> (QObject::sender());
   addIndicator (paramDialog);
 
   chart->goBack ();
@@ -250,6 +271,4 @@ QTACFunctions::function_accepted (void)
 void
 QTACFunctions::function_rejected (void)
 {
-
 }
-

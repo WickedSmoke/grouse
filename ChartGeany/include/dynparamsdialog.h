@@ -105,7 +105,6 @@ private slots:
   void colorDialog_rejected (void);
   void text_changed(QString);
   void function_accepted (void);
-  void function_rejected (void);
 
 protected:
   virtual void showEvent (QShowEvent * event);

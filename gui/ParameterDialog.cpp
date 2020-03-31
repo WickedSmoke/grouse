@@ -47,11 +47,7 @@ DynParamsDialog::DynParamsDialog (QString title, QWidget * parent) :
   QDialog(parent), modify(false)
 {
     constructorSetup();
-
-    if (title.isEmpty())
-        setWindowTitle( (((QPushButton *) parent)->text()) );
-    else
-        setWindowTitle( title );
+    setWindowTitle( title );
 }
 
 
@@ -60,8 +56,7 @@ DynParamsDialog::DynParamsDialog (const ParamVector& PVector, QString title) :
   QDialog(), modify(true)
 {
     constructorSetup();
-
-    setWindowTitle(title);
+    setWindowTitle( title );
 
     ParamVector::const_iterator it;
     FOREACH_PARAM( it, PVector )
