@@ -34,9 +34,8 @@
 
 
 DPColorButton::DPColorButton (QWidget * parent, int pidx, int bidx)
+    : QPushButton(parent)
 {
-    if( parent )
-        setParent(parent);
     paramidx = pidx;
     buttonidx = bidx;
 }
@@ -119,7 +118,6 @@ DynParamsDialog::~DynParamsDialog ()
         delete icon;
     foreach (const QPixmap *pixmap, Pixmap)
         delete pixmap;
-    delete colorDialog;
 }
 
 
@@ -219,19 +217,22 @@ qreal DynParamsDialog::getParam (QString paramName) const
 }
 
 
-void DynParamsDialog::setColorDialog (appColorDialog *dialog)
+void DynParamsDialog::makeColorDialog()
 {
-    colorDialog = dialog;
+    if( colorDialog )
+        return;
+
+    colorDialog = new appColorDialog(this);
     colorDialog->setModal(true);
-    connect(colorDialog, SIGNAL (accepted ()),
-            this, SLOT (colorDialog_accepted ()));
-    connect(colorDialog, SIGNAL (rejected ()),
-            this, SLOT (colorDialog_rejected ()));
+    connect(colorDialog, SIGNAL(accepted()), this, SLOT(colorAccepted()));
+    connect(colorDialog, SIGNAL(rejected()), this, SLOT(colorRejected()));
 }
 
 
 void DynParamsDialog::color_clicked()
 {
+    makeColorDialog();
+
     DPColorButton *btn = qobject_cast <DPColorButton *> (QObject::sender());
     colorDialog->setCurrentColor(Param[btn->paramidx]->value);
     colorDialog->show();
@@ -242,7 +243,7 @@ void DynParamsDialog::color_clicked()
 }
 
 
-void DynParamsDialog::colorDialog_accepted()
+void DynParamsDialog::colorAccepted()
 {
     QColor color = colorDialog->currentColor();
 
@@ -254,7 +255,7 @@ void DynParamsDialog::colorDialog_accepted()
 }
 
 
-void DynParamsDialog::colorDialog_rejected()
+void DynParamsDialog::colorRejected()
 {
     raise();
 }

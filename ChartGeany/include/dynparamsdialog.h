@@ -56,12 +56,10 @@ class DynParamsDialog : public QDialog
 public:
   explicit DynParamsDialog (QString title, QWidget *parent = 0); // new indicator constructor
   DynParamsDialog (const ParamVector& PVector, QString title); // modify constructor
-  void DynParamsDialog_constructor_body (void); // constructor body
   ~DynParamsDialog(void);
 
   QDialogButtonBox *buttonBox;
   QCheckBox *removeCheckBox;
-  appColorDialog *colorDialog; // color dialog
 
   // add a parameter
   void addParam (QString paramName, QString title, qint32 type, qreal defvalue);
@@ -80,11 +78,12 @@ public:
   const ParamVector& parameters() const { return Param; };
   ParamVector& parameters() { return Param; };
 
-  // set color dialog
-  void setColorDialog (appColorDialog *);
-
 private:
+  void DynParamsDialog_constructor_body (void); // constructor body
+  void makeColorDialog();
+
   Ui::DynParamsDialog * ui;
+  appColorDialog *colorDialog; // color dialog
 
   ParamVector Param;    // parameters' vector
   PixmapVector Pixmap;  // pixmaps' vector

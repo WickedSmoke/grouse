@@ -1022,7 +1022,6 @@ QTACObject::modifyIndicator ()
       DynParamsDialog* pd = new DynParamsDialog(pvector, objectName());
       if( pd )
       {
-          pd->setColorDialog (new appColorDialog);
           if( pd->exec() == QDialog::Accepted )
           {
              modifyFromDialog( pd );
@@ -1575,8 +1574,6 @@ QTACObject::setParamDialog (const ParamVector& pvector, QString title,
   delete paramDialog;
 
   paramDialog = new DynParamsDialog (pvector, title);
-  appColorDialog *colorDialog = new appColorDialog;
-  paramDialog->setColorDialog (colorDialog);
   paramDialog->setVisible (false);
 
   connect(paramDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(modification_accepted()));

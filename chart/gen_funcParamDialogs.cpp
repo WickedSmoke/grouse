@@ -3,8 +3,6 @@
 static void _connectPDialog(DynParamsDialog* dlg,QObject* dest)
 {
   dlg->setObjectName(QStringLiteral("ParamDialog"));
-  dlg->setColorDialog(new appColorDialog);
-
   dest->connect(dlg->buttonBox, SIGNAL(accepted()),
                 SLOT(function_accepted()));
   dest->connect(dlg->buttonBox, SIGNAL(rejected()),

@@ -81,21 +81,19 @@ public:
     const ParamVector& parameters() const { return Param; };
     ParamVector& parameters() { return Param; };
 
-    // set color dialog
-    void setColorDialog(appColorDialog*);
-
 protected:
     virtual void showEvent(QShowEvent * event);
 
 private slots:
     void color_clicked();
-    void colorDialog_accepted();
-    void colorDialog_rejected();
+    void colorAccepted();
+    void colorRejected();
     void text_changed(QString);
     void function_accepted();
 
 private:
     void constructorSetup();
+    void makeColorDialog();
 
     ParamVector Param;    // parameters' vector
     PixmapVector Pixmap;  // pixmaps' vector

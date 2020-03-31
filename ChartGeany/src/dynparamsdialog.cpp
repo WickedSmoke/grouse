@@ -119,7 +119,7 @@ DynParamsDialog::DynParamsDialog_constructor_body ()
   setStyleSheet (stylesheet);
   param_height = 40;
   ncolorbuttons = 0;
-  colorDialog = NULL;
+  colorDialog = nullptr;
   connect (buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
   connect (buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
 }
@@ -132,9 +132,6 @@ DynParamsDialog::~DynParamsDialog ()
 
   foreach (const QPixmap *pixmap, Pixmap)
     delete pixmap;
-
-  if (colorDialog != NULL)
-    delete colorDialog;
 
   delete ui;
 }
@@ -261,9 +258,12 @@ DynParamsDialog::getParam (QString paramName) const
 }
 
 void
-DynParamsDialog::setColorDialog (appColorDialog *dialog)
+DynParamsDialog::makeColorDialog ()
 {
-  colorDialog = dialog;
+  if (colorDialog)
+    return;
+
+  colorDialog = new appColorDialog(this);
   colorDialog->setModal (true);
   connect (colorDialog, SIGNAL (accepted ()), this, SLOT (colorDialog_accepted ()));
   connect (colorDialog, SIGNAL (rejected ()), this, SLOT (colorDialog_rejected ()));
@@ -273,9 +273,9 @@ DynParamsDialog::setColorDialog (appColorDialog *dialog)
 void
 DynParamsDialog::color_clicked (void)
 {
-  DPColorButton *btn;
+  makeColorDialog();
 
-  btn = qobject_cast <DPColorButton *> (QObject::sender());
+  DPColorButton *btn = qobject_cast <DPColorButton *> (QObject::sender());
   colorDialog->setCurrentColor (Param[btn->paramidx]->value);
 
   colorDialog->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
