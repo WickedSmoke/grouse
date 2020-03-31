@@ -226,7 +226,6 @@ QTACFunctions::button_clicked (void)
   paramDialog = btn->findChild<DynParamsDialog *> (QStringLiteral ("ParamDialog"));
   if (paramDialog != NULL)
   {
-    paramDialog->setReferenceChart (referencechart);
     paramDialog->move ((width () - paramDialog->width ()) / 2, 25);
     // paramDialog->exec ();
     paramDialog->open ();

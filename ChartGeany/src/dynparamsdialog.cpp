@@ -269,13 +269,6 @@ DynParamsDialog::getPVector () const
   return Param;
 }
 
-// set the reference chart
-void
-DynParamsDialog::setReferenceChart (void *chart)
-{
-  referencechart = chart;
-}
-
 void
 DynParamsDialog::setColorDialog (appColorDialog *dialog)
 {
