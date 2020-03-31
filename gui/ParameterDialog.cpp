@@ -25,6 +25,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QShowEvent>
+#include <QSpinBox>
 #include <QStyle>
 #include "ParameterDialog.h"
 #include "common.h"
@@ -126,20 +127,20 @@ void DynParamsDialog::addParam( QString paramName, QString label,
                                 qint32 type, qreal defvalue )
 {
     QWidget* field = nullptr;
-    QLineEdit *edit;
     DynParam *param;
 
     param = Param.addParameter( paramName, type, defvalue );
 
     if (type == DPT_INT)
     {
-        edit = new QLineEdit(QString::number(param->value, 'f', 0), this);
-        connect(edit, SIGNAL(textChanged(const QString&)),
-                this, SLOT(text_changed(QString)));
-        field = edit;
+        QSpinBox* spin = new QSpinBox(this);
+        connect(spin, SIGNAL(valueChanged(int)),
+                this, SLOT(intChanged(int)));
+        field = spin;
     }
     else if (type == DPT_REAL)
     {
+        QLineEdit *edit;
         edit = new QLineEdit(QString::number(param->value, 'f', 4), this);
         connect(edit, SIGNAL(textChanged(const QString&)),
                 this, SLOT(text_changed(QString)));
@@ -293,6 +294,19 @@ void DynParamsDialog::function_accepted()
 }
 
 
+void DynParamsDialog::intChanged(int n)
+{
+    QString name = QObject::sender()->objectName();
+
+    ParamVector::iterator it;
+    FOREACH_PARAM( it, Param )
+    {
+        if ((*it)->paramName == name)
+            (*it)->value = n;
+    }
+}
+
+
 void DynParamsDialog::text_changed(QString)
 {
     QLineEdit *edit;
@@ -315,6 +329,7 @@ void DynParamsDialog::showEvent (QShowEvent * event)
 {
   DynParam *param;
   QLineEdit *edit;
+  QSpinBox *spin;
   qint32 bidx = 0;
 
   if (event->spontaneous ())
@@ -332,9 +347,9 @@ void DynParamsDialog::showEvent (QShowEvent * event)
       if (param->callback_var != NULL)
         param->value = param->defvalue = *(int *)param->callback_var;
 
-      edit = findChild<QLineEdit *> (param->label);
-      edit->setText( QString::number(param->defvalue, 'f', 0) );
-      edit->clearFocus ();
+      spin = findChild<QSpinBox *> (param->label);
+      spin->setValue( (int) param->defvalue );
+      spin->clearFocus ();
     }
     else if (param->type == DPT_REAL)
     {

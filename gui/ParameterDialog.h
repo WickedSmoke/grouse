@@ -88,6 +88,7 @@ private slots:
     void color_clicked();
     void colorAccepted();
     void colorRejected();
+    void intChanged(int);
     void text_changed(QString);
     void function_accepted();
 
