@@ -46,6 +46,7 @@ QTAChartCore::QTAChartCore (QWidget * parent)
   GRIDsize = 0;
   eventcounter = 0;
   currentbar = -1;
+  chartheight = chartwidth = 0.0;
   last_x = 0;
   gridstep = 0;
   priceUpdater = NULL;
