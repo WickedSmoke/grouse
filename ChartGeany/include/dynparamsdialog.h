@@ -72,7 +72,7 @@ public:
   QString getTitle (void) const;
 
   // get parameter data
-  qreal getParam (QString paramName) const;
+  qreal getParam (const QString& paramName) const;
 
   // get parameter vector
   const ParamVector& parameters() const { return Param; };

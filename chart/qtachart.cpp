@@ -1250,6 +1250,19 @@ DynParam* ParamVector::addParameter( const QString& name, qint32 type,
 }
 
 
+// Return pointer to named paramater or nullptr if the name doesn't exist.
+const DynParam* ParamVector::constParameter( const QString& name ) const
+{
+    const_iterator it;
+    for( it = begin(); it != end(); ++it )
+    {
+        if( (*it)->paramName == name )
+            return *it;
+    }
+    return nullptr;
+}
+
+
 QTACObject* QTAChart::addStudyMACD( const QString& name, int period,
                                     QRgb colorMACD, QRgb colorSignal )
 {

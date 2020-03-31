@@ -56,6 +56,11 @@ public:
    ParamVector() {}
    ~ParamVector();
    DynParam* addParameter( const QString& name, qint32 type, qreal value );
+   const DynParam* constParameter( const QString& name ) const;
+   DynParam* parameter( const QString& name )
+   {
+       return const_cast<DynParam*>(constParameter(name));
+   }
 
 private:
     // Disabled copy constructor and operator=

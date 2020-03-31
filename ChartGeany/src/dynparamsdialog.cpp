@@ -246,14 +246,11 @@ DynParamsDialog::getTitle () const
 
 // get parameter data
 qreal
-DynParamsDialog::getParam (QString paramName) const
+DynParamsDialog::getParam (const QString& name) const
 {
-  ParamVector::const_iterator it;
-  FOREACH_PARAM( it, Param )
-  {
-    if ((*it)->paramName == paramName)
-      return (*it)->value;
-  }
+  const DynParam *par = Param.constParameter (name);
+  if (par)
+      return par->value;
   return 0;
 }
 
@@ -348,19 +345,10 @@ DynParamsDialog::function_rejected (void)
 void
 DynParamsDialog::text_changed(QString)
 {
-  QLineEdit *edit;
-  QString objname;
-  bool ok;
-
-  edit = (QLineEdit *) QObject::sender();
-  objname = edit->objectName ();
-
-  ParamVector::iterator it;
-  FOREACH_PARAM( it, Param )
-  {
-    if ((*it)->paramName == objname)
-      (*it)->value = edit->text ().toFloat (&ok);
-  }
+  QLineEdit *edit = (QLineEdit*) QObject::sender();
+  DynParam* par = Param.parameter( edit->objectName() );
+  if( par )
+    par->value = edit->text().toFloat();
 }
 
 // show event
