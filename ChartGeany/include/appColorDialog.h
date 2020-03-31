@@ -28,7 +28,6 @@ class appColorDialog : public QColorDialog
   
 public:
   explicit appColorDialog (QWidget * parent = 0);
-  ~appColorDialog (void);
 
   QColor	appSelectedColor (bool *ok) const;	 // return the selected color
 

@@ -28,24 +28,21 @@
 
 // constructor
 appColorDialog::appColorDialog (QWidget * parent)
+    : QColorDialog(parent)
 {
-  if (parent != NULL)
-    setParent (parent);
-
   setOption (QColorDialog::DontUseNativeDialog, true);
-  setWindowIcon (QIcon (QStringLiteral (":/png/images/icons/PNG/cglogo.png")));
+
   connect (this, SIGNAL (accepted ()), this, SLOT (color_accepted ()));
   connect (this, SIGNAL (rejected ()), this, SLOT (color_rejected ()));
   connect (this, SIGNAL (finished (int)), this, SLOT (dialog_finished (int)));
+
+#ifndef GUI_DESKTOP
+  setWindowIcon (QIcon (QStringLiteral (":/png/images/icons/PNG/cglogo.png")));
   setStyleSheet (QStringLiteral ("background: transparent; background-color:white;"));
   correctWidgetFonts (this);
+#endif
 }
 
-// destructor
-appColorDialog::~appColorDialog ()
-{
-
-}
 
 // selected color
 QColor
@@ -89,9 +86,4 @@ appColorDialog::showEvent (QShowEvent * event)
 
   keepCurrentColor = currentColor ();
   okflag = false;
-  this->setGeometry( QStyle::alignedRect(
-                       Qt::LeftToRight,
-                       Qt::AlignCenter,
-                       this->size(),
-                       qApp->desktop()->availableGeometry()));
 }
