@@ -57,7 +57,7 @@ public:
     explicit DynParamsDialog (QString title, QWidget *parent = 0);
 
     // modify constructor
-    DynParamsDialog (ParamVector PVector, QString title);
+    DynParamsDialog (const ParamVector& PVector, QString title);
 
     ~DynParamsDialog();
 
@@ -78,7 +78,8 @@ public:
     qreal getParam (QString paramName) const;
 
     // get parameter vector
-    ParamVector getPVector() const;
+    const ParamVector& parameters() const { return Param; };
+    ParamVector& parameters() { return Param; };
 
     // set color dialog
     void setColorDialog(appColorDialog*);

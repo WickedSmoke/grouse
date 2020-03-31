@@ -185,7 +185,7 @@ QTACFunctions::addIndicator (DynParamsDialog *paramDialog)
 #include "FuncAddStudy.cpp"
 
   if (obj != nullptr)
-    obj->setParamDialog (paramDialog->getPVector (), fname);
+    obj->setParamDialog (paramDialog->parameters (), fname);
 }
 
 // resize

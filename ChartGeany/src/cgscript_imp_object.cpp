@@ -397,12 +397,13 @@ ObjSetColor_imp (ObjectHandler_t objptr, Color_t color)
     if (pobj == nullptr) // not part of a subchart
     {
       DynParamsDialog *dynparam = obj->getParamDialog ();
-      ParamVector pvector = dynparam->getPVector ();
+      ParamVector& pvector = dynparam->parameters ();
+      ParamVector::iterator it;
 
-      foreach (DynParam *dparam, pvector)
+      FOREACH_PARAM (it, pvector)
       {
-        if (dparam->paramName == obj->colorParamName)
-          dparam->value = dparam->defvalue = static_cast <qreal> (obj->forecolor.rgb ());
+        if ((*it)->paramName == obj->colorParamName)
+          (*it)->value = (*it)->defvalue = static_cast <qreal> (obj->forecolor.rgb ());
       }
     }
   }
@@ -433,12 +434,13 @@ ObjSetColorRGB_imp (ObjectHandler_t objptr, int r, int g, int b)
     if (pobj == nullptr) // not part of a subchart
     {
       DynParamsDialog *dynparam = obj->getParamDialog ();
-      ParamVector pvector = dynparam->getPVector ();
+      ParamVector& pvector = dynparam->parameters ();
+      ParamVector::iterator it;
 
-      foreach (DynParam *dparam, pvector)
+      FOREACH_PARAM (it, pvector)
       {
-        if (dparam->paramName == obj->colorParamName)
-          dparam->value = dparam->defvalue = static_cast <qreal> (color.rgb ());
+        if ((*it)->paramName == obj->colorParamName)
+          (*it)->value = (*it)->defvalue = static_cast <qreal> (color.rgb ());
       }
     }
   }
@@ -651,17 +653,12 @@ ObjSetInputVariables_imp (ObjectHandler_t objptr, Array_t InputVariableRegistry)
       param->callback_var = static_cast <void *> (var->doubleVar);
     }
 
-    pvector += param;
+    pvector.push_back( param );
   }
 
   // if (obj->type == QTACHART_OBJ_SUBCHART || obj->type == QTACHART_OBJ_CONTAINER)
   if (pvector.size () > 0)
     obj->setParamDialog (pvector, obj->moduleName);
-
-  foreach (DynParam *param, pvector)
-    delete param;
-
-  pvector.resize (0);
 }
 
 // ObjSetRange_imp

@@ -1569,7 +1569,8 @@ QTACObject::setText(QGraphicsTextItem *textitem, QString candleText, qreal prc)
 
 // set indicator's parameter dialog
 void
-QTACObject::setParamDialog (ParamVector pvector, QString title, QObject *parent)
+QTACObject::setParamDialog (const ParamVector& pvector, QString title,
+                            QObject *parent)
 {
   delete paramDialog;
 
@@ -1756,7 +1757,7 @@ QTACObject::setDataTitle (int x)
     }
     else
     {
-      ParamVector pv = getParamDialog ()->getPVector ();
+      const ParamVector& pv = getParamDialog ()->parameters ();
       QString args = QStringLiteral ("(");
       int counter, s;
       bool first;

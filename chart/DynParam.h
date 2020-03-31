@@ -50,9 +50,20 @@ public:
   void *callback_var;   // parameter's callback variable (default NULL if none)
 };
 
-typedef QVector <DynParam *> ParamVector;
+class ParamVector : public QVector <DynParam *>
+{
+public:
+   ParamVector() {}
+   ~ParamVector();
+   DynParam* addParameter( const QString& name, qint32 type, qreal value );
 
-extern DynParam* addParameter( ParamVector&, const QString& name, qint32 type,
-                               qreal value );
+private:
+    // Disabled copy constructor and operator=
+    ParamVector( const ParamVector & ) : QVector <DynParam *>() {}
+    ParamVector &operator=( const ParamVector & ) { return *this; }
+};
+
+#define FOREACH_PARAM(it,pv)    for(it = pv.begin(); it != pv.end(); ++it)
+
 
 #endif // DYNPARAM_H

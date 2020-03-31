@@ -1231,14 +1231,21 @@ QTAChart::showOnlinePrice (bool boolean)
 }
 
 
-DynParam* addParameter( ParamVector& vec, const QString& name, qint32 type,
-                        qreal value )
+ParamVector::~ParamVector()
+{
+    QVector<DynParam*>::iterator it;
+    for( it = begin(); it != end(); ++it )
+        delete *it;
+}
+
+DynParam* ParamVector::addParameter( const QString& name, qint32 type,
+                                     qreal value )
 {
     DynParam *param = new DynParam(name);
     param->type = type;
     param->defvalue = value;
     param->value = value;
-    vec.push_back( param );
+    push_back( param );
     return param;
 }
 

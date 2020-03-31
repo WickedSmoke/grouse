@@ -60,7 +60,7 @@ DynParamsDialog::DynParamsDialog (QString title, QWidget * parent) :
 
 
 // constructor for modify: remove tick enabled
-DynParamsDialog::DynParamsDialog (ParamVector PVector, QString title) :
+DynParamsDialog::DynParamsDialog (const ParamVector& PVector, QString title) :
   QDialog()
 {
     constructorSetup();
@@ -71,8 +71,10 @@ DynParamsDialog::DynParamsDialog (ParamVector PVector, QString title) :
     removeCheckBox->setVisible(true);
     modify = true;
 
-    foreach(const DynParam *param, PVector)
+    ParamVector::const_iterator it;
+    FOREACH_PARAM( it, PVector )
     {
+        const DynParam *param = *it;
         addParam( param->paramName, param->label, param->type, param->value,
                   param->callback_var, param->show );
     }
@@ -117,8 +119,6 @@ DynParamsDialog::~DynParamsDialog ()
         delete icon;
     foreach (const QPixmap *pixmap, Pixmap)
         delete pixmap;
-    foreach (const DynParam *param, Param)
-        delete param;
     delete colorDialog;
 }
 
@@ -131,7 +131,7 @@ void DynParamsDialog::addParam( QString paramName, QString label,
     QLineEdit *edit;
     DynParam *param;
 
-    param = addParameter( Param, paramName, type, defvalue );
+    param = Param.addParameter( paramName, type, defvalue );
 
     if (type == DPT_INT)
     {
@@ -209,19 +209,13 @@ QString DynParamsDialog::getTitle () const
 // get parameter data
 qreal DynParamsDialog::getParam (QString paramName) const
 {
-    foreach (const DynParam *param, Param)
+    ParamVector::const_iterator it;
+    FOREACH_PARAM( it, Param )
     {
-        if( param->paramName == paramName )
-            return param->value;
+        if( (*it)->paramName == paramName )
+            return (*it)->value;
     }
     return 0;
-}
-
-
-// get parameter vector
-ParamVector DynParamsDialog::getPVector () const
-{
-    return Param;
 }
 
 
@@ -268,16 +262,20 @@ void DynParamsDialog::colorDialog_rejected()
 
 void DynParamsDialog::function_accepted()
 {
-  foreach (DynParam *param, Param)
+  ParamVector::iterator it;
+  FOREACH_PARAM( it, Param )
   {
+    DynParam* param = *it;
     if (param->paramName == QLatin1String ("Period") && param->value < 2)
       param->value = 2;
 
     param->defvalue = param->value;
   }
 
-  foreach (const DynParam *param, Param)
+  ParamVector::const_iterator ci;
+  FOREACH_PARAM( ci, Param )
   {
+    const DynParam* param = *ci;
     if (param->callback_var != NULL)
     {
       if (param->type == DPT_INT)
@@ -296,17 +294,18 @@ void DynParamsDialog::function_accepted()
 
 void DynParamsDialog::text_changed(QString)
 {
-    DynParam *param;
     QLineEdit *edit;
     QString objname;
     bool ok;
 
     edit = (QLineEdit*) QObject::sender();
     objname = edit->objectName();
-    foreach (param, Param)
+
+    ParamVector::iterator it;
+    FOREACH_PARAM( it, Param )
     {
-        if (param->paramName == objname)
-            param->value = edit->text().toFloat(&ok);
+        if ((*it)->paramName == objname)
+            (*it)->value = edit->text().toFloat(&ok);
     }
 }
 
@@ -323,8 +322,10 @@ void DynParamsDialog::showEvent (QShowEvent * event)
   if (removeLbl->isVisible ())
     removeCheckBox->setCheckState (Qt::Unchecked);
 
-  foreach (param, Param)
+  ParamVector::iterator it;
+  FOREACH_PARAM( it, Param )
   {
+    param = *it;
     if (param->type == DPT_INT)
     {
       if (param->callback_var != NULL)

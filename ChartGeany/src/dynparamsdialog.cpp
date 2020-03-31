@@ -69,7 +69,7 @@ DynParamsDialog::DynParamsDialog (QString title, QWidget * parent):
 }
 
 // constructor for modify: remove tick enabled
-DynParamsDialog::DynParamsDialog (ParamVector PVector, QString title):
+DynParamsDialog::DynParamsDialog (const ParamVector& PVector, QString title):
   QDialog (), ui (new Ui::DynParamsDialog)
 {
   DynParamsDialog_constructor_body ();
@@ -78,14 +78,14 @@ DynParamsDialog::DynParamsDialog (ParamVector PVector, QString title):
   ui->removeCheckBox->setVisible (true);
   modify = true;
 
-  foreach (const DynParam *param, PVector)
+  ParamVector::const_iterator it;
+  FOREACH_PARAM( it, PVector )
+  {
+    const DynParam *param = *it;
     addParam (param->paramName, param->label, param->type, param->value,
               param->callback_var, param->show);
+  }
 
-//  foreach (const DynParam *param, PVector)
-//    delete param;
-
-  // this->setWindowFlags(Qt::CustomizeWindowHint);
   correctWidgetFonts (this);
 }
 
@@ -133,9 +133,6 @@ DynParamsDialog::~DynParamsDialog ()
   foreach (const QPixmap *pixmap, Pixmap)
     delete pixmap;
 
-  foreach (const DynParam *param, Param)
-    delete param;
-
   if (colorDialog != NULL)
     delete colorDialog;
 
@@ -157,7 +154,7 @@ DynParamsDialog::addParam (QString paramName, QString label,
   QFont font;
   qint32 h;
 
-  param = addParameter( Param, paramName, type, defvalue );
+  param = Param.addParameter( paramName, type, defvalue );
 
   lbl = new QLabel (label, this, Qt::Widget);
   font = lbl->font ();
@@ -254,19 +251,13 @@ DynParamsDialog::getTitle () const
 qreal
 DynParamsDialog::getParam (QString paramName) const
 {
-  foreach (const DynParam *param, Param)
+  ParamVector::const_iterator it;
+  FOREACH_PARAM( it, Param )
   {
-    if (param->paramName == paramName)
-      return param->value;
+    if ((*it)->paramName == paramName)
+      return (*it)->value;
   }
   return 0;
-}
-
-// get parameter vector
-ParamVector
-DynParamsDialog::getPVector () const
-{
-  return Param;
 }
 
 void
@@ -318,16 +309,20 @@ DynParamsDialog::colorDialog_rejected ()
 void
 DynParamsDialog::function_accepted (void)
 {
-  foreach (DynParam *param, Param)
+  ParamVector::iterator it;
+  FOREACH_PARAM( it, Param )
   {
+    DynParam* param = *it;
     if (param->paramName == QLatin1String ("Period") && param->value < 2)
       param->value = 2;
 
     param->defvalue = param->value;
   }
 
-  foreach (const DynParam *param, Param)
+  ParamVector::const_iterator ci;
+  FOREACH_PARAM( ci, Param )
   {
+    const DynParam* param = *ci;
     if (param->callback_var != NULL)
     {
       if (param->type == DPT_INT)
@@ -353,16 +348,19 @@ DynParamsDialog::function_rejected (void)
 void
 DynParamsDialog::text_changed(QString)
 {
-  DynParam *param;
   QLineEdit *edit;
   QString objname;
   bool ok;
 
   edit = (QLineEdit *) QObject::sender();
   objname = edit->objectName ();
-  foreach (param, Param)
-    if (param->paramName == objname)
-      param->value = edit->text ().toFloat (&ok);
+
+  ParamVector::iterator it;
+  FOREACH_PARAM( it, Param )
+  {
+    if ((*it)->paramName == objname)
+      (*it)->value = edit->text ().toFloat (&ok);
+  }
 }
 
 // show event
@@ -393,8 +391,10 @@ DynParamsDialog::showEvent (QShowEvent * event)
   setMaximumSize (width (), h);
   setMinimumSize (width (), h);
 
-  foreach (param, Param)
+  ParamVector::iterator it;
+  FOREACH_PARAM( it, Param )
   {
+    param = *it;
     if (param->type == DPT_INT)
     {
       if (param->callback_var != NULL)

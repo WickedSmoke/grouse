@@ -5,203 +5,203 @@ static void _objectParameters(QTACObject* obj, ParamVector& pvec)
   QString name( obj->objectName() );
   if( name == QStringLiteral("SMA") )
   {
-    addParameter(pvec, QStringLiteral("Period"),
+    pvec.addParameter(QStringLiteral("Period"),
                  DPT_INT, obj->paramValue(QStringLiteral("Period")) );
-    addParameter(pvec, QStringLiteral("Color"),
+    pvec.addParameter(QStringLiteral("Color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("Color")) );
     return;
   }
   if( name == QStringLiteral("EMA") )
   {
-    addParameter(pvec, QStringLiteral("Period"),
+    pvec.addParameter(QStringLiteral("Period"),
                  DPT_INT, obj->paramValue(QStringLiteral("Period")) );
-    addParameter(pvec, QStringLiteral("Color"),
+    pvec.addParameter(QStringLiteral("Color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("Color")) );
     return;
   }
   if( name == QStringLiteral("MACD") )
   {
-    addParameter(pvec, QStringLiteral("Period"),
+    pvec.addParameter(QStringLiteral("Period"),
                  DPT_INT, obj->paramValue(QStringLiteral("Period")) );
-    addParameter(pvec, QStringLiteral("MACD color"),
+    pvec.addParameter(QStringLiteral("MACD color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("MACD color")) );
-    addParameter(pvec, QStringLiteral("Signal color"),
+    pvec.addParameter(QStringLiteral("Signal color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("Signal color")) );
     return;
   }
   if( name == QStringLiteral("MFI") )
   {
-    addParameter(pvec, QStringLiteral("Period"),
+    pvec.addParameter(QStringLiteral("Period"),
                  DPT_INT, obj->paramValue(QStringLiteral("Period")) );
-    addParameter(pvec, QStringLiteral("High level"),
+    pvec.addParameter(QStringLiteral("High level"),
                  DPT_INT, obj->paramValue(QStringLiteral("High level")) );
-    addParameter(pvec, QStringLiteral("Medium level"),
+    pvec.addParameter(QStringLiteral("Medium level"),
                  DPT_INT, obj->paramValue(QStringLiteral("Medium level")) );
-    addParameter(pvec, QStringLiteral("Low level"),
+    pvec.addParameter(QStringLiteral("Low level"),
                  DPT_INT, obj->paramValue(QStringLiteral("Low level")) );
-    addParameter(pvec, QStringLiteral("Color"),
+    pvec.addParameter(QStringLiteral("Color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("Color")) );
     return;
   }
   if( name == QStringLiteral("ROC") )
   {
-    addParameter(pvec, QStringLiteral("Period"),
+    pvec.addParameter(QStringLiteral("Period"),
                  DPT_INT, obj->paramValue(QStringLiteral("Period")) );
-    addParameter(pvec, QStringLiteral("Level"),
+    pvec.addParameter(QStringLiteral("Level"),
                  DPT_INT, obj->paramValue(QStringLiteral("Level")) );
-    addParameter(pvec, QStringLiteral("Color"),
+    pvec.addParameter(QStringLiteral("Color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("Color")) );
     return;
   }
   if( name == QStringLiteral("RSI") )
   {
-    addParameter(pvec, QStringLiteral("Period"),
+    pvec.addParameter(QStringLiteral("Period"),
                  DPT_INT, obj->paramValue(QStringLiteral("Period")) );
-    addParameter(pvec, QStringLiteral("High level"),
+    pvec.addParameter(QStringLiteral("High level"),
                  DPT_INT, obj->paramValue(QStringLiteral("High level")) );
-    addParameter(pvec, QStringLiteral("Low level"),
+    pvec.addParameter(QStringLiteral("Low level"),
                  DPT_INT, obj->paramValue(QStringLiteral("Low level")) );
-    addParameter(pvec, QStringLiteral("Color"),
+    pvec.addParameter(QStringLiteral("Color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("Color")) );
     return;
   }
   if( name == QStringLiteral("Slow Stoch") )
   {
-    addParameter(pvec, QStringLiteral("Period"),
+    pvec.addParameter(QStringLiteral("Period"),
                  DPT_INT, obj->paramValue(QStringLiteral("Period")) );
-    addParameter(pvec, QStringLiteral("High level"),
+    pvec.addParameter(QStringLiteral("High level"),
                  DPT_INT, obj->paramValue(QStringLiteral("High level")) );
-    addParameter(pvec, QStringLiteral("Medium level"),
+    pvec.addParameter(QStringLiteral("Medium level"),
                  DPT_INT, obj->paramValue(QStringLiteral("Medium level")) );
-    addParameter(pvec, QStringLiteral("Low level"),
+    pvec.addParameter(QStringLiteral("Low level"),
                  DPT_INT, obj->paramValue(QStringLiteral("Low level")) );
-    addParameter(pvec, QStringLiteral("%K color"),
+    pvec.addParameter(QStringLiteral("%K color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("%K color")) );
-    addParameter(pvec, QStringLiteral("%D color"),
+    pvec.addParameter(QStringLiteral("%D color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("%D color")) );
     return;
   }
   if( name == QStringLiteral("Fast Stoch") )
   {
-    addParameter(pvec, QStringLiteral("Period"),
+    pvec.addParameter(QStringLiteral("Period"),
                  DPT_INT, obj->paramValue(QStringLiteral("Period")) );
-    addParameter(pvec, QStringLiteral("High level"),
+    pvec.addParameter(QStringLiteral("High level"),
                  DPT_INT, obj->paramValue(QStringLiteral("High level")) );
-    addParameter(pvec, QStringLiteral("Medium level"),
+    pvec.addParameter(QStringLiteral("Medium level"),
                  DPT_INT, obj->paramValue(QStringLiteral("Medium level")) );
-    addParameter(pvec, QStringLiteral("Low level"),
+    pvec.addParameter(QStringLiteral("Low level"),
                  DPT_INT, obj->paramValue(QStringLiteral("Low level")) );
-    addParameter(pvec, QStringLiteral("%K color"),
+    pvec.addParameter(QStringLiteral("%K color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("%K color")) );
-    addParameter(pvec, QStringLiteral("%D color"),
+    pvec.addParameter(QStringLiteral("%D color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("%D color")) );
     return;
   }
   if( name == QStringLiteral("W%R") )
   {
-    addParameter(pvec, QStringLiteral("Period"),
+    pvec.addParameter(QStringLiteral("Period"),
                  DPT_INT, obj->paramValue(QStringLiteral("Period")) );
-    addParameter(pvec, QStringLiteral("High level"),
+    pvec.addParameter(QStringLiteral("High level"),
                  DPT_INT, obj->paramValue(QStringLiteral("High level")) );
-    addParameter(pvec, QStringLiteral("Low level"),
+    pvec.addParameter(QStringLiteral("Low level"),
                  DPT_INT, obj->paramValue(QStringLiteral("Low level")) );
-    addParameter(pvec, QStringLiteral("Color"),
+    pvec.addParameter(QStringLiteral("Color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("Color")) );
     return;
   }
   if( name == QStringLiteral("Bollinger Bands") )
   {
-    addParameter(pvec, QStringLiteral("Period"),
+    pvec.addParameter(QStringLiteral("Period"),
                  DPT_INT, obj->paramValue(QStringLiteral("Period")) );
-    addParameter(pvec, QStringLiteral("Color"),
+    pvec.addParameter(QStringLiteral("Color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("Color")) );
     return;
   }
   if( name == QStringLiteral("Parabolic SAR") )
   {
-    addParameter(pvec, QStringLiteral("Color"),
+    pvec.addParameter(QStringLiteral("Color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("Color")) );
     return;
   }
   if( name == QStringLiteral("ADX") )
   {
-    addParameter(pvec, QStringLiteral("Period"),
+    pvec.addParameter(QStringLiteral("Period"),
                  DPT_INT, obj->paramValue(QStringLiteral("Period")) );
-    addParameter(pvec, QStringLiteral("Weak"),
+    pvec.addParameter(QStringLiteral("Weak"),
                  DPT_INT, obj->paramValue(QStringLiteral("Weak")) );
-    addParameter(pvec, QStringLiteral("Strong"),
+    pvec.addParameter(QStringLiteral("Strong"),
                  DPT_INT, obj->paramValue(QStringLiteral("Strong")) );
-    addParameter(pvec, QStringLiteral("Very strong"),
+    pvec.addParameter(QStringLiteral("Very strong"),
                  DPT_INT, obj->paramValue(QStringLiteral("Very strong")) );
-    addParameter(pvec, QStringLiteral("Color"),
+    pvec.addParameter(QStringLiteral("Color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("Color")) );
     return;
   }
   if( name == QStringLiteral("Aroon") )
   {
-    addParameter(pvec, QStringLiteral("Period"),
+    pvec.addParameter(QStringLiteral("Period"),
                  DPT_INT, obj->paramValue(QStringLiteral("Period")) );
-    addParameter(pvec, QStringLiteral("High level"),
+    pvec.addParameter(QStringLiteral("High level"),
                  DPT_INT, obj->paramValue(QStringLiteral("High level")) );
-    addParameter(pvec, QStringLiteral("Medium level"),
+    pvec.addParameter(QStringLiteral("Medium level"),
                  DPT_INT, obj->paramValue(QStringLiteral("Medium level")) );
-    addParameter(pvec, QStringLiteral("Low level"),
+    pvec.addParameter(QStringLiteral("Low level"),
                  DPT_INT, obj->paramValue(QStringLiteral("Low level")) );
-    addParameter(pvec, QStringLiteral("Up color"),
+    pvec.addParameter(QStringLiteral("Up color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("Up color")) );
-    addParameter(pvec, QStringLiteral("Down color"),
+    pvec.addParameter(QStringLiteral("Down color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("Down color")) );
     return;
   }
   if( name == QStringLiteral("CCI") )
   {
-    addParameter(pvec, QStringLiteral("Period"),
+    pvec.addParameter(QStringLiteral("Period"),
                  DPT_INT, obj->paramValue(QStringLiteral("Period")) );
-    addParameter(pvec, QStringLiteral("High level"),
+    pvec.addParameter(QStringLiteral("High level"),
                  DPT_INT, obj->paramValue(QStringLiteral("High level")) );
-    addParameter(pvec, QStringLiteral("Low level"),
+    pvec.addParameter(QStringLiteral("Low level"),
                  DPT_INT, obj->paramValue(QStringLiteral("Low level")) );
-    addParameter(pvec, QStringLiteral("Color"),
+    pvec.addParameter(QStringLiteral("Color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("Color")) );
     return;
   }
   if( name == QStringLiteral("STDDEV") )
   {
-    addParameter(pvec, QStringLiteral("Period"),
+    pvec.addParameter(QStringLiteral("Period"),
                  DPT_INT, obj->paramValue(QStringLiteral("Period")) );
-    addParameter(pvec, QStringLiteral("Color"),
+    pvec.addParameter(QStringLiteral("Color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("Color")) );
     return;
   }
   if( name == QStringLiteral("Momentum") )
   {
-    addParameter(pvec, QStringLiteral("Period"),
+    pvec.addParameter(QStringLiteral("Period"),
                  DPT_INT, obj->paramValue(QStringLiteral("Period")) );
-    addParameter(pvec, QStringLiteral("Level"),
+    pvec.addParameter(QStringLiteral("Level"),
                  DPT_INT, obj->paramValue(QStringLiteral("Level")) );
-    addParameter(pvec, QStringLiteral("Color"),
+    pvec.addParameter(QStringLiteral("Color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("Color")) );
     return;
   }
   if( name == QStringLiteral("DMI") )
   {
-    addParameter(pvec, QStringLiteral("Period"),
+    pvec.addParameter(QStringLiteral("Period"),
                  DPT_INT, obj->paramValue(QStringLiteral("Period")) );
-    addParameter(pvec, QStringLiteral("Weak"),
+    pvec.addParameter(QStringLiteral("Weak"),
                  DPT_INT, obj->paramValue(QStringLiteral("Weak")) );
-    addParameter(pvec, QStringLiteral("Strong"),
+    pvec.addParameter(QStringLiteral("Strong"),
                  DPT_INT, obj->paramValue(QStringLiteral("Strong")) );
-    addParameter(pvec, QStringLiteral("Very strong"),
+    pvec.addParameter(QStringLiteral("Very strong"),
                  DPT_INT, obj->paramValue(QStringLiteral("Very strong")) );
-    addParameter(pvec, QStringLiteral("Color"),
+    pvec.addParameter(QStringLiteral("Color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("Color")) );
     return;
   }
   if( name == QStringLiteral("ATR") )
   {
-    addParameter(pvec, QStringLiteral("Period"),
+    pvec.addParameter(QStringLiteral("Period"),
                  DPT_INT, obj->paramValue(QStringLiteral("Period")) );
-    addParameter(pvec, QStringLiteral("Color"),
+    pvec.addParameter(QStringLiteral("Color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("Color")) );
     return;
   }

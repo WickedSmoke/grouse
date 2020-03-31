@@ -242,7 +242,7 @@ public:
   void setTLine (QGraphicsLineItem *sline, LineEdge e1, LineEdge e2); // set the edges of a trend line
   void setFibo (QGraphicsLineItem *sline); // set the edges of a fibo line
   void setFibo (QGraphicsLineItem *sline, LineEdge e1, LineEdge e2); // set the edges of a fibo line
-  void setParamDialog (ParamVector pvector, QString title, QObject *parent=0); // set module's parameter dialog
+  void setParamDialog (const ParamVector& pvector, QString title, QObject *parent=0); // set module's parameter dialog
   void setTitle (QString);          // set object's title
   inline void setThickness (int t) NOEXCEPT
   {

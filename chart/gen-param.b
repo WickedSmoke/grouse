@@ -157,7 +157,7 @@ params: context [
         ]
         label: replace/all to-string label '-' ' '
         emit [
-            {    addParameter(pvec, QStringLiteral("} label {"),^/}
+            {    pvec.addParameter(QStringLiteral("} label {"),^/}
             {                 } dt
             {, obj->paramValue(QStringLiteral("} label {")) );^/}
         ]

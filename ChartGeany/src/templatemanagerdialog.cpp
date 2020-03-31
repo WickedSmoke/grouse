@@ -194,11 +194,12 @@ TemplateManagerDialog::qtachart2sql (QString tableKey)
       {
         if (paramDialog != NULL) // technical indicator object
         {
-          ParamVector pvector;
+          const ParamVector& pvector = paramDialog->parameters ();
+          ParamVector::const_iterator it;
 
-          pvector = paramDialog->getPVector ();
-          foreach (const DynParam *param, pvector)
+          FOREACH_PARAM(it, pvector)
           {
+            const DynParam* param = *it;
             SQLCommand += QStringLiteral ("INSERT INTO ") % tablename;
             SQLCommand += QStringLiteral (" (SERIAL, DYNPARAM, TYPE, TITLE, PARAMNAME, PARAMLABEL,");
             SQLCommand += QStringLiteral ("PARAMTYPE, PARAMDEF, PARAMVALUE) VALUES ");
@@ -567,10 +568,8 @@ TemplateManagerDialog::attachtemplate (QString tablename)
       return CG_ERR_DBACCESS;
     }
 
-    pdialog = new  DynParamsDialog (lind->Plist, lind->Title);
+    pdialog = new DynParamsDialog (lind->Plist, lind->Title);
     core->functionScr->addIndicator (pdialog);
-    foreach (const DynParam *d, lind->Plist) delete d;
-    lind->Plist.clear ();
     delete lind;
     delete pdialog;
   }
