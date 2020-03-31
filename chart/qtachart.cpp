@@ -1305,9 +1305,9 @@ QTACObject* QTAChart::addStudySMA( const QString& name, int period, QRgb color )
         return nullptr;
 
     QTACObject* obj = new QTACObject(ccore, QTACHART_OBJ_CURVE);
-    obj->setTitle(name);
     obj->setAttributes(QTACHART_CLOSE, period, QStringLiteral("Period"),
                        SMA, 0, 0, color, QStringLiteral("Color"));
+    obj->setTitle(name);
     return obj;
 }
 
@@ -1317,18 +1317,18 @@ QTACObject* QTAChart::addStudyEMA( const QString& name, int period, QRgb color )
         return nullptr;
 
     QTACObject* obj = new QTACObject(ccore, QTACHART_OBJ_CURVE);
-    obj->setTitle(name);
     obj->setAttributes(QTACHART_CLOSE, period, QStringLiteral("Period"),
                        EMA, 0, 0, color, QStringLiteral("Color"));
+    obj->setTitle(name);
     return obj;
 }
 
 QTACObject* QTAChart::addStudyParabolicSAR( const QString& name, QRgb color )
 {
     QTACObject* obj = new QTACObject (ccore, QTACHART_OBJ_DOT);
-    obj->setTitle(name);
     obj->setAttributes(QTACHART_CLOSE, 1, QStringLiteral(""),
                        PSAR, 0, 0, color, QStringLiteral("Color"));
+    obj->setTitle(name);
     return obj;
 }
 
@@ -1341,9 +1341,10 @@ QTACObject* QTAChart::addStudyRSI( const QString& name, int period,
         return nullptr;
 
     obj = new QTACObject (ccore, QTACHART_OBJ_SUBCHART);
-    obj->setTitle (name);
     obj->setAttributes(QTACHART_CLOSE, period, QStringLiteral ("Period"),
                        DUMMY, 0, 100, color, QStringLiteral (""));
+    obj->setTitle (name);
+
     childobj = new QTACObject (obj, QTACHART_OBJ_CURVE);
     childobj->setAttributes(QTACHART_CLOSE, period, QStringLiteral("Period"),
                             RSI, 0, 100, color, QStringLiteral ("Color"));
