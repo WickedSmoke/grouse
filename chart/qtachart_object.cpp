@@ -1003,7 +1003,7 @@ qreal QTACObject::paramValue( const QString& name ) const
     return 0.0;
 }
 
-#include "ObjectParameters.cpp"
+#include "gen_objectParameters.cpp"
 
 // modify technical indicator;
 bool

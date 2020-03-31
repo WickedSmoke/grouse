@@ -110,7 +110,7 @@ ATR:            Period 14  Color 0,255,255
 */
 
 // This file is generated from the above data.
-#include "FuncParamDialogs.cpp"
+#include "gen_funcParamDialogs.cpp"
 
 void
 QTACFunctions::createButtons (void)
@@ -182,7 +182,7 @@ QTACFunctions::addIndicator (DynParamsDialog *paramDialog)
 
 #define PARAM(name)  paramDialog->getParam(QStringLiteral(name))
 
-#include "FuncAddStudy.cpp"
+#include "gen_funcAddStudy.cpp"
 
   if (obj != nullptr)
     obj->setParamDialog (paramDialog->parameters (), fname);

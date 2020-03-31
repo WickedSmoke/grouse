@@ -224,8 +224,8 @@ studies-add: context [
     indent: "            "
 ]
 
-generate dialogs %FuncParamDialogs.cpp
-generate functions-add %FuncAddStudy.cpp
-generate params  %ObjectParameters.cpp
+generate dialogs %gen_funcParamDialogs.cpp
+generate functions-add %gen_funcAddStudy.cpp
+generate params  %gen_objectParameters.cpp
 generate studies-menu %../gui/MainWindow_studies.cpp
 generate studies-add  %../gui/MainWindow_addStudy.cpp
