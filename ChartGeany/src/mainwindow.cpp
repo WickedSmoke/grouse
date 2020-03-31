@@ -59,7 +59,6 @@ const int  FONT_PIXELSIZE_PAD = 1;
 const int  CHART_FONT_SIZE_PAD = 3;
 
 AppOptions *Application_Options;
-DownloadDataDialog *downloaddatadialog;
 TemplateManagerDialog *templatemanager;
 ProgressDialog *progressdialog;
 DebugDialog *debugdialog;

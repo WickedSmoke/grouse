@@ -357,7 +357,6 @@ void MainWindow::closeTab(int index)
 
 
 #include "cgscript.h"
-#include "downloaddatadialog.h"
 #include "progressdialog.h"
 #include "templatemanagerdialog.h"
 #include "debugdialog.h"
@@ -369,7 +368,6 @@ AppOptions *Application_Options = &_options;
 QProgressBar *GlobalProgressBar = nullptr;
 QString Year, Month, Day;
 
-DownloadDataDialog *downloaddatadialog;
 TemplateManagerDialog *templatemanager;
 ProgressDialog *progressdialog;
 DebugDialog *debugdialog;
@@ -398,7 +396,6 @@ int main( int argc, char **argv )
         return 1;
     loadAppOptions(Application_Options);
 
-    downloaddatadialog = new DownloadDataDialog(&w);
     progressdialog  = new ProgressDialog(&w);
     templatemanager = new TemplateManagerDialog(&w);
     debugdialog     = new DebugDialog(&w);

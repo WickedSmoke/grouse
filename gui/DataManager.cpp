@@ -31,7 +31,7 @@
 #include "DataManager.h"
 #include "common.h"
 #include "databrowserdialog.h"
-#include "downloaddatadialog.h"
+#include "DownloadDataDialog.h"
 #include "loadcsvdialog.h"
 #include "feedyahoo.h"
 #include "feedav.h"

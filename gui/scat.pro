@@ -25,10 +25,10 @@ LIBS += -ldl -lxlsreader
 HEADERS += MainWindow.h \
 	DataManager.h \
 	ParameterDialog.h \
+	DownloadDataDialog.h \
 	../ChartGeany/include/appColorDialog.h \
 	../ChartGeany/include/debugdialog.h \
 	../ChartGeany/include/databrowserdialog.h \
-	../ChartGeany/include/downloaddatadialog.h \
 	../ChartGeany/include/loadcsvdialog.h \
 	../ChartGeany/include/symbollistdialog.h \
 	../ChartGeany/include/textobjectdialog.h \
@@ -61,11 +61,11 @@ HEADERS += MainWindow.h \
 SOURCES += MainWindow.cpp \
 	DataManager.cpp \
 	ParameterDialog.cpp \
+	DownloadDataDialog.cpp \
 	../ChartGeany/src/appColorDialog.cpp \
 	../ChartGeany/src/common.cpp \
 	../ChartGeany/src/debugdialog.cpp \
 	../ChartGeany/src/databrowserdialog.cpp \
-	../ChartGeany/src/downloaddatadialog.cpp \
 	../ChartGeany/src/loadcsvdialog.cpp \
 	../ChartGeany/src/symbollistdialog.cpp \
 	../ChartGeany/src/textobjectdialog.cpp \
