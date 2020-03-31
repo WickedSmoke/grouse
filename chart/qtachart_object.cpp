@@ -1576,8 +1576,8 @@ QTACObject::setParamDialog (const ParamVector& pvector, QString title,
   paramDialog = new DynParamsDialog (pvector, title);
   paramDialog->setVisible (false);
 
-  connect(paramDialog->buttonBox, SIGNAL(accepted ()), this, SLOT(modification_accepted()));
-  connect(paramDialog->buttonBox, SIGNAL(rejected ()), this, SLOT(modification_rejected()));
+  connect(paramDialog, SIGNAL(accepted()), this, SLOT(modification_accepted()));
+  connect(paramDialog, SIGNAL(rejected()), this, SLOT(modification_rejected()));
 
   if (!editBtn.isNull ())
     editBtn->setVisible (true);
@@ -1840,7 +1840,7 @@ void QTACObject::modifyFromDialog( DynParamsDialog* pd )
   QTACObject *child;
 
   pd->setVisible (false);
-  if (pd->removeCheckBox->checkState () == Qt::Checked)
+  if (pd->removeSelected())
   {
     clearITEMS ();
     title->setVisible (false);

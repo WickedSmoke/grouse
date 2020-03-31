@@ -45,6 +45,8 @@ MainWindow::MainWindow() :
     connect( _tabWidget, SIGNAL(tabCloseRequested(int)),
              this, SLOT(closeTab(int)));
 
+    setMinimumSize(700, 440);
+
     QSettings pref(APPDIR, APPNAME);
     QSize size = pref.value("main-window-size", QSize()).toSize();
     if (size.isValid())

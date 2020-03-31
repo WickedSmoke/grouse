@@ -103,7 +103,6 @@ DynParamsDialog::DynParamsDialog_constructor_body ()
   ui->setupUi (this);
   ui->buttonBox->setStyleSheet (boxstylesheet);
   ui->buttonBox->setFixedSize (QSize (380, 32));
-  buttonBox = ui->buttonBox;
   removeCheckBox = ui->removeCheckBox;
 
   foreach (QAbstractButton *button, ui->buttonBox->buttons ())
@@ -120,8 +119,8 @@ DynParamsDialog::DynParamsDialog_constructor_body ()
   param_height = 40;
   ncolorbuttons = 0;
   colorDialog = nullptr;
-  connect (buttonBox, SIGNAL(accepted ()), this, SLOT(function_accepted()));
-  connect (buttonBox, SIGNAL(rejected ()), this, SLOT(function_rejected()));
+  connect (ui->buttonBox, SIGNAL(accepted()), this, SLOT(function_accepted()));
+  connect (ui->buttonBox, SIGNAL(rejected()), this, SLOT(function_rejected()));
 }
 
 // destructor

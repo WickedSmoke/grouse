@@ -42,9 +42,9 @@ DPColorButton::DPColorButton (QWidget * parent, int pidx, int bidx)
 }
 
 
-// constructor: remove tick disabled
+// constructor: No remove button
 DynParamsDialog::DynParamsDialog (QString title, QWidget * parent) :
-  QDialog(parent)
+  QDialog(parent), modify(false)
 {
     constructorSetup();
 
@@ -52,24 +52,16 @@ DynParamsDialog::DynParamsDialog (QString title, QWidget * parent) :
         setWindowTitle( (((QPushButton *) parent)->text()) );
     else
         setWindowTitle( title );
-
-    removeLbl->setVisible(false);
-    removeCheckBox->setVisible(false);
-    modify = false;
 }
 
 
-// constructor for modify: remove tick enabled
+// constructor for modify: Remove button present
 DynParamsDialog::DynParamsDialog (const ParamVector& PVector, QString title) :
-  QDialog()
+  QDialog(), modify(true)
 {
     constructorSetup();
 
     setWindowTitle(title);
-
-    removeLbl->setVisible(true);
-    removeCheckBox->setVisible(true);
-    modify = true;
 
     ParamVector::const_iterator it;
     FOREACH_PARAM( it, PVector )
@@ -83,6 +75,7 @@ DynParamsDialog::DynParamsDialog (const ParamVector& PVector, QString title) :
 
 void DynParamsDialog::constructorSetup()
 {
+    _removed = false;
     colorDialog = nullptr;
     param_height = 40;
     ncolorbuttons = 0;
@@ -94,22 +87,22 @@ void DynParamsDialog::constructorSetup()
     _form = new QFormLayout;
     lo->addLayout( _form );
 
-    QBoxLayout* lo2 = new QHBoxLayout;
-    lo->addLayout( lo2 );
-
-        removeLbl = new QLabel( "Remove" );
-        lo2->addWidget( removeLbl );
-
-        removeCheckBox = new QCheckBox;
-        lo2->addWidget( removeCheckBox );
+    lo->addSpacing( 8 );
 
     buttonBox = new QDialogButtonBox;
     buttonBox->setStandardButtons( QDialogButtonBox::Cancel |
                                    QDialogButtonBox::Ok );
     connect( buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect( buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
     connect( buttonBox, SIGNAL(accepted()), this, SLOT(function_accepted()) );
+    connect( buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
     lo->addWidget( buttonBox );
+
+    if( modify )
+    {
+        QPushButton* btn = buttonBox->addButton("&Remove",
+                                        QDialogButtonBox::DestructiveRole);
+        connect( btn, SIGNAL(clicked(bool)), SLOT(removeClicked()) );
+    }
 }
 
 
@@ -291,6 +284,13 @@ void DynParamsDialog::function_accepted()
 }
 
 
+void DynParamsDialog::removeClicked()
+{
+    _removed = true;
+    accept();
+}
+
+
 void DynParamsDialog::intChanged(int n)
 {
     DynParam* par = Param.parameter( QObject::sender()->objectName() );
@@ -318,8 +318,7 @@ void DynParamsDialog::showEvent (QShowEvent * event)
   if (event->spontaneous ())
     return;
 
-  if (removeLbl->isVisible ())
-    removeCheckBox->setCheckState (Qt::Unchecked);
+  _removed = false;
 
   ParamVector::iterator it;
   FOREACH_PARAM( it, Param )

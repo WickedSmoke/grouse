@@ -61,9 +61,6 @@ public:
 
     ~DynParamsDialog();
 
-    QDialogButtonBox* buttonBox;    // Accessed in qtachart_functions.cpp
-    QCheckBox* removeCheckBox;      // Accessed in qtachart_object.cpp
-
     // add a parameter
     void addParam(QString paramName, QString title, qint32 type, qreal defvalue);
 
@@ -81,6 +78,8 @@ public:
     const ParamVector& parameters() const { return Param; };
     ParamVector& parameters() { return Param; };
 
+    bool removeSelected() const { return _removed; }
+
 protected:
     virtual void showEvent(QShowEvent * event);
 
@@ -91,6 +90,7 @@ private slots:
     void intChanged(int);
     void text_changed(QString);
     void function_accepted();
+    void removeClicked();
 
 private:
     void constructorSetup();
@@ -106,8 +106,9 @@ private:
     int paramidx;         // parameter index
     int cbidx;            // color button index
     bool modify;          // create = false, modify = true
+    bool _removed;
 
-    QLabel* removeLbl;
+    QDialogButtonBox* buttonBox;
     appColorDialog* colorDialog;
     QFormLayout* _form;
 };

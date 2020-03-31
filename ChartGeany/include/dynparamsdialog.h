@@ -58,9 +58,6 @@ public:
   DynParamsDialog (const ParamVector& PVector, QString title); // modify constructor
   ~DynParamsDialog(void);
 
-  QDialogButtonBox *buttonBox;
-  QCheckBox *removeCheckBox;
-
   // add a parameter
   void addParam (QString paramName, QString title, qint32 type, qreal defvalue);
 
@@ -78,11 +75,17 @@ public:
   const ParamVector& parameters() const { return Param; };
   ParamVector& parameters() { return Param; };
 
+  bool removeSelected() const
+  {
+    return removeCheckBox->checkState() == Qt::Checked;
+  }
+
 private:
   void DynParamsDialog_constructor_body (void); // constructor body
   void makeColorDialog();
 
   Ui::DynParamsDialog * ui;
+  QCheckBox *removeCheckBox;
   appColorDialog *colorDialog; // color dialog
 
   ParamVector Param;    // parameters' vector
