@@ -213,27 +213,6 @@ void MainWindow::closeEvent( QCloseEvent* event )
 }
 
 
-void MainWindow::keyPressEvent( QKeyEvent* e )
-{
-    switch( e->key() )
-    {
-        case Qt::Key_Q:
-        case Qt::Key_Escape:
-            close();
-            break;
-
-        default:
-            e->ignore();
-            break;
-    }
-}
-
-
-void MainWindow::mousePressEvent( QMouseEvent* )
-{
-}
-
-
 void MainWindow::createActions()
 {
 #define CONNECT(act,slot)   connect(act,SIGNAL(triggered()),this,slot)
