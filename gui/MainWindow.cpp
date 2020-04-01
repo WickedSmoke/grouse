@@ -374,16 +374,6 @@ DebugDialog *debugdialog;
 
 size_t CGScriptFunctionRegistrySize;
 
-const char DEFAULT_FONT_FAMILY[] = "Tahoma";
-#ifdef Q_OS_MAC
-const int  FONT_POINTSIZE_PAD = 3;
-const int  FONT_PIXELSIZE_PAD = 3;
-#else
-const int  FONT_POINTSIZE_PAD = 1;
-const int  FONT_PIXELSIZE_PAD = 1;
-#endif
-const int  CHART_FONT_SIZE_PAD = 3;
-
 
 int main( int argc, char **argv )
 {
