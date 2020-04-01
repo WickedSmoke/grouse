@@ -121,6 +121,7 @@ CG_ERR_RESULT MainWindow::addChart( const TableDataVector& datavector )
     _tabWidget->addTab( tachart, text );
     _tabWidget->setCurrentIndex( _tabWidget->count() - 1 );
     _studies->setEnabled(true);
+    _markers->setEnabled(true);
     tachart->setTabText( text );
     }
 
@@ -237,6 +238,17 @@ void MainWindow::createActions()
 }
 
 
+static const char* _markerName[6] =
+{
+    "Label",
+    "Trailing Text",
+    "Horizontal Line",
+    "Vertical Line",
+    "Trend Line",
+    "Fibonacci",
+};
+
+
 void MainWindow::createMenus()
 {
     QMenuBar* bar = menuBar();
@@ -251,6 +263,17 @@ void MainWindow::createMenus()
     _studies = bar->addMenu( "&Studies" );
     _studies->setEnabled( false );
     addStudyItems();
+
+    _markers = bar->addMenu( "&Markers" );
+    _markers->setEnabled( false );
+    connect( _markers, SIGNAL(triggered(QAction*)),
+             this, SLOT(addMarker(QAction*)) );
+    QAction* act;
+    for( int i = 0; i < 6; ++i )
+    {
+        act = _markers->addAction( _markerName[i] );
+        act->setData( i );
+    }
 
     bar->addSeparator();
 
@@ -277,6 +300,36 @@ void MainWindow::addStudy()
         {
 #include "MainWindow_addStudy.cpp"
         }
+    }
+}
+
+
+void MainWindow::addMarker( QAction* act )
+{
+    QTAChart* chart = qobject_cast<QTAChart*>(_tabWidget->currentWidget());
+    if( ! chart )
+        return;
+
+    switch( act->data().toInt() )
+    {
+        case 0:
+            chart->addMarkerLabel();
+            break;
+        case 1:
+            chart->addMarkerTrailingText();
+            break;
+        case 2:
+            chart->addMarkerHLine();
+            break;
+        case 3:
+            chart->addMarkerVLine();
+            break;
+        case 4:
+            chart->addMarkerTrendLine();
+            break;
+        case 5:
+            chart->addMarkerFibonacci();
+            break;
     }
 }
 
@@ -324,6 +377,7 @@ void MainWindow::closeTab(int index)
     {
         setExpandChart(false);
         _studies->setEnabled(false);
+        _markers->setEnabled(false);
     }
 
     QWidget* wid = _tabWidget->widget(index);

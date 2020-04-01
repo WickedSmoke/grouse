@@ -1698,3 +1698,33 @@ QTACObject* QTAChart::addStudyATR( const QString& name, int period, QRgb color )
 
     return obj;
 }
+
+void QTAChart::addMarkerLabel()
+{
+    ccore->drawScr->createTextObject(QTACHART_OBJ_LABEL);
+}
+
+void QTAChart::addMarkerTrailingText()
+{
+    ccore->drawScr->createTextObject(QTACHART_OBJ_TEXT);
+}
+
+void QTAChart::addMarkerHLine()
+{
+    ccore->drawScr->createTHVLineObject(QTACHART_OBJ_HLINE);
+}
+
+void QTAChart::addMarkerVLine()
+{
+    ccore->drawScr->createTHVLineObject(QTACHART_OBJ_VLINE);
+}
+
+void QTAChart::addMarkerTrendLine()
+{
+    ccore->drawScr->createTHVLineObject(QTACHART_OBJ_LINE);
+}
+
+void QTAChart::addMarkerFibonacci()
+{
+    ccore->drawScr->createTHVLineObject(QTACHART_OBJ_FIBO);
+}

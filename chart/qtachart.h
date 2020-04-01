@@ -140,6 +140,14 @@ Q_OBJECT public:
                            int Strong, int veryStrong, QRgb color );
   QTACObject* addStudyATR( const QString& name, int period, QRgb color );
 
+
+  void addMarkerLabel();
+  void addMarkerTrailingText();
+  void addMarkerHLine();
+  void addMarkerVLine();
+  void addMarkerTrendLine();
+  void addMarkerFibonacci();
+
 private:
   Ui::QTAChart * ui;
 

@@ -43,6 +43,7 @@ protected:
 private slots:
 
     void addStudy();
+    void addMarker( QAction* );
     void showDataManager();
     void closeTab(int);
 
@@ -60,6 +61,7 @@ private:
     QAction* _actManageData;
 
     QMenu* _studies;
+    QMenu* _markers;
 
     DataManager* _dataManager;
     QTabWidget*  _tabWidget;

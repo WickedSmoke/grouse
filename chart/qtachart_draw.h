@@ -39,6 +39,8 @@ Q_OBJECT public:
   ~QTACDraw (void);
 
   void setReferenceChart (void *chart);		// sets the reference chart
+  void createTextObject (QTAChartObjectType type); // create a label/text object
+  void createTHVLineObject (QTAChartObjectType type);
 
 private:
   Ui::QTACDraw * ui;
@@ -53,8 +55,6 @@ private:
 
   // functions
   QPushButton *addButton (QString text);	// add a button
-  void createTextObject (QTAChartObjectType type); // create a label/text object
-  void createTHVLineObject (QTAChartObjectType type);
 
 private slots:
   void labelButton_clicked (void);
