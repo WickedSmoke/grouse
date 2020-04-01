@@ -170,6 +170,20 @@ void updatePrice(RTPrice rtprice)
 }
 
 
+// TODO: Make this a callback to let user control response.
+static void _dbExit( int exitStatus, const char* msg )
+{
+    showMessage(QString::fromUtf8(msg));
+    qApp->exit( exitStatus );
+
+#if defined (Q_OS_WIN) || defined (Q_OS_MAC)
+    exit(exitStatus);
+#else
+    quick_exit(exitStatus);
+#endif
+}
+
+
 // reset the database
 void InstrumentDatabase::reset()
 {
@@ -191,15 +205,8 @@ void InstrumentDatabase::reset()
   return;
 
 fail:
-    showMessage(QString::fromUtf8 ("Cannot create or open database. Application quits."));
     sqlite3_close(_db);
-    qApp->exit(1);
-
-#if defined (Q_OS_WIN) || defined (Q_OS_MAC)
-    exit(1);
-#else
-    quick_exit(1);
-#endif
+    _dbExit(1, "Cannot create or open database. Application quits.");
 }
 
 
@@ -396,14 +403,7 @@ bool InstrumentDatabase::openFile( const QString& filename, const char** err )
       statfile.close ();
 
       decryptdlg->hide ();
-      showMessage (QString::fromUtf8 ("Decryption completed. Now restart the application."));
-      qApp->exit (0);
-
-#if defined (Q_OS_WIN) || defined (Q_OS_MAC)
-      exit (1);
-#else
-      quick_exit (1);
-#endif
+      _dbExit(0, "Decryption completed. Now restart the application.");
     }
   }
 
@@ -648,6 +648,48 @@ int InstrumentDatabase::dbVersion()
 }
 
 
+/*
+  Load lists.datafeedsList, symlistList, realtimeList, & symlisturlList.
+  Returns CG_ERR_OK if successful.
+*/
+int InstrumentDatabase::loadDatafeeds( SQLists& lists )
+{
+    lists.datafeedsList.clear();
+    lists.symlistList.clear();
+    lists.realtimeList.clear();
+    lists.symlisturlList.clear();
+
+    int rc = selectfromdb(lists.datafeeds_query, sqlcb_datafeeds, NULL);
+    if (rc != SQLITE_OK)
+    {
+        setGlobalError(CG_ERR_DBACCESS, __FILE__, __LINE__);
+        return CG_ERR_DBACCESS;
+    }
+
+    lists.datafeedsList.sort();
+    return CG_ERR_OK;
+}
+
+
+/*
+  Load lists.currencyList.
+  Returns CG_ERR_OK if successful.
+*/
+int InstrumentDatabase::loadCurrencies( SQLists& lists )
+{
+    lists.currencyList.clear();
+
+    int rc = selectfromdb(lists.currencies_query, sqlcb_currencies, NULL);
+    if (rc != SQLITE_OK)
+    {
+        setGlobalError(CG_ERR_DBACCESS, __FILE__, __LINE__);
+        return CG_ERR_DBACCESS;
+    }
+
+    return CG_ERR_OK;
+}
+
+
 // SQL callbacks
 
 #define LIST_QUERY1(NAME, OUTPUT) \
@@ -714,9 +756,6 @@ int sqlcb_datafeeds (void *dummy, int argc, char **argv, char **column)
       *datafeedsList << QString (argv[counter]);
 #else
       ComboItems->datafeedsList << QString (argv[counter]);
-#endif
-
-#ifndef CGTOOL
     else if (stringEqualI(colname, "REALTIME"))
       ComboItems->realtimeList << QString (argv[counter]);
     else if (stringEqualI(colname, "SYMLIST"))

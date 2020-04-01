@@ -153,6 +153,8 @@ public:
     bool openFile( const QString& filename, const char** err );
     void initializeListQueries( SQLists& );
     bool disableModules();
+    int loadDatafeeds( SQLists& );
+    int loadCurrencies( SQLists& );
     int loadChartData( const QString& base, QTAChartData* data );
     int loadTableData( const QString& base, const QString& adjusted,
                        TableDataVector* data );

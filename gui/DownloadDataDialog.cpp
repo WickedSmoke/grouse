@@ -36,7 +36,7 @@
 DownloadDataDialog::DownloadDataDialog(QWidget* parent) :
     QDialog (parent)
 {
-    int rc;
+    int err;
     int row = 0;
 
     setWindowTitle("Download Data");
@@ -98,31 +98,29 @@ DownloadDataDialog::DownloadDataDialog(QWidget* parent) :
 
 
     // datafeeds list
-    ComboItems->datafeedsList.clear();
-    ComboItems->symlistList.clear();
-    ComboItems->realtimeList.clear();
-    ComboItems->symlisturlList.clear();
-    rc = selectfromdb (ComboItems->datafeeds_query, sqlcb_datafeeds, NULL);
-    if (rc != SQLITE_OK)
+    err = gDatabase->loadDatafeeds( *ComboItems );
+    if (err != CG_ERR_OK)
     {
-        setGlobalError(CG_ERR_DBACCESS, __FILE__, __LINE__);
-        showMessage(errorMessage (CG_ERR_DBACCESS));
-        this->hide();
+        showMessage(errorMessage(err));
+        hide();
     }
-    ComboItems->datafeedsList.sort ();
-
-    datafeedsCombo->addItems(ComboItems->datafeedsList);
+    else
+    {
+        datafeedsCombo->addItems(ComboItems->datafeedsList);
+    }
 
     // currency list
-    ComboItems->currencyList.clear ();
-    rc = selectfromdb (ComboItems->currencies_query, sqlcb_currencies, NULL);
-    if (rc != SQLITE_OK)
+    err = gDatabase->loadCurrencies( *ComboItems );
+    if (err != CG_ERR_OK)
     {
-        setGlobalError(CG_ERR_DBACCESS, __FILE__, __LINE__);
-        showMessage(errorMessage(CG_ERR_DBACCESS));
-        this->hide();
+        showMessage(errorMessage(err));
+        hide();
     }
-    currencyCombo->addItems(ComboItems->currencyList);
+    else
+    {
+        currencyCombo->addItems(ComboItems->currencyList);
+    }
+
 
     symlistdlg = new SymbolListDialog(this);
 

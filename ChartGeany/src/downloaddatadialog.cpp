@@ -33,7 +33,7 @@ DownloadDataDialog::DownloadDataDialog (QWidget * parent):
   stylesheet = QStringLiteral ("background: transparent;"),
   stylesheet2 = QStringLiteral ("background: transparent; background-color: white;"),
   stylesheet3 = QStringLiteral ("selection-background-color: blue");
-  int rc;
+  int err;
 
   ui->setupUi (this);
 
@@ -56,31 +56,28 @@ DownloadDataDialog::DownloadDataDialog (QWidget * parent):
   ui->currencyComboBox->setStyleSheet (stylesheet2  + stylesheet3);
 
   // datafeeds list
-  ComboItems->datafeedsList.clear ();
-  ComboItems->symlistList.clear ();
-  ComboItems->realtimeList.clear ();
-  ComboItems->symlisturlList.clear ();
-  rc = selectfromdb (ComboItems->datafeeds_query, sqlcb_datafeeds, NULL);
-  if (rc != SQLITE_OK)
+  err = gDatabase->loadDatafeeds( *ComboItems );
+  if (err != CG_ERR_OK)
   {
-    setGlobalError(CG_ERR_DBACCESS, __FILE__, __LINE__);
-    showMessage (errorMessage (CG_ERR_DBACCESS));
-    this->hide ();
+    showMessage (errorMessage (err));
+    hide ();
   }
-  ComboItems->datafeedsList.sort ();
-  ui->datafeedsComboBox->addItems (ComboItems->datafeedsList);
+  else
+  {
+    ui->datafeedsComboBox->addItems (ComboItems->datafeedsList);
+  }
 
   // currency list
-  ComboItems->currencyList.clear ();
-  rc = selectfromdb (ComboItems->currencies_query, sqlcb_currencies, NULL);
-
-  if (rc != SQLITE_OK)
+  err = gDatabase->loadCurrencies( *ComboItems );
+  if (err != CG_ERR_OK)
   {
-    setGlobalError(CG_ERR_DBACCESS, __FILE__, __LINE__);
-    showMessage (errorMessage (CG_ERR_DBACCESS));
-    this->hide ();
+    showMessage (errorMessage (err));
+    hide ();
   }
-  ui->currencyComboBox->addItems (ComboItems->currencyList);
+  else
+  {
+    ui->currencyComboBox->addItems (ComboItems->currencyList);
+  }
 
   symlistdlg = new SymbolListDialog (this);
 
