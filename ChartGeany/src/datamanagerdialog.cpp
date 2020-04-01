@@ -22,6 +22,7 @@
 #include <QResizeEvent>
 #include <QDateTime>
 #include "ui_datamanagerdialog.h"
+#include "datamanagerdialog.h"
 #include "mainwindow.h"
 #include "common.h"
 #include "databrowserdialog.h"

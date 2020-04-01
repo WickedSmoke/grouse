@@ -40,6 +40,7 @@
 #include "sqlite3.h"
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
+#include "datamanagerdialog.h"
 #include "splashdialog.h"
 #include "qtachart.h"
 #include "portfolio.h"

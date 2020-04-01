@@ -20,7 +20,13 @@
 #include <QLatin1String>
 #include "cgtool.h"
 #else
-#include "common.h"
+
+#ifdef GUI_DESKTOP
+#include "DataManager.h"
+#define DataManagerDialog   DataManager
+#else
+#include "datamanagerdialog.h"
+#endif
 
 // symbol list poppulate
 static void

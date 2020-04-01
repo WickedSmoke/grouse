@@ -37,6 +37,8 @@ namespace Ui
   class MainWindow;
 }
 
+class DataManagerDialog;
+
 class MainWindow : public QMainWindow
 {
   Q_OBJECT

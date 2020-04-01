@@ -31,7 +31,6 @@
 // extern classes
 #include "chartapp.h"
 #include "loadcsvdialog.h"
-#include "datamanagerdialog.h"
 #include "modulemanagerdialog.h"
 #include "debugdialog.h"
 #include "templatemanagerdialog.h"
