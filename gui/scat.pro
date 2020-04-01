@@ -1,7 +1,7 @@
 OBJECTS_DIR = obj
 MOC_DIR = moc
 
-RESOURCES += ../ChartGeany/resources/ChartGeany.qrc
+RESOURCES += icons.qrc
 
 CONFIG += qt debug
 

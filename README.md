@@ -1,9 +1,9 @@
-Scat 0.1
-========
+Chart Grouse 0.1
+================
 
-Scat (Stock Chart Analysis Tool) is a fork of
+Chart Grouse is a program for technical market analysis.  It is a fork of
 [Chart Geany](https://chart-geany.sourceforge.io/) 6.1.5
-to add an alternate desktop style GUI.
+which adds an alternate desktop style GUI.
 
 The code is being refactored to separate the database, network, and chart
 code from the touch-based GUI.

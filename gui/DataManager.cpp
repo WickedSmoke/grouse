@@ -55,7 +55,7 @@ static QToolButton* _toolButton(QBoxLayout* lo, const char* iconName,
     QToolButton* btn = new QToolButton;
 
     QIcon icon;
-    icon.addFile( QString(":/png/images/icons/PNG/%1").arg(iconName),
+    icon.addFile( QString(":/icons/%1").arg(iconName),
                   QSize(), QIcon::Normal, QIcon::Off );
     btn->setIcon(icon);
     btn->setIconSize(QSize(35, 35));

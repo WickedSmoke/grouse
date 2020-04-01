@@ -56,7 +56,7 @@ DownloadDataDialog::DownloadDataDialog(QWidget* parent) :
 
     checkButton = new QPushButton("Check");
     QIcon icon1;
-    icon1.addFile(QString::fromUtf8(":/png/images/icons/PNG/Search.png"),
+    icon1.addFile(QString::fromUtf8(":/icons/Search.png"),
                   QSize(), QIcon::Normal, QIcon::Off);
     checkButton->setIcon(icon1);
     grid->addWidget( checkButton, row, 2 );

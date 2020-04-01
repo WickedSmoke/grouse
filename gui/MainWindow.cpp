@@ -197,8 +197,14 @@ void MainWindow::disableTickerButton() {}
 
 void MainWindow::showAbout()
 {
-    QMessageBox::information( this, "About Scat",
-        "Scat\n\nVersion 0.0.1" );
+    QMessageBox* about = new QMessageBox(this);
+    about->setWindowFlags( Qt::Dialog | Qt::FramelessWindowHint );
+    about->setWindowTitle( "About Chart Grouse" );
+    about->setIconPixmap( QPixmap(QStringLiteral(":/images/cg-logo.png")) );
+    about->setTextFormat( Qt::RichText );
+    about->setText( "<h3>Version 0.0.1</h3>\n"
+                    "<p>&copy; 2020 Lucas Tsatiris, Karl Robillard</p>" );
+    about->exec();
 }
 
 

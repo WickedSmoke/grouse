@@ -1,0 +1,15 @@
+<RCC>
+  <qresource prefix="icons">
+    <file alias="Chart_Graph.png">../ChartGeany/images/icons/PNG/Chart_Graph.png</file>
+    <file alias="Internet_Download.png">../ChartGeany/images/icons/PNG/Internet_Download.png</file>
+    <file alias="File_Upload.png">../ChartGeany/images/icons/PNG/File_Upload.png</file>
+    <file alias="Update_Button.png">../ChartGeany/images/icons/PNG/Update_Button.png</file>
+    <file alias="Button_Sync.png">../ChartGeany/images/icons/PNG/Button_Sync.png</file>
+    <file alias="File_Table.png">../ChartGeany/images/icons/PNG/File_Table.png</file>
+    <file alias="Trash_Delete.png">../ChartGeany/images/icons/PNG/Trash_Delete.png</file>
+    <file alias="Search.png">../ChartGeany/images/icons/PNG/Search.png</file>
+  </qresource>
+  <qresource>
+    <file>images/cg-logo.png</file>
+  </qresource>
+</RCC>
