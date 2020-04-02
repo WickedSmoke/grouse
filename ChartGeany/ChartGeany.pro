@@ -215,7 +215,6 @@ SOURCES += \
         src/mainwindow.cpp \
         src/manualdialog.cpp \
         src/modulemanagerdialog.cpp \
-        src/netservice.cpp \
         src/native_segvfpe.cpp \
         src/optionsdialog.cpp \
         src/priceupdater.cpp \
@@ -256,6 +255,7 @@ SOURCES += \
         ../database/feedav.cpp \
         ../database/feediex.cpp \
         ../database/feedyahoo.cpp \
+        ../database/netservice.cpp \
         ../database/platformstring.cpp \
         ../database/sqlcb_modules.cpp \
         ../database/sqlcb_symbol_table.cpp \
@@ -287,7 +287,6 @@ HEADERS  += \
         include/mainwindow.h \
         include/manualdialog.h \
         include/modulemanagerdialog.h \
-        include/netservice.h \
         include/optionsdialog.h \
         include/priceupdater.h \
         include/priceworker.h \
@@ -316,7 +315,8 @@ HEADERS  += \
         ../chart/qtcgraphicsscene.h \
         ../database/feedav.h \
         ../database/feediex.h \
-        ../database/feedyahoo.h
+        ../database/feedyahoo.h \
+        ../database/netservice.h
 
 
 # Qt5 specific sources and headers

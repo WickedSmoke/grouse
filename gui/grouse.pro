@@ -38,7 +38,6 @@ HEADERS += MainWindow.h \
 	../ChartGeany/include/priceupdater.h \
 	../ChartGeany/include/priceworker.h \
 	../ChartGeany/include/progressdialog.h \
-	../ChartGeany/include/netservice.h \
 	../ChartGeany/include/stockticker.h \
 	../ChartGeany/include/waitdialog.h \
 	../chart/chartapp.h \
@@ -56,7 +55,8 @@ HEADERS += MainWindow.h \
 	../chart/qtcgraphicsscene.h \
 	../database/feedav.h \
 	../database/feediex.h \
-	../database/feedyahoo.h
+	../database/feedyahoo.h \
+	../database/netservice.h
 
 
 SOURCES += MainWindow.cpp \
@@ -78,7 +78,6 @@ SOURCES += MainWindow.cpp \
 	../ChartGeany/src/priceworker.cpp \
 	../ChartGeany/src/progressdialog.cpp \
 	../ChartGeany/src/native_segvfpe.cpp \
-	../ChartGeany/src/netservice.cpp \
 	../ChartGeany/src/stockticker.cpp \
 	../ChartGeany/src/waitdialog.cpp \
 	../ChartGeany/src/cgscript.c \
@@ -119,6 +118,7 @@ SOURCES += MainWindow.cpp \
 	../database/feedav.cpp \
 	../database/feediex.cpp \
 	../database/feedyahoo.cpp \
+	../database/netservice.cpp \
 	../database/sqlcb_symbol_table.cpp \
 	../database/sqlcb_toolchain.cpp \
 
