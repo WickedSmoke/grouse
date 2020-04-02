@@ -45,19 +45,20 @@
 class OptionColor : public QToolButton
 {
 public:
-    OptionColor( const QColor& color ) : _pix(24, 24), _col(color)
+    OptionColor( const QColor& color ) : _pix(24, 24)
     {
         setColor( color );
     }
+
+    const QColor& color() const { return _col; }
 
     void setColor( const QColor& color )
     {
         _pix.fill( color );
         QIcon icon( _pix );
         setIcon(icon);
+        _col = color;
     }
-
-    const QColor& color() const { return _col; }
 
 private:
     QPixmap _pix;
@@ -66,7 +67,7 @@ private:
 
 
 OptionsDialog::OptionsDialog(QWidget* parent) :
-    QDialog(parent)
+    QDialog(parent), _colorDialog(nullptr), _lastColorClicked(nullptr)
 {
     QFormLayout* form;
     QGridLayout* grid;
@@ -203,11 +204,25 @@ OptionsDialog::OptionsDialog(QWidget* parent) :
 
 void OptionsDialog::colorClicked()
 {
-    OptionColor* btn = static_cast<OptionColor*>( sender() );
-    QColorDialog* dlg = new QColorDialog(this);
-    dlg->setOption(QColorDialog::DontUseNativeDialog, true);
-    if( dlg->exec() == QDialog::Accepted )
-        btn->setColor( dlg->selectedColor() );
+    if( ! _colorDialog )
+    {
+        _colorDialog = new QColorDialog(this);
+        if( ! _colorDialog )
+            return;
+        _colorDialog->setOption(QColorDialog::DontUseNativeDialog, true);
+        connect( _colorDialog, SIGNAL(colorSelected(const QColor&)),
+                 SLOT(colorSel(const QColor&)) );
+    }
+    _lastColorClicked = static_cast<OptionColor*>( sender() );
+    _colorDialog->setCurrentColor( _lastColorClicked->color() );
+    _colorDialog->open();
+}
+
+
+void OptionsDialog::colorSel(const QColor& col)
+{
+    if( _lastColorClicked )
+        _lastColorClicked->setColor(col);
 }
 
 

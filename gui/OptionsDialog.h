@@ -22,8 +22,9 @@
 #include <QDialog>
 
 
-class QLineEdit;
 class QCheckBox;
+class QColorDialog;
+class QLineEdit;
 class QGroupBox;
 class QRadioButton;
 class QSpinBox;
@@ -40,12 +41,16 @@ protected:
     void showEvent(QShowEvent*);
 
 private slots:
+    void colorSel(const QColor&);
     void setChartStyle(int);
     void colorClicked();
     void saveOptions();
 
 private:
     int chartStyle();
+
+    QColorDialog* _colorDialog;
+    OptionColor* _lastColorClicked;
 
     QLineEdit* _keyIEX ;
     QLineEdit* _keyAlpha;
