@@ -26,6 +26,7 @@ HEADERS += MainWindow.h \
 	DataManager.h \
 	ParameterDialog.h \
 	DownloadDataDialog.h \
+	OptionsDialog.h \
 	../ChartGeany/include/appColorDialog.h \
 	../ChartGeany/include/debugdialog.h \
 	../ChartGeany/include/databrowserdialog.h \
@@ -62,6 +63,7 @@ SOURCES += MainWindow.cpp \
 	DataManager.cpp \
 	ParameterDialog.cpp \
 	DownloadDataDialog.cpp \
+	OptionsDialog.cpp \
 	../ChartGeany/src/appColorDialog.cpp \
 	../ChartGeany/src/common.cpp \
 	../ChartGeany/src/debugdialog.cpp \

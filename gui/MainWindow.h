@@ -12,6 +12,7 @@
 
 
 class DataManager;
+class OptionsDialog;
 class QTabWidget;
 
 class MainWindow : public QMainWindow
@@ -45,6 +46,7 @@ private slots:
     void addStudy();
     void addMarker( QAction* );
     void showDataManager();
+    void showOptions();
     void closeTab(int);
 
 private:
@@ -64,6 +66,7 @@ private:
     QMenu* _markers;
 
     DataManager* _dataManager;
+    OptionsDialog* _optionsDialog;
     QTabWidget*  _tabWidget;
 
     // Disabled copy constructor and operator=

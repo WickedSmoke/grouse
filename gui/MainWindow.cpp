@@ -16,8 +16,8 @@
 #include "MainWindow.h"
 #include "chartapp.h"
 #include "common.h"
-#include "progressdialog.h"
 #include "DataManager.h"
+#include "OptionsDialog.h"
 #include "qtachart.h"
 #include "qtachart_object.h"
 
@@ -33,7 +33,7 @@
 
 
 MainWindow::MainWindow() :
-    _dataManager(nullptr)
+    _dataManager(nullptr), _optionsDialog(nullptr)
 {
     createActions();
     createMenus();
@@ -263,6 +263,8 @@ void MainWindow::createMenus()
     //file->addAction( _actOpen );
     //file->addAction( _actSave );
     file->addAction( _actManageData );
+    file->addAction( "&Edit Options...", this, SLOT(showOptions()),
+                     QKeySequence("CTRL+E") );
     file->addSeparator();
     file->addAction( _actQuit );
 
@@ -374,6 +376,13 @@ void MainWindow::showDataManager()
 {
     CREATE_DIALOG( _dataManager, DataManager );
     _dataManager->show();
+}
+
+
+void MainWindow::showOptions()
+{
+    CREATE_DIALOG( _optionsDialog, OptionsDialog );
+    _optionsDialog->show();
 }
 
 
