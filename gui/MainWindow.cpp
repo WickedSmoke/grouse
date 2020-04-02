@@ -35,6 +35,8 @@
 MainWindow::MainWindow() :
     _dataManager(nullptr), _optionsDialog(nullptr)
 {
+    setWindowTitle("Chart Grouse");
+
     createActions();
     createMenus();
     createTools();
