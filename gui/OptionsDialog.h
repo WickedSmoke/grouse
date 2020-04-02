@@ -77,6 +77,8 @@ private:
     QCheckBox* _onlinePrice;
     OptionColor* _fgColor;
     OptionColor* _bgColor;
+
+    bool _enableproxyOrig;
 };
 
 

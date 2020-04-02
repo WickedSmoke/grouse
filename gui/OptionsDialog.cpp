@@ -34,6 +34,7 @@
 #include "defs.h"       // Application_Options
 #include "chartapp.h"   // showMessage
 #include "qtachart.h"
+#include "netservice.h"
 
 
 #define gPref   Application_Options
@@ -77,6 +78,8 @@ OptionsDialog::OptionsDialog(QWidget* parent) :
     setWindowFlags(Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint);
     setModal(true);
     setMinimumWidth(500);
+
+    _enableproxyOrig = gPref->enableproxy;
 
     QBoxLayout* lo = new QVBoxLayout( this );
     QTabWidget* tab = new QTabWidget;
@@ -285,6 +288,12 @@ void OptionsDialog::saveOptions()
     gPref->linear     = _linearScale->isChecked();
     gPref->showonlineprice = _onlinePrice->isChecked();
 
+    // TODO: Only apply if anything actually changed.  Until precise change
+    // tracking is implemented we only skip apply if the proxy is now
+    // disabled and was also originally disabled.
+    if( gPref->enableproxy || (_enableproxyOrig != gPref->enableproxy) )
+        NetService::applyProxyOptions(gPref);
+
     int result = saveAppOptions(gPref);
     if(result != CG_ERR_OK)
         showMessage(errorMessage(result), this);
@@ -294,6 +303,8 @@ void OptionsDialog::saveOptions()
 
 void OptionsDialog::showEvent(QShowEvent *event)
 {
+    _enableproxyOrig = gPref->enableproxy;
+
     // General
     _keyIEX->setText( gPref->iexapikey );
     _keyAlpha->setText( gPref->avapikey );

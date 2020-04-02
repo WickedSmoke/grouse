@@ -50,6 +50,8 @@ class NetService: public QObject
   Q_OBJECT
   
 public:
+  static void applyProxyOptions (const AppOptions*);
+
   explicit NetService (qint16  nettimeout, const QByteArray& httpHeader, QObject *parent = 0); // constructor
   ~NetService (void);	     				 // destructor
 

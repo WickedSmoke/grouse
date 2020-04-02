@@ -19,7 +19,6 @@
 
 #include "optsize.h"
 #include <QDesktopServices>
-#include <QNetworkProxy>
 #include <QCloseEvent>
 #include <QShowEvent>
 #include <QScrollBar>
@@ -30,6 +29,7 @@
 #include "mainwindow.h"
 #include "feedyahoo.h"
 #include "feediex.h"
+#include "netservice.h"
 #include "top.h"
 
 // constructor
@@ -647,17 +647,7 @@ OptionsDialog::loadOptions (void)
     }
   }
 
-  QNetworkProxy proxy;
-  if (!Application_Options->enableproxy)
-    proxy.setType(QNetworkProxy::NoProxy);
-  else
-    proxy.setType(QNetworkProxy::HttpProxy);
-
-  proxy.setHostName(Application_Options->proxyhost);
-  proxy.setPort(Application_Options->proxyport);
-  proxy.setUser(Application_Options->proxyuser);
-  proxy.setPassword(Application_Options->proxypass);
-  QNetworkProxy::setApplicationProxy (proxy);
+  NetService::applyProxyOptions(Application_Options);
 
   setChartStyle (Application_Options->chartstyle);
   setLineColor (Application_Options->linecolor);

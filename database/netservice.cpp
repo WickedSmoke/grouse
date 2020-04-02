@@ -20,10 +20,25 @@
 #include <QByteArray>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
+#include <QNetworkProxy>
 #include <QTemporaryFile>
 #include <QSslConfiguration>
 #include "netservice.h"
 #include "common.h"
+
+
+void NetService::applyProxyOptions( const AppOptions* opt )
+{
+  QNetworkProxy proxy;
+  proxy.setType(opt->enableproxy ? QNetworkProxy::HttpProxy
+                                 : QNetworkProxy::NoProxy);
+  proxy.setHostName(opt->proxyhost);
+  proxy.setPort(opt->proxyport);
+  proxy.setUser(opt->proxyuser);
+  proxy.setPassword(opt->proxypass);
+  QNetworkProxy::setApplicationProxy (proxy);
+}
+
 
 // constructor
 NetService::NetService (qint16  nettimeout, const QByteArray& httpHeader, QObject *parent)
