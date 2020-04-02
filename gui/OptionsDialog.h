@@ -24,7 +24,9 @@
 
 class QLineEdit;
 class QCheckBox;
+class QGroupBox;
 class QRadioButton;
+class QSpinBox;
 class OptionColor;
 
 class OptionsDialog : public QDialog
@@ -49,6 +51,13 @@ private:
     QLineEdit* _keyAlpha;
     QCheckBox* _convertGBP;
     QCheckBox* _updateQuotes;
+
+    QGroupBox* _network;
+    QLineEdit* _host;
+    QSpinBox*  _port;
+    QLineEdit* _user;
+    QLineEdit* _passwd;
+    QSpinBox*  _timeout;
 
     QRadioButton* _lineChart;
     QRadioButton* _candleChart;

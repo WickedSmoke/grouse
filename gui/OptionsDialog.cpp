@@ -27,6 +27,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QSpinBox>
 #include <QTabWidget>
 #include <QToolButton>
 #include "OptionsDialog.h"
@@ -97,8 +98,8 @@ OptionsDialog::OptionsDialog(QWidget* parent) :
         lo2->addLayout( form );
         _keyIEX = new QLineEdit( gPref->iexapikey );
         _keyAlpha = new QLineEdit( gPref->avapikey );
-        form->addRow( new QLabel("IEX API key:"), _keyIEX );
-        form->addRow( new QLabel("Alpha Vantage API key:"), _keyAlpha );
+        form->addRow( "IEX API key:", _keyIEX );
+        form->addRow( "Alpha Vantage API key:", _keyAlpha );
 
         _convertGBP = new QCheckBox("Convert London prices to GBP");
         SET_CHECK( _convertGBP, gPref->longbp );
@@ -108,6 +109,30 @@ OptionsDialog::OptionsDialog(QWidget* parent) :
         lo2->addWidget(_updateQuotes);
 
         lo2->addStretch();
+
+
+    _network = new QGroupBox;
+    _network->setFlat(true);
+    _network->setCheckable(true);
+    _network->setChecked( gPref->enableproxy );
+    _network->setTitle("&Enable Proxy");
+    form = new QFormLayout( _network );
+
+        _host    = new QLineEdit( gPref->proxyhost );
+        _port    = new QSpinBox;
+        _port->setMaximum( 32767 );
+        _port->setValue( gPref->proxyport );
+        _user    = new QLineEdit( gPref->proxyuser );
+        _passwd  = new QLineEdit( gPref->proxypass );
+        _timeout = new QSpinBox;
+        _timeout->setRange( 20, 120 );
+        _timeout->setSuffix(" sec.");
+        _timeout->setValue( gPref->nettimeout );
+        form->addRow( "Host:", _host );
+        form->addRow( "Port:", _port );
+        form->addRow( "User:", _user );
+        form->addRow( "Password:", _passwd );
+        form->addRow( "Timeout:", _timeout );
 
 
     QWidget* charts = new QWidget;
@@ -170,7 +195,7 @@ OptionsDialog::OptionsDialog(QWidget* parent) :
 
     tab->addTab( general, "General" );
     tab->addTab( new QWidget, "Ticker" );
-    tab->addTab( new QWidget, "Network" );
+    tab->addTab( _network, "Network" );
     tab->addTab( charts, "Chart Defaults" );
     //tab->addTab( "Develop" );
 }
@@ -226,6 +251,14 @@ void OptionsDialog::saveOptions()
     gPref->longbp     = _convertGBP->isChecked();
     gPref->autoupdate = _updateQuotes->isChecked();
 
+    // Network
+    gPref->enableproxy = _network->isChecked();
+    gPref->proxyhost  = _host->text();
+    gPref->proxyport  = _port->value();
+    gPref->proxyuser  = _user->text();
+    gPref->proxypass  = _passwd->text();
+    gPref->nettimeout = _timeout->value();
+
     // Chart Defaults
     gPref->linecolor  = _lineColor->color();
     gPref->barcolor   = _barColor->color();
@@ -251,6 +284,14 @@ void OptionsDialog::showEvent(QShowEvent *event)
     _keyAlpha->setText( gPref->avapikey );
     _convertGBP->setChecked( gPref->longbp );
     _updateQuotes->setChecked( gPref->autoupdate );
+
+    // Network
+    _network->setChecked( gPref->enableproxy );
+    _host->setText( gPref->proxyhost );
+    _port->setValue( gPref->proxyport );
+    _user->setText( gPref->proxyuser );
+    _passwd->setText( gPref->proxypass );
+    _timeout->setValue( gPref->nettimeout );
 
     // Chart Defaults
     _lineColor->setColor( gPref->linecolor );
