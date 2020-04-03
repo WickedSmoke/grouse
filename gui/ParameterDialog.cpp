@@ -161,7 +161,8 @@ void DynParamsDialog::addParam( QString paramName, QString label,
     if( field )
     {
         field->setObjectName(label);
-        _form->addRow( label, field );
+        QString labelC(label);
+        _form->addRow( labelC.append(':'), field );
     }
 }
 
