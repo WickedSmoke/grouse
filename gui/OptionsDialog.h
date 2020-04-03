@@ -24,10 +24,12 @@
 
 class QCheckBox;
 class QColorDialog;
+class QComboBox;
 class QLineEdit;
 class QGroupBox;
 class QRadioButton;
 class QSpinBox;
+class QTreeWidget;
 class OptionColor;
 
 class OptionsDialog : public QDialog
@@ -38,15 +40,21 @@ public:
     OptionsDialog(QWidget *parent = 0);
 
 protected:
+    bool eventFilter(QObject*, QEvent*);
     void showEvent(QShowEvent*);
 
 private slots:
+    void tabChanged(int);
+    void addTickerSymbol();
     void colorSel(const QColor&);
     void setChartStyle(int);
     void colorClicked();
     void saveOptions();
 
 private:
+    void populateTickerSymbols();
+    void updateTickerSymbols();
+    void removeTickerSymbol();
     int chartStyle();
 
     QColorDialog* _colorDialog;
@@ -56,6 +64,11 @@ private:
     QLineEdit* _keyAlpha;
     QCheckBox* _convertGBP;
     QCheckBox* _updateQuotes;
+
+    QTreeWidget* _tickerList;
+    QLineEdit* _tsymbol;
+    QComboBox* _tfeed;
+    QSpinBox*  _tspeed;
 
     QGroupBox* _network;
     QLineEdit* _host;
@@ -79,6 +92,8 @@ private:
     OptionColor* _bgColor;
 
     bool _enableproxyOrig;
+    bool _tickerLoaded;
+    bool _tickerModified;
 };
 
 

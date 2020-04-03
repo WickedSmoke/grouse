@@ -19,12 +19,15 @@
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QColorDialog>
+#include <QComboBox>
 #include <QDialogButtonBox>
 #include <QFormLayout>
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
+#include <QKeyEvent>
+#include <QTreeWidget>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QSpinBox>
@@ -80,6 +83,8 @@ OptionsDialog::OptionsDialog(QWidget* parent) :
     setMinimumWidth(500);
 
     _enableproxyOrig = gPref->enableproxy;
+    _tickerLoaded = false;
+    _tickerModified = false;
 
     QBoxLayout* lo = new QVBoxLayout( this );
     QTabWidget* tab = new QTabWidget;
@@ -113,6 +118,42 @@ OptionsDialog::OptionsDialog(QWidget* parent) :
         lo2->addWidget(_updateQuotes);
 
         lo2->addStretch();
+
+
+    QWidget* ticker = new QWidget;
+    grid = new QGridLayout( ticker );
+    {
+        QStringList hdr;
+        hdr << QStringLiteral("Symbol") << QStringLiteral("Feed");
+
+        _tickerList = new QTreeWidget;
+        _tickerList->setRootIsDecorated( false );
+        _tickerList->setColumnCount( 2 );
+        _tickerList->setHeaderLabels( hdr );
+        _tickerList->setEditTriggers( QAbstractItemView::NoEditTriggers );
+        _tickerList->setSelectionBehavior( QAbstractItemView::SelectRows );
+        _tickerList->installEventFilter(this);
+        grid->addWidget( _tickerList, 0, 0, 2, 3 );
+
+        _tsymbol = new QLineEdit;
+        _tfeed = new QComboBox;
+        _tfeed->addItem("IEX", 0);
+        _tfeed->addItem("YAHOO", 1);
+        QPushButton* btn = new QPushButton("Add Symbol");
+        connect( btn, SIGNAL(clicked(bool)), this, SLOT(addTickerSymbol()) );
+        _tsymbol->setMaximumWidth( btn->sizeHint().width() );
+        grid->addWidget( _tsymbol, 2, 0 );
+        grid->addWidget( _tfeed, 2, 1 );
+        grid->addWidget( btn, 2, 2 );
+
+        grid->addWidget( new QLabel("Scroll Speed:"), 0, 4, Qt::AlignRight );
+        _tspeed = new QSpinBox;
+        _tspeed->setRange( 10, 50 );
+        _tspeed->setValue( gPref->scrollspeed );
+        grid->addWidget( _tspeed, 0, 5 );
+
+        grid->setRowStretch(1, 1);
+    }
 
 
     _network = new QGroupBox;
@@ -198,10 +239,110 @@ OptionsDialog::OptionsDialog(QWidget* parent) :
 
 
     tab->addTab( general, "General" );
-    tab->addTab( new QWidget, "Ticker" );
+    tab->addTab( ticker, "Ticker" );
     tab->addTab( _network, "Network" );
     tab->addTab( charts, "Chart Defaults" );
     //tab->addTab( "Develop" );
+
+    connect( tab, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)) );
+}
+
+
+void OptionsDialog::tabChanged(int index)
+{
+    if( index == 1 && ! _tickerLoaded )
+    {
+        populateTickerSymbols();
+        _tickerLoaded = true;
+    }
+}
+
+
+void OptionsDialog::populateTickerSymbols()
+{
+    QStringList symbol, feed;
+    CG_ERR_RESULT err;
+
+    err = loadTickerSymbols(symbol, feed);
+    if(err != CG_ERR_OK)
+    {
+        showMessage(errorMessage(err), this);
+        return;
+    }
+
+    _tickerList->clear();
+
+    QStringList istr;
+    istr << QStringLiteral("") << QStringLiteral("");
+    for(int i = 0; i < symbol.size (); ++i)
+    {
+        istr[0] = symbol[i];
+        istr[1] = feed[i];
+        _tickerList->addTopLevelItem( new QTreeWidgetItem( istr ) );
+    }
+}
+
+
+void OptionsDialog::updateTickerSymbols()
+{
+    QStringList symbol, feed;
+    CG_ERR_RESULT err;
+
+    QTreeWidgetItemIterator it(_tickerList);
+    while(*it)
+    {
+        symbol << (*it)->text(0);
+        feed   << (*it)->text(1);
+        ++it;
+    }
+
+    err = saveTickerSymbols(symbol, feed);
+    if( err != CG_ERR_OK )
+        showMessage(errorMessage(err), this);
+}
+
+
+void OptionsDialog::addTickerSymbol()
+{
+    QList<QTreeWidgetItem*> found =
+        _tickerList->findItems( _tsymbol->text(), Qt::MatchFixedString, 0);
+    if( ! found.isEmpty() )
+    {
+        showMessage("Symbol already in ticker.", this);
+        return;
+    }
+
+    QStringList istr;
+    istr << _tsymbol->text() << _tfeed->currentText();
+    _tickerList->addTopLevelItem( new QTreeWidgetItem( istr ) );
+    _tickerList->scrollToBottom();
+
+    _tickerModified = true;
+}
+
+
+void OptionsDialog::removeTickerSymbol()
+{
+    QList<QTreeWidgetItem *> sel = _tickerList->selectedItems();
+    while( ! sel.isEmpty() )
+    {
+        delete sel.takeFirst();
+        _tickerModified = true;
+    }
+}
+
+
+bool OptionsDialog::eventFilter(QObject* obj, QEvent* ev)
+{
+    if( obj == _tickerList && ev->type() == QEvent::KeyPress )
+    {
+        if( static_cast<QKeyEvent*>(ev)->key() == Qt::Key_Delete )
+        {
+            removeTickerSymbol();
+            return true;
+        }
+    }
+    return QDialog::eventFilter(obj, ev);
 }
 
 
@@ -269,6 +410,9 @@ void OptionsDialog::saveOptions()
     gPref->longbp     = _convertGBP->isChecked();
     gPref->autoupdate = _updateQuotes->isChecked();
 
+    // Ticker
+    gPref->scrollspeed = (qint16) _tspeed->value();
+
     // Network
     gPref->enableproxy = _network->isChecked();
     gPref->proxyhost  = _host->text();
@@ -294,6 +438,9 @@ void OptionsDialog::saveOptions()
     if( gPref->enableproxy || (_enableproxyOrig != gPref->enableproxy) )
         NetService::applyProxyOptions(gPref);
 
+    if( _tickerModified )
+        updateTickerSymbols();
+
     int result = saveAppOptions(gPref);
     if(result != CG_ERR_OK)
         showMessage(errorMessage(result), this);
@@ -304,12 +451,17 @@ void OptionsDialog::saveOptions()
 void OptionsDialog::showEvent(QShowEvent *event)
 {
     _enableproxyOrig = gPref->enableproxy;
+    _tickerLoaded = false;
+    _tickerModified = false;
 
     // General
     _keyIEX->setText( gPref->iexapikey );
     _keyAlpha->setText( gPref->avapikey );
     _convertGBP->setChecked( gPref->longbp );
     _updateQuotes->setChecked( gPref->autoupdate );
+
+    // Ticker
+    _tspeed->setValue( gPref->scrollspeed );
 
     // Network
     _network->setChecked( gPref->enableproxy );
