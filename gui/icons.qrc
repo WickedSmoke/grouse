@@ -9,6 +9,25 @@
     <file alias="Trash_Delete.png">../ChartGeany/images/icons/PNG/Trash_Delete.png</file>
     <file alias="Search.png">../ChartGeany/images/icons/PNG/Search.png</file>
   </qresource>
+  <qresource prefix="png">
+    <file alias="images/icons/PNG/fullscreen.png">../ChartGeany/images/icons/PNG/fullscreen.png</file>
+    <file alias="images/icons/PNG/Gear.png">../ChartGeany/images/icons/PNG/Gear.png</file>
+    <file alias="images/icons/PNG/Blocknotes.png">../ChartGeany/images/icons/PNG/Blocknotes.png</file>
+    <file alias="images/icons/PNG/Zoom_In.png">../ChartGeany/images/icons/PNG/Zoom_In.png</file>
+    <file alias="images/icons/PNG/Zoom_Out.png">../ChartGeany/images/icons/PNG/Zoom_Out.png</file>
+    <file alias="images/icons/PNG/Chart_Graph_Descending.png">../ChartGeany/images/icons/PNG/Chart_Graph_Descending.png</file>
+    <file alias="images/icons/PNG/Application_Blueprint.png">../ChartGeany/images/icons/PNG/Application_Blueprint.png</file>
+    <file alias="images/icons/PNG/File_List.png">../ChartGeany/images/icons/PNG/File_List.png</file>
+    <file alias="images/icons/PNG/Button_Back.png">../ChartGeany/images/icons/PNG/Button_Back.png</file>
+    <file alias="images/icons/PNG/Error_Symbol.png">../ChartGeany/images/icons/PNG/Error_Symbol.png</file>
+    <file alias="images/icons/PNG/Info.png">../ChartGeany/images/icons/PNG/Info.png</file>
+    <file alias="images/icons/PNG/Button_Up.png">../ChartGeany/images/icons/PNG/Button_Up.png</file>
+    <file alias="images/icons/PNG/Button_Down.png">../ChartGeany/images/icons/PNG/Button_Down.png</file>
+    <file alias="images/icons/PNG/File_Edit.png">../ChartGeany/images/icons/PNG/File_Edit.png</file>
+    <file alias="images/icons/PNG/Trash_Full.png">../ChartGeany/images/icons/PNG/Trash_Full.png</file>
+    <file alias="images/icons/PNG/Folder_Chart.png">../ChartGeany/images/icons/PNG/Folder_Chart.png</file>
+    <file alias="images/icons/PNG/Folder_Upload.png">../ChartGeany/images/icons/PNG/Folder_Upload.png</file>
+  </qresource>
   <qresource>
     <file>images/cg-logo.png</file>
   </qresource>
