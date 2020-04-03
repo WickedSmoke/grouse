@@ -6,8 +6,10 @@
 
 
 #include <QApplication>
+#include <QDockWidget>
 #include <QFileDialog>
 #include <QKeyEvent>
+#include <QLayout>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QProgressBar>
@@ -20,6 +22,7 @@
 #include "OptionsDialog.h"
 #include "qtachart.h"
 #include "qtachart_object.h"
+#include "stockticker.h"
 
 
 #include "MainWindow_studies.cpp"
@@ -33,7 +36,8 @@
 
 
 MainWindow::MainWindow() :
-    _dataManager(nullptr), _optionsDialog(nullptr)
+    _dataManager(nullptr), _optionsDialog(nullptr),
+    _tdock(nullptr), _ticker(nullptr)
 {
     setWindowTitle("Chart Grouse");
 
@@ -191,12 +195,6 @@ QStringList MainWindow::getTabKeys( const QString& type )
 }
 
 
-void MainWindow::enableTickerButton() {}
-
-
-void MainWindow::disableTickerButton() {}
-
-
 void MainWindow::showAbout()
 {
     QMessageBox* about = new QMessageBox(this);
@@ -259,6 +257,8 @@ static const char* _markerName[6] =
 
 void MainWindow::createMenus()
 {
+    QAction* act;
+
     QMenuBar* bar = menuBar();
 
     QMenu* file = bar->addMenu( "&File" );
@@ -267,6 +267,9 @@ void MainWindow::createMenus()
     file->addAction( _actManageData );
     file->addAction( "&Edit Options...", this, SLOT(showOptions()),
                      QKeySequence("CTRL+E") );
+    act = file->addAction( "Show &Ticker", this, SLOT(toggleTicker(bool)),
+                     QKeySequence("CTRL+T") );
+    act->setCheckable(true);
     file->addSeparator();
     file->addAction( _actQuit );
 
@@ -278,7 +281,6 @@ void MainWindow::createMenus()
     _markers->setEnabled( false );
     connect( _markers, SIGNAL(triggered(QAction*)),
              this, SLOT(addMarker(QAction*)) );
-    QAction* act;
     for( int i = 0; i < 6; ++i )
     {
         act = _markers->addAction( _markerName[i] );
@@ -344,6 +346,7 @@ void MainWindow::addMarker( QAction* act )
 }
 
 
+#if 0
 void MainWindow::open( const QString& file )
 {
     if( 1 )
@@ -358,7 +361,6 @@ void MainWindow::open( const QString& file )
 }
 
 
-#if 0
 void MainWindow::open()
 {
     QString fn;
@@ -383,8 +385,72 @@ void MainWindow::showDataManager()
 
 void MainWindow::showOptions()
 {
-    CREATE_DIALOG( _optionsDialog, OptionsDialog );
+    if(! _optionsDialog)
+    {
+        _optionsDialog = new OptionsDialog(this);
+        if(! _optionsDialog) return;
+        connect( _optionsDialog, SIGNAL(tickerSpeedChanged(int)),
+                 SLOT(tickerSpeed(int)) );
+    }
     _optionsDialog->show();
+}
+
+
+void MainWindow::toggleTicker( bool on )
+{
+    if( on )
+    {
+        if(! _ticker)
+        {
+            _ticker = new StockTicker(this);
+            if(! _ticker) return;
+
+            // TODO: Set height based upon font used.
+            // Does not appear in QDockWidget without some minimum height.
+            _ticker->setMinimumHeight( 31 );
+
+            if(_tdock)
+            {
+                _tdock->setWidget( _ticker );
+                _tdock->show();
+            }
+            else
+            {
+                _tdock = new QDockWidget("Ticker", this);
+                _tdock->setFeatures( QDockWidget::NoDockWidgetFeatures );
+                _tdock->setAllowedAreas( Qt::BottomDockWidgetArea );
+                // Using an empty widget to hide the titlebar.
+                _tdock->setTitleBarWidget( new QWidget(_tdock) );
+                _tdock->setWidget( _ticker );
+
+                addDockWidget( Qt::BottomDockWidgetArea, _tdock );
+            }
+        }
+
+        QStringList lsymbol, lfeed;
+        int rc = gDatabase->loadTickerSymbols(lsymbol, lfeed);
+        if(rc != CG_ERR_OK)
+        {
+            showMessage(errorMessage(rc), this);
+            return;
+        }
+        if(lsymbol.isEmpty())
+        {
+            showMessage("No symbols found in ticker", this);
+            return;
+        }
+        _ticker->show();
+    }
+    else if( _ticker )
+    {
+#if 0
+        _ticker->hide();
+#else
+        _tdock->hide();
+        delete _ticker;
+        _ticker = nullptr;
+#endif
+    }
 }
 
 
@@ -400,6 +466,13 @@ void MainWindow::closeTab(int index)
     QWidget* wid = _tabWidget->widget(index);
     _tabWidget->removeTab(index);
     delete wid;
+}
+
+
+void MainWindow::tickerSpeed(int speed)
+{
+    if( _ticker )
+        _ticker->setSpeed(speed);
 }
 
 

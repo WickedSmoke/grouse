@@ -150,6 +150,8 @@ OptionsDialog::OptionsDialog(QWidget* parent) :
         _tspeed = new QSpinBox;
         _tspeed->setRange( 10, 50 );
         _tspeed->setValue( gPref->scrollspeed );
+        connect( _tspeed, SIGNAL(valueChanged(int)),
+                 SIGNAL(tickerSpeedChanged(int)) );
         grid->addWidget( _tspeed, 0, 5 );
 
         grid->setRowStretch(1, 1);

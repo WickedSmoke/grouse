@@ -20,7 +20,10 @@
 #include <QTextDocument>
 #include "ui_stockticker.h"
 #include "stockticker.h"
+
+#ifndef GUI_DESKTOP
 #include "mainwindow.h"
+#endif
 
 /// TickerWorker
 // constructor
@@ -215,11 +218,13 @@ StockTicker::ticker ()
   ui->graphicsView->scene ()->update ();
   counter -= tickerspeed;
 
+#ifndef GUI_DESKTOP
   if (firstrun)
   {
     (qobject_cast <MainWindow *> (parent ()))->enableTickerButton ();
     firstrun = false;
   }
+#endif
 
   if (counter < (w * -1))
   {

@@ -22,6 +22,8 @@
 #include "stockticker.h"
 #include "mainwindow.h"
 
+//#define SIMULATE_FEED
+
 /// PriceWorkerTicker
 // constructor
 PriceWorkerTicker::PriceWorkerTicker ()
@@ -29,9 +31,11 @@ PriceWorkerTicker::PriceWorkerTicker ()
   parentObject = NULL;
   state = 0;
   runflag = 1;
+#ifndef SIMULATE_FEED
   yfeed = new YahooFeed (this);
   efeed = new IEXFeed (this);
   afeed = new AlphaVantageFeed (this);
+#endif
 }
 
 // destructor
@@ -75,12 +79,18 @@ PriceWorkerTicker::process()
           lrtprice += dummy;
           if (runflag.fetchAndAddAcquire (0) == 1)
           {
+#ifdef SIMULATE_FEED
+            RTPrice& rp = lrtprice[counter2];
+            rp.symbol = symbol.at(counter2);
+            rp.price  = QStringLiteral("666.00");
+#else
             if (datafeed.at (counter2).toUpper () == QLatin1String ("YAHOO"))
               yfeed->getRealTimePrice (symbol.at (counter2), lrtprice[counter2], YahooFeed::HTTP);
             else if (datafeed.at (counter2).toUpper () == QLatin1String ("IEX"))
               efeed->getRealTimePrice (symbol.at (counter2), lrtprice[counter2]);
             else if (datafeed.at (counter2).toUpper () == QLatin1String ("ALPHAVANTAGE"))
               afeed->getRealTimePrice (symbol.at (counter2), lrtprice[counter2], AlphaVantageFeed::CSV);
+#endif
           }
         }
       }

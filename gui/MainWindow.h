@@ -13,7 +13,9 @@
 
 class DataManager;
 class OptionsDialog;
+class StockTicker;
 class QTabWidget;
+class QDockWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -29,12 +31,8 @@ public:
 
     QStringList getTabKeys( const QString& type );
 
-    void enableTickerButton();
-    void disableTickerButton();
-
 public slots:
 
-    void open( const QString& file );
     void showAbout();
 
 protected:
@@ -47,7 +45,9 @@ private slots:
     void addMarker( QAction* );
     void showDataManager();
     void showOptions();
+    void toggleTicker(bool);
     void closeTab(int);
+    void tickerSpeed(int);
 
 private:
 
@@ -68,6 +68,8 @@ private:
     DataManager* _dataManager;
     OptionsDialog* _optionsDialog;
     QTabWidget*  _tabWidget;
+    QDockWidget* _tdock;
+    StockTicker* _ticker;
 
     // Disabled copy constructor and operator=
     MainWindow( const MainWindow & ) : QMainWindow( 0 ) {}

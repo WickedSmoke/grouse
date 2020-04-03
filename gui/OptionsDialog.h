@@ -39,6 +39,9 @@ class OptionsDialog : public QDialog
 public:
     OptionsDialog(QWidget *parent = 0);
 
+signals:
+    void tickerSpeedChanged(int);
+
 protected:
     bool eventFilter(QObject*, QEvent*);
     void showEvent(QShowEvent*);
