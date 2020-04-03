@@ -285,14 +285,6 @@ extern CG_ERR_RESULT loadAppOptions (AppOptions *options);
 // save application options
 extern CG_ERR_RESULT saveAppOptions (AppOptions *options);
 
-// load ticker symbols
-extern CG_ERR_RESULT loadTickerSymbols (QStringList & symbol, QStringList & feed);
-
-// load portfolio symbols
-extern CG_ERR_RESULT loadPortfolioSymbols (QStringList & symbol, QStringList & feed, int pfid);
-
-// save ticker symbols
-extern CG_ERR_RESULT saveTickerSymbols (QStringList & symbol, QStringList & feed);
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #ifndef QStringLiteral

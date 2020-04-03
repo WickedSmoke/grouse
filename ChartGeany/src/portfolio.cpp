@@ -23,7 +23,6 @@
 #include "ui_portfolio.h"
 #include "portfolio.h"
 #include "mainwindow.h"
-#include "common.h"
 
 typedef QList<QTableWidgetItem *> RowCells;
 static const int TRNCOLUMNS = 10;

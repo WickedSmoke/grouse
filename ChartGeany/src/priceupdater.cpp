@@ -56,7 +56,7 @@ PriceWorkerTicker::process()
       QStringList lsymbol, lfeed;
       qint32 max;
 
-      if (loadTickerSymbols (lsymbol, lfeed) == CG_ERR_OK)
+      if (gDatabase->loadTickerSymbols (lsymbol, lfeed) == CG_ERR_OK)
       {
         symbol = lsymbol;
         datafeed = lfeed;

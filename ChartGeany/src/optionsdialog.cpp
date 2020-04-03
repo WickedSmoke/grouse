@@ -485,7 +485,7 @@ OptionsDialog::loadOptions (void)
     return;
   }
 
-  result = loadTickerSymbols (symbol, feed);
+  result = gDatabase->loadTickerSymbols (symbol, feed);
   if (result != CG_ERR_OK)
   {
     showMessage (errorMessage (result), this);
@@ -797,7 +797,7 @@ OptionsDialog::saveOptions ()
     feed << ui->tickerTableWidget->item (row, 1)->text ();
   }
 
-  result = saveTickerSymbols (symbol, feed);
+  result = gDatabase->saveTickerSymbols (symbol, feed);
   if (result != CG_ERR_OK)
   {
     showMessage (errorMessage (result), this);

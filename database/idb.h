@@ -158,6 +158,10 @@ public:
     int loadChartData( const QString& base, QTAChartData* data );
     int loadTableData( const QString& base, const QString& adjusted,
                        TableDataVector* data );
+
+    CG_ERR_RESULT loadTickerSymbols(QStringList& symbol, QStringList& feed);
+    CG_ERR_RESULT saveTickerSymbols(QStringList& symbol, QStringList& feed);
+
     void reset();
     int dbVersion();
 
@@ -186,6 +190,9 @@ extern int updatedb(QString &SQL, bool trylock);
 // update price table
 extern void updatePrice(RTPrice rtprice);
 
+extern CG_ERR_RESULT loadPortfolioSymbols(QStringList& symbol,
+                                          QStringList& feed, int pfid);
+
 // select from database
 extern int selectfromdb(const char *sql,
                         int (*callback)(void*,int,char**,char**), void *arg1);
@@ -200,8 +207,6 @@ extern int sqlcb_currencies(void *dummy, int argc, char **argv, char **);
 extern int sqlcb_markets   (void *dummy, int argc, char **argv, char **);
 extern int sqlcb_datafeeds (void *dummy, int argc, char **argv, char **);
 extern int sqlcb_nsymbols  (void *nsymptr, int argc, char **argv, char **);
-extern int sqlcb_tickersymbols(void *data, int argc, char **argv, char **);
-extern int sqlcb_tickerfeed(void *data, int argc, char **argv, char **);
 extern int sqlcb_transactiontypes(void *data, int argc, char **argv, char **);
 extern int sqlcb_commissiontypes(void *data, int argc, char **argv, char **);
 

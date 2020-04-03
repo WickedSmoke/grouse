@@ -263,7 +263,7 @@ void OptionsDialog::populateTickerSymbols()
     QStringList symbol, feed;
     CG_ERR_RESULT err;
 
-    err = loadTickerSymbols(symbol, feed);
+    err = gDatabase->loadTickerSymbols(symbol, feed);
     if(err != CG_ERR_OK)
     {
         showMessage(errorMessage(err), this);
@@ -296,7 +296,7 @@ void OptionsDialog::updateTickerSymbols()
         ++it;
     }
 
-    err = saveTickerSymbols(symbol, feed);
+    err = gDatabase->saveTickerSymbols(symbol, feed);
     if( err != CG_ERR_OK )
         showMessage(errorMessage(err), this);
 }

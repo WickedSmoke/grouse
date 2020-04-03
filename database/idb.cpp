@@ -733,6 +733,111 @@ int sqlcb_commissiontypes(void *dummy, int argc, char **argv, char **column)
 {
     LIST_QUERY1("DESCRIPTION", commissiontypeList)
 }
+
+static int sqlcb_tickersymbols(void *data, int argc, char **argv, char **column)
+{
+    QStringList *slist = static_cast <QStringList *> (data);
+    const char* colname;
+
+    for (qint32 counter = 0; counter < argc; counter ++)
+    {
+        colname = column[counter];
+        if (stringEqualI(colname, "SYMBOL"))
+            slist->append(QString(argv[counter]));
+    }
+    return 0;
+}
+
+static int sqlcb_tickerfeed(void *data, int argc, char **argv, char **column)
+{
+    QStringList *feed = static_cast <QStringList *> (data);
+    const char* colname;
+
+    for (qint32 counter = 0; counter < argc; counter ++)
+    {
+        colname = column[counter];
+        if (stringEqualI(colname, "FEED") ||
+            stringEqualI(colname, "DATAFEED"))
+        feed->append(QString(argv[counter]));
+    }
+    return 0;
+}
+
+
+CG_ERR_RESULT loadPortfolioSymbols(QStringList& symbol, QStringList& feed,
+                                   int pfid)
+{
+  QString query, table;
+  QStringList wsymbol, wfeed;
+  int rc;
+
+  table = QStringLiteral ("pftrans_") % QString::number (pfid) % QStringLiteral ("summary");
+  query = QStringLiteral ("SELECT SYMBOL FROM ") % table % QStringLiteral (" WHERE QUANTITY <> 0 ORDER BY SYMBOL;");
+  rc = selectfromdb(query.toUtf8(), sqlcb_tickersymbols,
+                    static_cast <void *> (&wsymbol));
+  if (rc == SQLITE_OK)
+  {
+    query += QStringLiteral ("SELECT DATAFEED FROM ") % table % QStringLiteral (" WHERE QUANTITY <> 0 ORDER BY SYMBOL;");
+    rc = selectfromdb(query.toUtf8(), sqlcb_tickerfeed,
+                      static_cast <void *> (&wfeed));
+    if (rc != SQLITE_OK)
+    {
+      symbol.clear ();
+      return CG_ERR_DBACCESS;
+    }
+  }
+  else
+    return CG_ERR_DBACCESS;
+
+  symbol = wsymbol;
+  feed = wfeed;
+
+  return CG_ERR_OK;
+}
+
+
+CG_ERR_RESULT InstrumentDatabase::loadTickerSymbols(QStringList& symbol,
+                                                    QStringList& feed)
+{
+    int rc;
+
+    rc = selectfromdb("SELECT SYMBOL FROM TICKER_SYMBOLS ORDER BY SYMBOL;",
+                      sqlcb_tickersymbols, static_cast <void *> (&symbol));
+    if (rc != SQLITE_OK)
+        return CG_ERR_DBACCESS;
+
+    rc = selectfromdb( "SELECT FEED FROM TICKER_SYMBOLS ORDER BY SYMBOL;",
+                       sqlcb_tickerfeed, static_cast <void *> (&feed));
+    if (rc != SQLITE_OK)
+    {
+        symbol.clear();
+        return CG_ERR_DBACCESS;
+    }
+    return CG_ERR_OK;
+}
+
+
+CG_ERR_RESULT InstrumentDatabase::saveTickerSymbols(QStringList& symbol,
+                                                    QStringList& feed)
+{
+  QString query;
+  int rc;
+
+  query = QStringLiteral ("DELETE FROM TICKER_SYMBOLS;");
+  for (qint32 counter = 0; counter < symbol.size (); counter ++)
+  {
+    query += QStringLiteral ("INSERT INTO TICKER_SYMBOLS (SYMBOL, FEED) VALUES ('") %
+             symbol[counter] % QStringLiteral ("','") % feed[counter] % QStringLiteral ("');");
+  }
+  query.append ('\n');
+
+  rc = updatedb (query);
+  if (rc != SQLITE_OK)
+    return CG_ERR_DBACCESS;
+
+  return CG_ERR_OK;
+}
+
 #endif
 
 

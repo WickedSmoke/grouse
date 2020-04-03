@@ -804,7 +804,7 @@ MainWindow::tickerButton_clicked ()
   {
     CG_ERR_RESULT result;
 
-    result = loadTickerSymbols (lsymbol, lfeed);
+    result = gDatabase->loadTickerSymbols (lsymbol, lfeed);
     if (result == CG_ERR_OK)
     {
       if (lsymbol.size () == 0)
