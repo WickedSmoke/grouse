@@ -24,9 +24,9 @@
 #include "mainwindow.h"
 #endif
 
-// constructor
+
 StockTicker::StockTicker (QWidget * parent):
-  QGraphicsView (parent), timerId(0)
+    QGraphicsView (parent), timerId(0)
 {
   newdata = false;
   tickerdata = NULL;
@@ -58,8 +58,8 @@ StockTicker::StockTicker (QWidget * parent):
   tickerlabel->setPos (0, -5);
 }
 
-// destructor
-StockTicker::~StockTicker ()
+
+StockTicker::~StockTicker()
 {
   if (timerId)
     killTimer(timerId);
@@ -68,9 +68,9 @@ StockTicker::~StockTicker ()
   delete tickerlabel;
 }
 
+
 // stock ticker data updates and advance
-void
-StockTicker::ticker ()
+void StockTicker::ticker()
 {
   static qreal x = 0,y = 0,w = 0, h = 0, wd;
   static qint32 counter = 0;
@@ -176,45 +176,45 @@ StockTicker::ticker ()
 }
 
 /// events
-// resize
-void
-StockTicker::resizeEvent (QResizeEvent *)
+void StockTicker::resizeEvent (QResizeEvent *)
 {
   scene()->setSceneRect (0, 0, width () - 10, height () - 5);
 }
 
-void
-StockTicker::timerEvent(QTimerEvent *)
+
+void StockTicker::timerEvent(QTimerEvent *)
 {
     ticker();
 }
 
 /// slots
-void
-StockTicker::updatePrices (RTPriceList rtprice)
+void StockTicker::updatePrices(RTPriceList rtprice)
 {
-  qint32 rs = rtplist.size ();
-  if (rs != rtprice.size ())
-  {
-    rtplist = rtprice;
-    newdata = true;
-  }
-
-  rs = rtplist.size ();
-  for (qint32 counter = 0; counter < rs; counter ++)
-  {
-    if (rtplist.at (counter).symbol != rtprice.at (counter).symbol ||
-        rtplist.at (counter).price != rtprice.at (counter).price)
+    int rs = rtplist.size();
+    if (rs != rtprice.size())
     {
-      rtplist = rtprice;
-      newdata = true;
+        rtplist = rtprice;
+        newdata = true;
     }
-  }
+    else
+    {
+        rs = rtplist.size();
+        for (int i = 0; i < rs; ++i)
+        {
+            if (rtplist.at(i).symbol != rtprice.at(i).symbol ||
+                rtplist.at(i).price != rtprice.at(i).price)
+            {
+                rtplist = rtprice;
+                newdata = true;
+                break;
+            }
+        }
+    }
 
-  if (newdata && timerId == 0)
-  {
-    timerId = startTimer( 1000 / tickerspeed );
-  }
+    if (newdata && timerId == 0)
+    {
+        timerId = startTimer( 1000 / tickerspeed );
+    }
 }
 
 void StockTicker::setSpeed (qint16 speed)
