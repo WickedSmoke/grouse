@@ -25,43 +25,9 @@
 #include "mainwindow.h"
 #endif
 
-/// TickerWorker
-// constructor
-TickerWorker::TickerWorker () NOEXCEPT
-{
-  parentObject = NULL;
-  state = false;
-  runflag = true;
-}
-
-// destructor
-TickerWorker::~TickerWorker ()
-{
-  runflag = false;
-}
-
-// process slot
-void
-TickerWorker::process()
-{
-  while (runflag == true)
-  {
-    if (parentObject != NULL)
-      parentObject->emitAdvanceTicker ();
-    Sleeper::msleep (250);
-  }
-}
-
-// terminate slot
-void
-TickerWorker::terminate () NOEXCEPT
-{
-  runflag = false;
-}
-
 // constructor
 StockTicker::StockTicker (QWidget * parent):
-  QWidget (parent), ui (new Ui::StockTicker)
+  QWidget (parent), ui (new Ui::StockTicker), timerId(0)
 {
   QStringList symbol, feed;
   const QString
@@ -71,7 +37,6 @@ StockTicker::StockTicker (QWidget * parent):
   tickerdata = NULL;
   tickerlabel = NULL;
   tickerspeed = Application_Options->scrollspeed;
-  worker = NULL;
   tickerstring = QStringLiteral ("");
   ticker_running = false;
   firstrun = true;
@@ -94,9 +59,6 @@ StockTicker::StockTicker (QWidget * parent):
   connect(this ,SIGNAL(updateTicker (RTPriceList)),
           this, SLOT (updateTickerSlot (RTPriceList)));
 
-  connect(this ,SIGNAL(advanceTicker ()),
-          this, SLOT (advanceTickerSlot ()));
-
   tickerlabel = new QGraphicsTextItem;
   tickerlabel->setFont (QFont (DEFAULT_FONT_FAMILY));
   tickerlabel->setHtml (QStringLiteral ("<td bgcolor=black><font size = 5 color=white>Please wait...</font></td>"));
@@ -111,13 +73,8 @@ StockTicker::StockTicker (QWidget * parent):
 // destructor
 StockTicker::~StockTicker ()
 {
-  if (worker != NULL)
-  {
-    worker->terminate ();
-    thread.quit ();
-    thread.wait ();
-    delete worker;
-  }
+  if (timerId)
+    killTimer(timerId);
 
   if (tickerdata != NULL)
     delete tickerdata;
@@ -241,13 +198,6 @@ StockTicker::emitUpdateTicker (RTPriceList rtprice)
   emit updateTicker (rtprice);
 }
 
-// advance ticker signal emittion and slot
-void
-StockTicker::emitAdvanceTicker ()
-{
-  emit advanceTicker ();
-}
-
 /// events
 // resize
 void
@@ -256,6 +206,12 @@ StockTicker::resizeEvent (QResizeEvent * event)
   Q_UNUSED (event);
   ui->graphicsView->resize (width () - 2, height ());
   scene->setSceneRect (0, 0, width () - 10, height () - 5);
+}
+
+void
+StockTicker::timerEvent(QTimerEvent *)
+{
+    ticker();
 }
 
 /// slots
@@ -280,19 +236,8 @@ StockTicker::updateTickerSlot (RTPriceList rtprice)
     }
   }
 
-  if (newdata && worker == NULL)
+  if (newdata && timerId == 0)
   {
-    worker = new TickerWorker ;
-    worker->setParentObject (this);
-    worker->moveToThread(&thread);
-    connect(&thread, SIGNAL(started()), worker, SLOT(process()));
-    thread.start();
-    thread.setPriority (QThread::LowestPriority);
+    timerId = startTimer( 250 );
   }
-}
-
-void
-StockTicker::advanceTickerSlot ()
-{
-  ticker ();
 }

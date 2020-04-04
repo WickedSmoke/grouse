@@ -29,35 +29,6 @@ namespace Ui
   class StockTicker;
 }
 
-// class for worker thread that signals the ticker advance
-class TickerWorker : public QObject
-{
-  Q_OBJECT
-public:
-  TickerWorker (void) NOEXCEPT; // constructor
-  ~TickerWorker (void);	// destructor
-  inline bool isRunning () const NOEXCEPT
-  {
-    return state;
-  }; // returns running state
-  
-  void setParentObject (StockTicker *obj) NOEXCEPT
-  {
-    parentObject = obj;
-  }; // sets the parent
-
-public slots:
-  void process(void);		// thread process
-  void terminate (void) NOEXCEPT;	// thread terminate
-
-signals:
-
-private:
-  StockTicker *parentObject; // the parent
-  bool runflag;	  // set false to terminate execution
-  bool state;	  // true if running
-};
-
 // stock ticker widget
 class StockTicker:public QWidget
 {
@@ -70,24 +41,22 @@ public:
   inline bool tickerRunning () const NOEXCEPT
   {
     return ticker_running;
-  }; // returns running state
+  } // returns running state
   
   inline qint16 speed () const NOEXCEPT
   {
     return tickerspeed;
-  }; // returns ticker's speed
+  } // returns ticker's speed
   
   inline void setSpeed (qint16 speed) NOEXCEPT
   {
     tickerspeed = speed;
-  }; // sets tickerspeed
+  } // sets tickerspeed
   
   void emitUpdateTicker (RTPriceList rtprice); // update ticker signal emittion
-  void emitAdvanceTicker (void); // update ticker signal emittion
 
 signals:
   void updateTicker (RTPriceList rtprice); // update the ticker data
-  void advanceTicker (void); // advance ticker by one step
 
 private:
   Ui::StockTicker *ui; 					// user interface
@@ -100,17 +69,15 @@ private:
   bool newdata;							// true: new data arrived
   bool ticker_running;					// true: ticker is running
   bool firstrun;						// true: ticker's first run
-  QThread thread;	// worker thread
-  TickerWorker *worker; // worker class
+  int timerId;
   qint16 tickerspeed; // ticker's speed
 
 private slots:
   void updateTickerSlot (RTPriceList rtprice);  // update ticker
-  void advanceTickerSlot (void);  				// advance ticker
 
 protected:
   virtual void resizeEvent (QResizeEvent * event);  // resize event
-
+  void timerEvent(QTimerEvent *event);
 };
 
 #endif // STOCKTICKER_H
