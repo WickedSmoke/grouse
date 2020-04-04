@@ -287,6 +287,21 @@ QString errorMessage(CG_ERR_RESULT err)
 }
 
 
+FeedSource InstrumentDatabase::feedSource( const QString& name )
+{
+    if( name.isEmpty() )
+        return SourceNone;
+    // Do quick mapping based on first character.
+    switch( name[0].toUpper().toLatin1() )
+    {
+        case 'A': return SourceAlphaVantage;
+        case 'I': return SourceIEX;
+        case 'Y': return SourceYahoo;
+    }
+    return SourceNone;
+}
+
+
 InstrumentDatabase::InstrumentDatabase() : _db(nullptr), _sqlitebuff(nullptr)
 {
     gDatabase = this;

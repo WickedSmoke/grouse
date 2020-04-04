@@ -144,9 +144,20 @@ typedef struct
 Q_DECLARE_TYPEINFO (QTAChartData, Q_MOVABLE_TYPE);
 
 
+enum FeedSource
+{
+    SourceNone,
+    SourceYahoo,
+    SourceIEX,
+    SourceAlphaVantage
+};
+
+
 class InstrumentDatabase
 {
 public:
+    static FeedSource feedSource( const QString& name );
+
     InstrumentDatabase();
     ~InstrumentDatabase();
 

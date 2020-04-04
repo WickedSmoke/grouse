@@ -33,7 +33,6 @@ public:
   PriceWorker (QString symbol, QString feed);
   ~PriceWorker ();
 
-  QString getFeed () const NOEXCEPT { return datafeed; }
   QString getSymbol () const NOEXCEPT { return symbol; }
   bool isRunning () { return (bool) state.fetchAndAddAcquire (0); }
   void setParentObject (QTACObject *obj) { parentObject = obj; }
@@ -46,7 +45,7 @@ private:
   QTACObject *parentObject; // parent object
   QAtomicInt runflag;       // set false to terminate execution
   QAtomicInt state;         // true if running
-  QString datafeed;         // data feed
+  FeedSource source;
   QString symbol;           // symbol
   YahooFeed *yfeed;         // Yahoo Finance feed
   IEXFeed *efeed;           // IEX feed
@@ -78,8 +77,6 @@ private:
   StockTicker *parentObject;    // parent object
   QAtomicInt runflag;           // set false to terminate execution
   QAtomicInt state;             // true if running
-  QStringList datafeed;         // data feed
-  QStringList symbol;           // symbol
   YahooFeed *yfeed;             // Yahoo Finance feed
   IEXFeed *efeed;               // IEX feed
   AlphaVantageFeed *afeed;

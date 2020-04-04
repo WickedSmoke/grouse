@@ -29,7 +29,7 @@
 
 PriceWorkerTicker::PriceWorkerTicker ()
 {
-  parentObject = NULL;
+  parentObject = nullptr;
   state = 0;
   runflag = 1;
 #ifndef SIMULATE_FEED
@@ -58,18 +58,17 @@ void PriceWorkerTicker::process()
       QStringList lsymbol, lfeed;
       qint32 max;
 
-      if (gDatabase->loadTickerSymbols (lsymbol, lfeed) == CG_ERR_OK)
+      if (gDatabase->loadTickerSymbols (lsymbol, lfeed) != CG_ERR_OK)
       {
-        symbol = lsymbol;
-        datafeed = lfeed;
+          qDebug("PriceWorkerTicker: loadTickerSymbols error");
       }
 
-      max = symbol.size ();
+      max = lsymbol.size ();
 
       lrtprice.clear ();
       lrtprice.reserve (max);
 
-      for (qint32 counter2 = 0; counter2 < max && runflag.fetchAndAddAcquire (0); counter2 ++)
+      for (qint32 i = 0; i < max && runflag.fetchAndAddAcquire (0); i ++)
       {
         RTPrice dummy;
         if (runflag.fetchAndAddAcquire (0) == 1)
@@ -78,16 +77,27 @@ void PriceWorkerTicker::process()
           if (runflag.fetchAndAddAcquire (0) == 1)
           {
 #ifdef SIMULATE_FEED
-            RTPrice& rp = lrtprice[counter2];
-            rp.symbol = symbol.at(counter2);
+            RTPrice& rp = lrtprice[i];
+            rp.symbol = lsymbol.at(i);
             rp.price  = QStringLiteral("666.00");
 #else
-            if (datafeed.at (counter2).toUpper () == QLatin1String ("YAHOO"))
-              yfeed->getRealTimePrice (symbol.at (counter2), lrtprice[counter2], YahooFeed::HTTP);
-            else if (datafeed.at (counter2).toUpper () == QLatin1String ("IEX"))
-              efeed->getRealTimePrice (symbol.at (counter2), lrtprice[counter2]);
-            else if (datafeed.at (counter2).toUpper () == QLatin1String ("ALPHAVANTAGE"))
-              afeed->getRealTimePrice (symbol.at (counter2), lrtprice[counter2], AlphaVantageFeed::CSV);
+            switch( InstrumentDatabase::feedSource( lfeed.at(i) ) )
+            {
+              case SourceNone:
+                break;
+
+              case SourceYahoo:
+                yfeed->getRealTimePrice(lsymbol.at(i), lrtprice[i],
+                                        YahooFeed::HTTP);
+                break;
+              case SourceIEX:
+                efeed->getRealTimePrice(lsymbol.at(i), lrtprice[i]);
+                break;
+              case SourceAlphaVantage:
+                afeed->getRealTimePrice(lsymbol.at(i), lrtprice[i],
+                                      AlphaVantageFeed::CSV);
+                break;
+            }
 #endif
           }
         }
@@ -95,13 +105,13 @@ void PriceWorkerTicker::process()
 
       if (runflag.fetchAndAddAcquire (0) == 1)
       {
-        for (qint32 counter3 = 0; counter3 < lrtprice.size (); counter3 ++)
+        for (qint32 i = 0; i < lrtprice.size (); i ++)
         {
-          if (lrtprice[counter3].price.toFloat () == 0)
-            lrtprice.removeAt(counter3);
+          if (lrtprice[i].price.toFloat () == 0)
+            lrtprice.removeAt(i);
         }
         rtprice = lrtprice;
-        if (parentObject != NULL) parentObject->emitUpdateTicker (rtprice);
+        if (parentObject != nullptr) parentObject->emitUpdateTicker (rtprice);
       }
     }
 
@@ -191,22 +201,29 @@ PriceUpdater::~PriceUpdater ()
 // PriceWorker
 
 
-PriceWorker::PriceWorker (QString symbol, QString feed)
+PriceWorker::PriceWorker (QString symbol, QString feed) :
+    yfeed(nullptr), efeed(nullptr), afeed(nullptr)
 {
-  parentObject = NULL;
+  parentObject = nullptr;
   state = 0;
   runflag = 1;
-  if (feed == QLatin1String ("YAHOO"))
-    yfeed = new YahooFeed (this);
-  else if (feed == QLatin1String ("IEX"))
-    efeed = new IEXFeed (this);
-  else if (feed == QLatin1String ("ALPHAVANTAGE"))
-    afeed = new AlphaVantageFeed (this);
-  else
-    runflag = 0;
-  datafeed = feed;
+  source = InstrumentDatabase::feedSource(feed);
+  switch( source )
+  {
+    case SourceYahoo:
+      yfeed = new YahooFeed (this);
+      break;
+    case SourceIEX:
+      efeed = new IEXFeed (this);
+      break;
+    case SourceAlphaVantage:
+      afeed = new AlphaVantageFeed (this);
+      break;
+    default:
+      runflag = 0;
+      break;
+  }
   this->symbol = symbol;
-
 }
 
 PriceWorker::~PriceWorker ()
@@ -226,18 +243,26 @@ void PriceWorker::process()
   {
     if (counter == 0 && runflag.fetchAndAddAcquire (0))
     {
-      if (datafeed.toUpper() == QLatin1String ("YAHOO") &&
-          runflag.fetchAndAddAcquire (0))
-        err = yfeed->getRealTimePrice (symbol, rtprice, YahooFeed::HTTP);
-      else if (datafeed.toUpper () == QLatin1String ("IEX") &&
-               runflag.fetchAndAddAcquire (0))
-        err = efeed->getRealTimePrice (symbol, rtprice);
-      else if (datafeed.toUpper () == QLatin1String ("ALPHAVANTAGE") &&
-               runflag.fetchAndAddAcquire (0))
-        err = afeed->getRealTimePrice (symbol, rtprice, AlphaVantageFeed::CSV);
+      switch( source )
+      {
+        case SourceYahoo:
+          if (runflag.fetchAndAddAcquire(0))
+            err = yfeed->getRealTimePrice(symbol, rtprice, YahooFeed::HTTP);
+          break;
+        case SourceIEX:
+          if (runflag.fetchAndAddAcquire(0))
+            err = efeed->getRealTimePrice(symbol, rtprice);
+          break;
+        case SourceAlphaVantage:
+          if (runflag.fetchAndAddAcquire(0))
+            err = afeed->getRealTimePrice(symbol, rtprice, AlphaVantageFeed::CSV);
+          break;
+        default:
+          break;
+      }
 
       if (err == CG_ERR_OK && runflag.fetchAndAddAcquire(0) &&
-          parentObject != NULL)
+          parentObject != nullptr)
             parentObject->emitUpdateOnlinePrice (rtprice);
     }
 
