@@ -24,8 +24,9 @@
 
 //#define SIMULATE_FEED
 
-/// PriceWorkerTicker
-// constructor
+
+// PriceWorkerTicker
+
 PriceWorkerTicker::PriceWorkerTicker ()
 {
   parentObject = NULL;
@@ -38,15 +39,12 @@ PriceWorkerTicker::PriceWorkerTicker ()
 #endif
 }
 
-// destructor
 PriceWorkerTicker::~PriceWorkerTicker ()
 {
   runflag = 0;
 }
 
-// process slot
-void
-PriceWorkerTicker::process()
+void PriceWorkerTicker::process()
 {
   const int sleepms = 50;
   RTPriceList lrtprice;
@@ -119,9 +117,7 @@ PriceWorkerTicker::process()
   state = 0;
 }
 
-// terminate slot
-void
-PriceWorkerTicker::terminate () NOEXCEPT
+void PriceWorkerTicker::terminate () NOEXCEPT
 {
   if (state.fetchAndAddAcquire (0) == 0)
     return;
@@ -129,8 +125,11 @@ PriceWorkerTicker::terminate () NOEXCEPT
   runflag = 0;
 }
 
-/// PriceUpdater
-// constructor
+
+//----------------------------------------------------------------------------
+// PriceUpdater
+
+
 PriceUpdater::PriceUpdater (QString symbol, QString feed, QTACObject *parent)
 {
   if (parent != NULL)
@@ -158,8 +157,6 @@ PriceUpdater::PriceUpdater (StockTicker *parent)
   }
 
   worker = NULL;
-  tickerworker = NULL;
-
   tickerworker = new PriceWorkerTicker ();
   if (parent != NULL)
     tickerworker->setParentObject (parent);
@@ -170,7 +167,6 @@ PriceUpdater::PriceUpdater (StockTicker *parent)
   thread.setPriority (QThread::LowestPriority);
 }
 
-// destructor
 PriceUpdater::~PriceUpdater ()
 {
   if (worker != NULL)
@@ -192,9 +188,9 @@ PriceUpdater::~PriceUpdater ()
 
 
 //----------------------------------------------------------------------------
+// PriceWorker
 
 
-// constructor
 PriceWorker::PriceWorker (QString symbol, QString feed)
 {
   parentObject = NULL;
@@ -213,18 +209,16 @@ PriceWorker::PriceWorker (QString symbol, QString feed)
 
 }
 
-// destructor
 PriceWorker::~PriceWorker ()
 {
   runflag = 0;
 }
 
 // process slot
-void
-PriceWorker::process()
+void PriceWorker::process()
 {
   const int sleepms = 50;
-  CG_ERR_RESULT result = CG_ERR_OK;
+  CG_ERR_RESULT err = CG_ERR_OK;
   qint32 counter = 0;
 
   state = 1;
@@ -232,18 +226,19 @@ PriceWorker::process()
   {
     if (counter == 0 && runflag.fetchAndAddAcquire (0))
     {
-      if (datafeed.toUpper () == QLatin1String ("YAHOO") && runflag.fetchAndAddAcquire (0))
-        result = yfeed->getRealTimePrice (symbol, rtprice, YahooFeed::HTTP);
-      else
-      if (datafeed.toUpper () == QLatin1String ("IEX") && runflag.fetchAndAddAcquire (0))
-        result = efeed->getRealTimePrice (symbol, rtprice);
-      else
-      if (datafeed.toUpper () == QLatin1String ("ALPHAVANTAGE") &&
+      if (datafeed.toUpper() == QLatin1String ("YAHOO") &&
           runflag.fetchAndAddAcquire (0))
-        result = afeed->getRealTimePrice (symbol, rtprice, AlphaVantageFeed::CSV);
+        err = yfeed->getRealTimePrice (symbol, rtprice, YahooFeed::HTTP);
+      else if (datafeed.toUpper () == QLatin1String ("IEX") &&
+               runflag.fetchAndAddAcquire (0))
+        err = efeed->getRealTimePrice (symbol, rtprice);
+      else if (datafeed.toUpper () == QLatin1String ("ALPHAVANTAGE") &&
+               runflag.fetchAndAddAcquire (0))
+        err = afeed->getRealTimePrice (symbol, rtprice, AlphaVantageFeed::CSV);
 
-      if (result == CG_ERR_OK && runflag.fetchAndAddAcquire (0) && parentObject != NULL)
-        if (parentObject != NULL) parentObject->emitUpdateOnlinePrice (rtprice);
+      if (err == CG_ERR_OK && runflag.fetchAndAddAcquire(0) &&
+          parentObject != NULL)
+            parentObject->emitUpdateOnlinePrice (rtprice);
     }
 
     if (runflag.fetchAndAddAcquire (0) == 1)
@@ -258,8 +253,7 @@ PriceWorker::process()
 }
 
 // terminate slot
-void
-PriceWorker::terminate () NOEXCEPT
+void PriceWorker::terminate () NOEXCEPT
 {
   if (state.fetchAndAddAcquire (0) == 0)
     return;

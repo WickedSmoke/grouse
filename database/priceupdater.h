@@ -30,40 +30,28 @@ class PriceWorker : public QObject
   Q_OBJECT
 
 public:
-  PriceWorker (QString symbol, QString feed); // constructor
-  ~PriceWorker (void); // destructor
+  PriceWorker (QString symbol, QString feed);
+  ~PriceWorker ();
 
-  QString getFeed () const NOEXCEPT
-  {
-    return datafeed;
-  }; // returns the data feed
-  QString getSymbol () const NOEXCEPT
-  {
-    return symbol;
-  }; // returns the symbol
-  bool isRunning ()
-  {
-    return (bool) state.fetchAndAddAcquire (0);
-  }; // returns running state
-  void setParentObject (QTACObject *obj)
-  {
-    parentObject = obj;
-  }; // set the parent object
+  QString getFeed () const NOEXCEPT { return datafeed; }
+  QString getSymbol () const NOEXCEPT { return symbol; }
+  bool isRunning () { return (bool) state.fetchAndAddAcquire (0); }
+  void setParentObject (QTACObject *obj) { parentObject = obj; }
 
 public slots:
-  void process(void);           // thread process
-  void terminate (void) NOEXCEPT;       // thread terminate
+  void process();               // thread process
+  void terminate () NOEXCEPT;   // thread terminate
 
 private:
   QTACObject *parentObject; // parent object
-  QAtomicInt runflag;     // set false to terminate execution
-  QAtomicInt state;   // true if running
-  QString datafeed;   // data feed
-  QString symbol;     // symbol
-  YahooFeed *yfeed;  // Yahoo Finance feed
-  IEXFeed *efeed; // IEX feed
-  AlphaVantageFeed *afeed; // Alpha Vantage feed
-  RTPrice rtprice; // real time price
+  QAtomicInt runflag;       // set false to terminate execution
+  QAtomicInt state;         // true if running
+  QString datafeed;         // data feed
+  QString symbol;           // symbol
+  YahooFeed *yfeed;         // Yahoo Finance feed
+  IEXFeed *efeed;           // IEX feed
+  AlphaVantageFeed *afeed;  // Alpha Vantage feed
+  RTPrice rtprice;          // real time price
 };
 
 
@@ -75,33 +63,27 @@ class PriceWorkerTicker : public QObject
   Q_OBJECT
 
 public:
-  PriceWorkerTicker (void); //constructor
-  ~PriceWorkerTicker (void);  // destructor
-  bool isRunning ()
-  {
-    return (bool) state.fetchAndAddAcquire (0);
-  }; // returns running state
-  void setParentObject (StockTicker *obj)
-  {
-    parentObject = obj;
-  }; // set the parent object
+  PriceWorkerTicker ();
+  ~PriceWorkerTicker ();
+  bool isRunning () { return (bool) state.fetchAndAddAcquire (0); }
+  void setParentObject (StockTicker *obj) { parentObject = obj; }
 
 public slots:
-  void process(void);       // thread process
-  void terminate (void) NOEXCEPT;   // thread terminate
+  void process();               // thread process
+  void terminate () NOEXCEPT;   // thread terminate
 
 signals:
 
 private:
   StockTicker *parentObject;    // parent object
-  QAtomicInt runflag;     // set false to terminate execution
-  QAtomicInt state;   // true if running
-  QStringList datafeed;   // data feed
-  QStringList symbol;     // symbol
-  YahooFeed *yfeed;  // Yahoo Finance feed
-  IEXFeed *efeed; // IEX feed
-  AlphaVantageFeed *afeed; //
-  RTPriceList rtprice; // real time price
+  QAtomicInt runflag;           // set false to terminate execution
+  QAtomicInt state;             // true if running
+  QStringList datafeed;         // data feed
+  QStringList symbol;           // symbol
+  YahooFeed *yfeed;             // Yahoo Finance feed
+  IEXFeed *efeed;               // IEX feed
+  AlphaVantageFeed *afeed;
+  RTPriceList rtprice;          // real time price
 };
 
 
@@ -110,15 +92,14 @@ class PriceUpdater: public QObject
   Q_OBJECT
 
 public:
-  explicit PriceUpdater (StockTicker *parent); // constructor
-  PriceUpdater (QString symbol, QString feed, QTACObject *parent); // constructor
-  ~PriceUpdater (void);      // destructor
+  explicit PriceUpdater (StockTicker *parent);
+  PriceUpdater (QString symbol, QString feed, QTACObject *parent);
+  ~PriceUpdater ();
 
 private:
-  QThread thread;   // worker thread
-  PriceWorker *worker; // worker class
-  PriceWorkerTicker *tickerworker; // worker class
-
+  QThread thread;           // worker thread
+  PriceWorker *worker;      // worker class
+  PriceWorkerTicker *tickerworker;
 };
 
 #endif // PRICEUPDATER_H
