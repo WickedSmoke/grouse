@@ -17,7 +17,6 @@
  */
 
 #include <QTextDocument>
-#include <QGraphicsView>
 #include "stockticker.h"
 
 #ifndef GUI_DESKTOP
@@ -26,10 +25,8 @@
 
 // constructor
 StockTicker::StockTicker (QWidget * parent):
-  QWidget (parent), timerId(0)
+  QGraphicsView (parent), timerId(0)
 {
-  QStringList symbol, feed;
-
   newdata = false;
   tickerdata = NULL;
   tickerlabel = NULL;
@@ -38,17 +35,16 @@ StockTicker::StockTicker (QWidget * parent):
   ticker_running = false;
   firstrun = true;
 
-  graphicsView = new QGraphicsView(this);
-  graphicsView->setViewportUpdateMode (QGraphicsView::NoViewportUpdate);
-  graphicsView->setCacheMode (QGraphicsView::CacheBackground);
-  graphicsView->setAlignment (Qt::AlignLeft | Qt::AlignTop);
+  setViewportUpdateMode (QGraphicsView::NoViewportUpdate);
+  setCacheMode (QGraphicsView::CacheBackground);
+  setAlignment (Qt::AlignLeft | Qt::AlignTop);
 
-  scene = new QTCGraphicsScene (this);
-  graphicsView->setScene (scene);
+  QTCGraphicsScene *gs;
+  gs = new QTCGraphicsScene (this);
+  setScene (gs);
 
-  scene->setItemIndexMethod (QTCGraphicsScene::NoIndex);
-  scene->setBackgroundBrush (Qt::black);
-  scene->setBackgroundBrush (Qt::SolidPattern);
+  gs->setItemIndexMethod (QTCGraphicsScene::NoIndex);
+  gs->setBackgroundBrush (Qt::black);
 
   tickerdata = new PriceUpdater (this);
 
@@ -60,11 +56,8 @@ StockTicker::StockTicker (QWidget * parent):
   tickerlabel->setFont (QFont (DEFAULT_FONT_FAMILY));
   tickerlabel->setHtml (QStringLiteral ("<td bgcolor=black><font size = 5 color=white>Please wait...</font></td>"));
   tickerlabel->setVisible (true);
-  scene->addItem (tickerlabel);
+  gs->addItem (tickerlabel);
   tickerlabel->setPos (0, -5);
-
-  if (parent != NULL)
-    setParent (parent);
 }
 
 // destructor
@@ -73,11 +66,8 @@ StockTicker::~StockTicker ()
   if (timerId)
     killTimer(timerId);
 
-  if (tickerdata != NULL)
-    delete tickerdata;
-
-  if (tickerlabel != NULL)
-    delete tickerlabel;
+  delete tickerdata;
+  delete tickerlabel;
 }
 
 // stock ticker data updates and advance
@@ -140,14 +130,15 @@ StockTicker::ticker ()
     tickerstr += QStringLiteral ("</tr></table>");
     tickerstring = tickerstr;
 
-    foreach (QGraphicsItem *item, scene->items ())
-      scene->removeItem (item);
+    QGraphicsScene* gs = scene();
+    foreach (QGraphicsItem *item, gs->items ())
+      gs->removeItem (item);
 
     if (rtplist.size () > 0)
     {
       tickerlabel->setHtml (tickerstring);
       tickerlabel->setVisible (false);
-      scene->addItem (tickerlabel);
+      gs->addItem (tickerlabel);
 
       tickerlabel->boundingRect ().getRect (&x, &y, &w, &h);
       wd = width ();
@@ -156,9 +147,9 @@ StockTicker::ticker ()
       QPainter tmpPainter(&srcPixmap);
       tickerlabel->document()->drawContents(&tmpPainter);
       tmpPainter.end();
-      scene->removeItem (tickerlabel);
+      gs->removeItem (tickerlabel);
       fPixmap = srcPixmap.copy (5, 0, w - 10, h - 5);
-      pixtickerlabel = scene->addPixmap (fPixmap);
+      pixtickerlabel = gs->addPixmap (fPixmap);
       newdata = false;
     }
   }
@@ -167,7 +158,7 @@ StockTicker::ticker ()
     ticker_running = true;
 
   pixtickerlabel->setPos (counter, -4);
-  graphicsView->scene ()->update ();
+  scene ()->update ();
   counter -= tickerspeed;
 
 #ifndef GUI_DESKTOP
@@ -196,11 +187,9 @@ StockTicker::emitUpdateTicker (RTPriceList rtprice)
 /// events
 // resize
 void
-StockTicker::resizeEvent (QResizeEvent * event)
+StockTicker::resizeEvent (QResizeEvent *)
 {
-  Q_UNUSED (event);
-  graphicsView->resize (width () - 2, height ());
-  scene->setSceneRect (0, 0, width () - 10, height () - 5);
+  scene()->setSceneRect (0, 0, width () - 10, height () - 5);
 }
 
 void

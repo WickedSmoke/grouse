@@ -19,15 +19,16 @@
 #ifndef STOCKTICKER_H
 #define STOCKTICKER_H
 
-#include <QWidget>
+#include <QGraphicsView>
 #include <QGraphicsTextItem>
 #include "qtcgraphicsscene.h"
 #include "priceupdater.h"
 
 // stock ticker widget
-class StockTicker:public QWidget
+class StockTicker : public QGraphicsView
 {
   Q_OBJECT
+
 public:
   explicit StockTicker (QWidget * parent = 0); // constructor
   ~StockTicker (void); // destructor
@@ -37,25 +38,23 @@ public:
   {
     return ticker_running;
   } // returns running state
-  
+
   inline qint16 speed () const NOEXCEPT
   {
     return tickerspeed;
   } // returns ticker's speed
-  
+
   inline void setSpeed (qint16 speed) NOEXCEPT
   {
     tickerspeed = speed;
   } // sets tickerspeed
-  
+
   void emitUpdateTicker (RTPriceList rtprice); // update ticker signal emittion
 
 signals:
   void updateTicker (RTPriceList rtprice); // update the ticker data
 
 private:
-  QGraphicsView *graphicsView;
-  QTCGraphicsScene *scene;				// ticker's graphics scene
   PriceUpdater *tickerdata;				// thread: update the prices
   QGraphicsPixmapItem *pixtickerlabel;	// ticker's pixmap
   QGraphicsTextItem *tickerlabel;		// ticker's label
