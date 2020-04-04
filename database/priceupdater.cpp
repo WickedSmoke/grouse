@@ -29,7 +29,6 @@
 
 PriceWorkerTicker::PriceWorkerTicker ()
 {
-  parentObject = nullptr;
   state = 0;
   runflag = 1;
 #ifndef SIMULATE_FEED
@@ -47,6 +46,7 @@ PriceWorkerTicker::~PriceWorkerTicker ()
 void PriceWorkerTicker::process()
 {
   const int sleepms = 50;
+  RTPrice fprice;
   RTPriceList lrtprice;
   qint32 counter = 0;
 
@@ -70,48 +70,39 @@ void PriceWorkerTicker::process()
 
       for (qint32 i = 0; i < max && runflag.fetchAndAddAcquire (0); i ++)
       {
-        RTPrice dummy;
         if (runflag.fetchAndAddAcquire (0) == 1)
         {
-          lrtprice += dummy;
-          if (runflag.fetchAndAddAcquire (0) == 1)
-          {
 #ifdef SIMULATE_FEED
-            RTPrice& rp = lrtprice[i];
-            rp.symbol = lsymbol.at(i);
-            rp.price  = QStringLiteral("666.00");
+          fprice.symbol = lsymbol.at(i);
+          fprice.price  = QStringLiteral("666.00");
+          lrtprice.push_back( fprice );
 #else
-            switch( InstrumentDatabase::feedSource( lfeed.at(i) ) )
-            {
-              case SourceNone:
-                break;
-
-              case SourceYahoo:
-                yfeed->getRealTimePrice(lsymbol.at(i), lrtprice[i],
-                                        YahooFeed::HTTP);
-                break;
-              case SourceIEX:
-                efeed->getRealTimePrice(lsymbol.at(i), lrtprice[i]);
-                break;
-              case SourceAlphaVantage:
-                afeed->getRealTimePrice(lsymbol.at(i), lrtprice[i],
-                                      AlphaVantageFeed::CSV);
-                break;
-            }
-#endif
+          fprice.price.clear();
+          switch( InstrumentDatabase::feedSource( lfeed.at(i) ) )
+          {
+            case SourceNone:
+              break;
+            case SourceYahoo:
+              yfeed->getRealTimePrice(lsymbol.at(i), fprice, YahooFeed::HTTP);
+              break;
+            case SourceIEX:
+              efeed->getRealTimePrice(lsymbol.at(i), fprice);
+              break;
+            case SourceAlphaVantage:
+              afeed->getRealTimePrice(lsymbol.at(i), fprice,
+                                    AlphaVantageFeed::CSV);
+              break;
           }
+          if( ! fprice.price.isEmpty() )
+            lrtprice.push_back( fprice );
+#endif
         }
       }
 
       if (runflag.fetchAndAddAcquire (0) == 1)
       {
-        for (qint32 i = 0; i < lrtprice.size (); i ++)
-        {
-          if (lrtprice[i].price.toFloat () == 0)
-            lrtprice.removeAt(i);
-        }
-        rtprice = lrtprice;
-        if (parentObject != nullptr) parentObject->emitUpdateTicker (rtprice);
+        // The list should get copied by Qt::QueuedConnection.
+        emit updatePrices(lrtprice);
       }
     }
 
@@ -148,14 +139,14 @@ static void _startWorker( QObject* worker, QThread* thread )
   thread->setPriority (QThread::LowestPriority);
 }
 
-PriceUpdater::PriceUpdater (QString symbol, QString feed, QTACObject *parent)
+PriceUpdater::PriceUpdater(QString symbol, QString feed, QTACObject *parent) :
+    QObject(parent)
 {
   worker = new PriceWorker (symbol, feed);
   tickerworker = nullptr;
 
   if (parent)
   {
-    setParent (parent);
     parent->onlineprice = true;
     worker->setParentObject (parent);
   }
@@ -163,17 +154,14 @@ PriceUpdater::PriceUpdater (QString symbol, QString feed, QTACObject *parent)
   _startWorker( worker, &thread );
 }
 
-PriceUpdater::PriceUpdater (StockTicker *parent)
+PriceUpdater::PriceUpdater(StockTicker *parent) :
+    QObject(parent)
 {
   worker = nullptr;
   tickerworker = new PriceWorkerTicker;
 
-  if (parent)
-  {
-    setParent (parent);
-    setObjectName (QStringLiteral ("PriceUpdater"));
-    tickerworker->setParentObject (parent);
-  }
+  connect(tickerworker, SIGNAL(updatePrices(RTPriceList)),
+          parent, SLOT(updatePrices(RTPriceList)), Qt::QueuedConnection);
 
   _startWorker( tickerworker, &thread );
 }

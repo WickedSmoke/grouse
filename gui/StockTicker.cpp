@@ -47,11 +47,8 @@ StockTicker::StockTicker (QWidget * parent):
   gs->setItemIndexMethod (QTCGraphicsScene::NoIndex);
   gs->setBackgroundBrush (Qt::black);
 
-  tickerdata = new PriceUpdater (this);
-
   qRegisterMetaType<RTPriceList> ("RTPriceList");
-  connect(this ,SIGNAL(updateTicker (RTPriceList)),
-          this, SLOT (updateTickerSlot (RTPriceList)));
+  tickerdata = new PriceUpdater (this);
 
   tickerlabel = new QGraphicsTextItem;
   tickerlabel->setFont (QFont (DEFAULT_FONT_FAMILY));
@@ -178,13 +175,6 @@ StockTicker::ticker ()
   }
 }
 
-// update ticker signal emittion and slot
-void
-StockTicker::emitUpdateTicker (RTPriceList rtprice)
-{
-  emit updateTicker (rtprice);
-}
-
 /// events
 // resize
 void
@@ -201,7 +191,7 @@ StockTicker::timerEvent(QTimerEvent *)
 
 /// slots
 void
-StockTicker::updateTickerSlot (RTPriceList rtprice)
+StockTicker::updatePrices (RTPriceList rtprice)
 {
   qint32 rs = rtplist.size ();
   if (rs != rtprice.size ())

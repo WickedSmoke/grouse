@@ -49,10 +49,8 @@ public:
 
   void setSpeed (qint16 speed);
 
-  void emitUpdateTicker (RTPriceList rtprice); // update ticker signal emittion
-
-signals:
-  void updateTicker (RTPriceList rtprice); // update the ticker data
+public slots:
+  void updatePrices (RTPriceList rtprice);
 
 private:
   PriceUpdater *tickerdata;				// thread: update the prices
@@ -65,9 +63,6 @@ private:
   bool firstrun;						// true: ticker's first run
   int timerId;
   qint16 tickerspeed; // ticker's speed
-
-private slots:
-  void updateTickerSlot (RTPriceList rtprice);  // update ticker
 
 protected:
   virtual void resizeEvent (QResizeEvent * event);  // resize event

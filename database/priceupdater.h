@@ -65,22 +65,20 @@ public:
   PriceWorkerTicker ();
   ~PriceWorkerTicker ();
   bool isRunning () { return (bool) state.fetchAndAddAcquire (0); }
-  void setParentObject (StockTicker *obj) { parentObject = obj; }
+
+signals:
+  void updatePrices(RTPriceList);
 
 public slots:
   void process();               // thread process
   void terminate () NOEXCEPT;   // thread terminate
 
-signals:
-
 private:
-  StockTicker *parentObject;    // parent object
   QAtomicInt runflag;           // set false to terminate execution
-  QAtomicInt state;             // true if running
+  QAtomicInt state;             // non-zero if running
   YahooFeed *yfeed;             // Yahoo Finance feed
   IEXFeed *efeed;               // IEX feed
   AlphaVantageFeed *afeed;
-  RTPriceList rtprice;          // real time price
 };
 
 
