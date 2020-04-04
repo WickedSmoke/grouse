@@ -159,7 +159,7 @@ StockTicker::ticker ()
 
   pixtickerlabel->setPos (counter, -4);
   scene ()->update ();
-  counter -= tickerspeed;
+  counter -= 3;
 
 #ifndef GUI_DESKTOP
   if (firstrun)
@@ -222,6 +222,19 @@ StockTicker::updateTickerSlot (RTPriceList rtprice)
 
   if (newdata && timerId == 0)
   {
-    timerId = startTimer( 250 );
+    timerId = startTimer( 1000 / tickerspeed );
   }
+}
+
+void StockTicker::setSpeed (qint16 speed)
+{
+    if( speed < 10 )
+        speed = 10;
+    if( speed != tickerspeed )
+    {
+        tickerspeed = speed;
+        if( timerId )
+            killTimer( timerId );
+        timerId = startTimer( 1000 / tickerspeed );
+    }
 }

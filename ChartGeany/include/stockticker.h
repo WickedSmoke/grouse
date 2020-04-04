@@ -44,10 +44,7 @@ public:
     return tickerspeed;
   } // returns ticker's speed
 
-  inline void setSpeed (qint16 speed) NOEXCEPT
-  {
-    tickerspeed = speed;
-  } // sets tickerspeed
+  void setSpeed (qint16 speed);
 
   void emitUpdateTicker (RTPriceList rtprice); // update ticker signal emittion
 
