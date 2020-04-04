@@ -24,11 +24,6 @@
 #include "qtcgraphicsscene.h"
 #include "priceupdater.h"
 
-namespace Ui
-{
-  class StockTicker;
-}
-
 // stock ticker widget
 class StockTicker:public QWidget
 {
@@ -59,7 +54,7 @@ signals:
   void updateTicker (RTPriceList rtprice); // update the ticker data
 
 private:
-  Ui::StockTicker *ui; 					// user interface
+  QGraphicsView *graphicsView;
   QTCGraphicsScene *scene;				// ticker's graphics scene
   PriceUpdater *tickerdata;				// thread: update the prices
   QGraphicsPixmapItem *pixtickerlabel;	// ticker's pixmap

@@ -16,9 +16,8 @@
  *
  */
 
-#include "optsize.h"
 #include <QTextDocument>
-#include "ui_stockticker.h"
+#include <QGraphicsView>
 #include "stockticker.h"
 
 #ifndef GUI_DESKTOP
@@ -27,11 +26,9 @@
 
 // constructor
 StockTicker::StockTicker (QWidget * parent):
-  QWidget (parent), ui (new Ui::StockTicker), timerId(0)
+  QWidget (parent), timerId(0)
 {
   QStringList symbol, feed;
-  const QString
-  buttonstylesheet = QStringLiteral ("background: transparent; background-color: white; color:black");
 
   newdata = false;
   tickerdata = NULL;
@@ -41,13 +38,13 @@ StockTicker::StockTicker (QWidget * parent):
   ticker_running = false;
   firstrun = true;
 
-  ui->setupUi (this);
-  ui->graphicsView->setViewportUpdateMode (QGraphicsView::NoViewportUpdate);
-  ui->graphicsView->setCacheMode (QGraphicsView::CacheBackground);
-  ui->graphicsView->setAlignment (Qt::AlignLeft | Qt::AlignTop);
+  graphicsView = new QGraphicsView(this);
+  graphicsView->setViewportUpdateMode (QGraphicsView::NoViewportUpdate);
+  graphicsView->setCacheMode (QGraphicsView::CacheBackground);
+  graphicsView->setAlignment (Qt::AlignLeft | Qt::AlignTop);
 
   scene = new QTCGraphicsScene (this);
-  ui->graphicsView->setScene (scene);
+  graphicsView->setScene (scene);
 
   scene->setItemIndexMethod (QTCGraphicsScene::NoIndex);
   scene->setBackgroundBrush (Qt::black);
@@ -81,8 +78,6 @@ StockTicker::~StockTicker ()
 
   if (tickerlabel != NULL)
     delete tickerlabel;
-
-  delete ui;
 }
 
 // stock ticker data updates and advance
@@ -172,7 +167,7 @@ StockTicker::ticker ()
     ticker_running = true;
 
   pixtickerlabel->setPos (counter, -4);
-  ui->graphicsView->scene ()->update ();
+  graphicsView->scene ()->update ();
   counter -= tickerspeed;
 
 #ifndef GUI_DESKTOP
@@ -204,7 +199,7 @@ void
 StockTicker::resizeEvent (QResizeEvent * event)
 {
   Q_UNUSED (event);
-  ui->graphicsView->resize (width () - 2, height ());
+  graphicsView->resize (width () - 2, height ());
   scene->setSceneRect (0, 0, width () - 10, height () - 5);
 }
 

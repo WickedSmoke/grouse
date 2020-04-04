@@ -493,7 +493,6 @@ FORMS += \
         forms/qtacobjects.ui \
         forms/qtacproperties.ui \
         forms/splashdialog.ui \
-        forms/stockticker.ui \
         forms/symbollistdialog.ui \
         forms/templatemanagerdialog.ui \
         forms/textobjectdialog.ui \
