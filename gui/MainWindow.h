@@ -51,16 +51,8 @@ private slots:
 
 private:
 
-    void createActions();
     void createMenus();
-    void createTools();
     void addStudyItems();
-
-    QAction* _actOpen;
-    QAction* _actSave;
-    QAction* _actQuit;
-    QAction* _actAbout;
-    QAction* _actManageData;
 
     QMenu* _studies;
     QMenu* _markers;

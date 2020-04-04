@@ -41,9 +41,7 @@ MainWindow::MainWindow() :
 {
     setWindowTitle("Chart Grouse");
 
-    createActions();
     createMenus();
-    createTools();
 
     _tabWidget = new QTabWidget;
     _tabWidget->setTabsClosable(true);
@@ -220,30 +218,6 @@ void MainWindow::closeEvent( QCloseEvent* event )
 }
 
 
-void MainWindow::createActions()
-{
-#define CONNECT(act,slot)   connect(act,SIGNAL(triggered()),this,slot)
-
-/*
-    _actOpen = new QAction( "&Open...", this );
-    CONNECT( _actOpen, SLOT(open()) );
-
-    _actSave = new QAction( "&Save", this );
-    CONNECT( _actSave, SLOT(save()) );
-*/
-    _actQuit = new QAction( "&Quit", this );
-    _actQuit->setShortcut( QKeySequence::Quit );
-    CONNECT( _actQuit, SLOT(close()) );
-
-    _actAbout = new QAction( "&About", this );
-    CONNECT( _actAbout, SLOT(showAbout()) );
-
-    _actManageData = new QAction( "&Manage Data...", this );
-    _actManageData->setShortcut( QKeySequence("F1") );
-    CONNECT( _actManageData, SLOT(showDataManager()) );
-}
-
-
 static const char* _markerName[6] =
 {
     "Label",
@@ -262,16 +236,15 @@ void MainWindow::createMenus()
     QMenuBar* bar = menuBar();
 
     QMenu* file = bar->addMenu( "&File" );
-    //file->addAction( _actOpen );
-    //file->addAction( _actSave );
-    file->addAction( _actManageData );
+    file->addAction( "&Manage Data...", this, SLOT(showDataManager()),
+                     QKeySequence("F1") );
     file->addAction( "&Edit Options...", this, SLOT(showOptions()),
                      QKeySequence("CTRL+E") );
     act = file->addAction( "Show &Ticker", this, SLOT(toggleTicker(bool)),
                      QKeySequence("CTRL+T") );
     act->setCheckable(true);
     file->addSeparator();
-    file->addAction( _actQuit );
+    file->addAction( "&Quit", this, SLOT(close()), QKeySequence::Quit );
 
     _studies = bar->addMenu( "&Studies" );
     _studies->setEnabled( false );
@@ -290,12 +263,7 @@ void MainWindow::createMenus()
     bar->addSeparator();
 
     QMenu* help = bar->addMenu( "&Help" );
-    help->addAction( _actAbout );
-}
-
-
-void MainWindow::createTools()
-{
+    help->addAction( "&About", this, SLOT(showAbout()) );
 }
 
 
