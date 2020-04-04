@@ -22,7 +22,10 @@
 #include <QGraphicsView>
 #include <QGraphicsTextItem>
 #include "qtcgraphicsscene.h"
-#include "priceupdater.h"
+#include "idb.h"
+
+
+class PriceUpdater;
 
 // stock ticker widget
 class StockTicker : public QGraphicsView
@@ -34,12 +37,12 @@ public:
   ~StockTicker (void); // destructor
 
   void ticker (void);		// stock ticker implementation
-  inline bool tickerRunning () const NOEXCEPT
+  inline bool tickerRunning () const
   {
     return ticker_running;
   } // returns running state
 
-  inline qint16 speed () const NOEXCEPT
+  inline qint16 speed () const
   {
     return tickerspeed;
   } // returns ticker's speed
@@ -70,5 +73,6 @@ protected:
   virtual void resizeEvent (QResizeEvent * event);  // resize event
   void timerEvent(QTimerEvent *event);
 };
+
 
 #endif // STOCKTICKER_H

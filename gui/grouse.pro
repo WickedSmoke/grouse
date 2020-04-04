@@ -27,6 +27,7 @@ HEADERS += MainWindow.h \
 	ParameterDialog.h \
 	DownloadDataDialog.h \
 	OptionsDialog.h \
+	StockTicker.h \
 	../ChartGeany/include/appColorDialog.h \
 	../ChartGeany/include/debugdialog.h \
 	../ChartGeany/include/databrowserdialog.h \
@@ -35,10 +36,7 @@ HEADERS += MainWindow.h \
 	../ChartGeany/include/textobjectdialog.h \
 	../ChartGeany/include/templatemanagerdialog.h \
 	../ChartGeany/include/lineobjectdialog.h \
-	../ChartGeany/include/priceupdater.h \
-	../ChartGeany/include/priceworker.h \
 	../ChartGeany/include/progressdialog.h \
-	../ChartGeany/include/stockticker.h \
 	../ChartGeany/include/waitdialog.h \
 	../chart/chartapp.h \
 	../chart/qtachart.h \
@@ -56,7 +54,8 @@ HEADERS += MainWindow.h \
 	../database/feedav.h \
 	../database/feediex.h \
 	../database/feedyahoo.h \
-	../database/netservice.h
+	../database/netservice.h \
+	../database/priceupdater.h
 
 
 SOURCES += MainWindow.cpp \
@@ -64,6 +63,7 @@ SOURCES += MainWindow.cpp \
 	ParameterDialog.cpp \
 	DownloadDataDialog.cpp \
 	OptionsDialog.cpp \
+	StockTicker.cpp \
 	../ChartGeany/src/appColorDialog.cpp \
 	../ChartGeany/src/common.cpp \
 	../ChartGeany/src/debugdialog.cpp \
@@ -74,11 +74,8 @@ SOURCES += MainWindow.cpp \
 	../ChartGeany/src/templatemanagerdialog.cpp \
 	../ChartGeany/src/function_dataset.cpp \
 	../ChartGeany/src/lineobjectdialog.cpp \
-	../ChartGeany/src/priceupdater.cpp \
-	../ChartGeany/src/priceworker.cpp \
 	../ChartGeany/src/progressdialog.cpp \
 	../ChartGeany/src/native_segvfpe.cpp \
-	../ChartGeany/src/stockticker.cpp \
 	../ChartGeany/src/waitdialog.cpp \
 	../ChartGeany/src/cgscript.c \
 	../ChartGeany/src/cgscript_imp_arrays.cpp \
@@ -119,6 +116,7 @@ SOURCES += MainWindow.cpp \
 	../database/feediex.cpp \
 	../database/feedyahoo.cpp \
 	../database/netservice.cpp \
+	../database/priceupdater.cpp \
 	../database/sqlcb_symbol_table.cpp \
 	../database/sqlcb_toolchain.cpp \
 

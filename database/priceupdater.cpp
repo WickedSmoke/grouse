@@ -19,7 +19,7 @@
 #include <QGraphicsTextItem>
 #include "defs.h"
 #include "priceupdater.h"
-#include "stockticker.h"
+#include "StockTicker.h"
 #include "mainwindow.h"
 
 //#define SIMULATE_FEED
@@ -188,4 +188,81 @@ PriceUpdater::~PriceUpdater ()
     thread.wait ();
     delete tickerworker;
   }
+}
+
+
+//----------------------------------------------------------------------------
+
+
+// constructor
+PriceWorker::PriceWorker (QString symbol, QString feed)
+{
+  parentObject = NULL;
+  state = 0;
+  runflag = 1;
+  if (feed == QLatin1String ("YAHOO"))
+    yfeed = new YahooFeed (this);
+  else if (feed == QLatin1String ("IEX"))
+    efeed = new IEXFeed (this);
+  else if (feed == QLatin1String ("ALPHAVANTAGE"))
+    afeed = new AlphaVantageFeed (this);
+  else
+    runflag = 0;
+  datafeed = feed;
+  this->symbol = symbol;
+
+}
+
+// destructor
+PriceWorker::~PriceWorker ()
+{
+  runflag = 0;
+}
+
+// process slot
+void
+PriceWorker::process()
+{
+  const int sleepms = 50;
+  CG_ERR_RESULT result = CG_ERR_OK;
+  qint32 counter = 0;
+
+  state = 1;
+  while (runflag.fetchAndAddAcquire (0) == 1)
+  {
+    if (counter == 0 && runflag.fetchAndAddAcquire (0))
+    {
+      if (datafeed.toUpper () == QLatin1String ("YAHOO") && runflag.fetchAndAddAcquire (0))
+        result = yfeed->getRealTimePrice (symbol, rtprice, YahooFeed::HTTP);
+      else
+      if (datafeed.toUpper () == QLatin1String ("IEX") && runflag.fetchAndAddAcquire (0))
+        result = efeed->getRealTimePrice (symbol, rtprice);
+      else
+      if (datafeed.toUpper () == QLatin1String ("ALPHAVANTAGE") &&
+          runflag.fetchAndAddAcquire (0))
+        result = afeed->getRealTimePrice (symbol, rtprice, AlphaVantageFeed::CSV);
+
+      if (result == CG_ERR_OK && runflag.fetchAndAddAcquire (0) && parentObject != NULL)
+        if (parentObject != NULL) parentObject->emitUpdateOnlinePrice (rtprice);
+    }
+
+    if (runflag.fetchAndAddAcquire (0) == 1)
+    {
+      Sleeper::msleep(sleepms);
+      counter += sleepms;
+      if (counter >= (Application_Options->nettimeout * 1100))
+        counter = 0;
+    }
+  }
+  state = 0;
+}
+
+// terminate slot
+void
+PriceWorker::terminate () NOEXCEPT
+{
+  if (state.fetchAndAddAcquire (0) == 0)
+    return;
+
+  runflag = 0;
 }

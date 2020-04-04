@@ -16,8 +16,8 @@
  *
  */
 
-#ifndef PRICEWORKER_H
-#define PRICEWORKER_H
+#ifndef PRICEUPDATER_H
+#define PRICEUPDATER_H
 
 #include "feedyahoo.h"
 #include "feediex.h"
@@ -54,8 +54,6 @@ public slots:
   void process(void);           // thread process
   void terminate (void) NOEXCEPT;       // thread terminate
 
-signals:
-
 private:
   QTACObject *parentObject; // parent object
   QAtomicInt runflag;     // set false to terminate execution
@@ -68,4 +66,59 @@ private:
   RTPrice rtprice; // real time price
 };
 
-#endif // PRICEWORKER_H
+
+class StockTicker;
+
+// Price worker for a symbol list
+class PriceWorkerTicker : public QObject
+{
+  Q_OBJECT
+
+public:
+  PriceWorkerTicker (void); //constructor
+  ~PriceWorkerTicker (void);  // destructor
+  bool isRunning ()
+  {
+    return (bool) state.fetchAndAddAcquire (0);
+  }; // returns running state
+  void setParentObject (StockTicker *obj)
+  {
+    parentObject = obj;
+  }; // set the parent object
+
+public slots:
+  void process(void);       // thread process
+  void terminate (void) NOEXCEPT;   // thread terminate
+
+signals:
+
+private:
+  StockTicker *parentObject;    // parent object
+  QAtomicInt runflag;     // set false to terminate execution
+  QAtomicInt state;   // true if running
+  QStringList datafeed;   // data feed
+  QStringList symbol;     // symbol
+  YahooFeed *yfeed;  // Yahoo Finance feed
+  IEXFeed *efeed; // IEX feed
+  AlphaVantageFeed *afeed; //
+  RTPriceList rtprice; // real time price
+};
+
+
+class PriceUpdater: public QObject
+{
+  Q_OBJECT
+
+public:
+  explicit PriceUpdater (StockTicker *parent); // constructor
+  PriceUpdater (QString symbol, QString feed, QTACObject *parent); // constructor
+  ~PriceUpdater (void);      // destructor
+
+private:
+  QThread thread;   // worker thread
+  PriceWorker *worker; // worker class
+  PriceWorkerTicker *tickerworker; // worker class
+
+};
+
+#endif // PRICEUPDATER_H

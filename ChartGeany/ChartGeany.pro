@@ -173,6 +173,7 @@ DEFINES    *= QT_NO_WARNING_OUTPUT
 INCLUDEPATH += \
         include \
         cgscript/include \
+        ../gui \
         ../chart \
         ../database \
         ../3rdparty/sqlite3/include \
@@ -217,18 +218,16 @@ SOURCES += \
         src/modulemanagerdialog.cpp \
         src/native_segvfpe.cpp \
         src/optionsdialog.cpp \
-        src/priceupdater.cpp \
-        src/priceworker.cpp \
         src/progressdialog.cpp \
         src/portfoliomanagerdialog.cpp \
         src/portfolio.cpp \
         src/splashdialog.cpp \
-        src/stockticker.cpp \
         src/symbollistdialog.cpp \
         src/templatemanagerdialog.cpp \
         src/textobjectdialog.cpp \
         src/unix_signals.cpp \
         src/waitdialog.cpp \
+        ../gui/StockTicker.cpp \
         ../chart/chartapp.cpp \
         ../chart/qtachart_core_barchart.cpp \
         ../chart/qtachart_core_candlechart.cpp \
@@ -257,6 +256,7 @@ SOURCES += \
         ../database/feedyahoo.cpp \
         ../database/netservice.cpp \
         ../database/platformstring.cpp \
+        ../database/priceupdater.cpp \
         ../database/sqlcb_modules.cpp \
         ../database/sqlcb_symbol_table.cpp \
         ../database/sqlcb_toolchain.cpp \
@@ -288,18 +288,16 @@ HEADERS  += \
         include/manualdialog.h \
         include/modulemanagerdialog.h \
         include/optionsdialog.h \
-        include/priceupdater.h \
-        include/priceworker.h \
         include/progressdialog.h \
         include/portfoliomanagerdialog.h \
         include/portfolio.h \
         include/splashdialog.h \
-        include/stockticker.h \
         include/symbollistdialog.h \
         include/templatemanagerdialog.h \
         include/textobjectdialog.h \
         include/unix_signals.h \
         include/waitdialog.h \
+        ../gui/StockTicker.h \
         ../chart/chartapp.h \
         ../chart/qtachart_core.h \
         ../chart/qtachart_data.h \
@@ -316,7 +314,8 @@ HEADERS  += \
         ../database/feedav.h \
         ../database/feediex.h \
         ../database/feedyahoo.h \
-        ../database/netservice.h
+        ../database/netservice.h \
+        ../database/priceupdater.h
 
 
 # Qt5 specific sources and headers

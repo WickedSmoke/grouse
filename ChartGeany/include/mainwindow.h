@@ -27,7 +27,7 @@
 #include "templatemanagerdialog.h"
 #include "portfoliomanagerdialog.h"
 #include "qtachart_object.h"
-#include "stockticker.h"
+#include "StockTicker.h"
 
 
 typedef class _ChartTab ChartTab;

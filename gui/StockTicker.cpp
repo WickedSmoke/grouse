@@ -17,7 +17,8 @@
  */
 
 #include <QTextDocument>
-#include "stockticker.h"
+#include "StockTicker.h"
+#include "priceupdater.h"
 
 #ifndef GUI_DESKTOP
 #include "mainwindow.h"

@@ -22,7 +22,7 @@
 #include "OptionsDialog.h"
 #include "qtachart.h"
 #include "qtachart_object.h"
-#include "stockticker.h"
+#include "StockTicker.h"
 
 
 #include "MainWindow_studies.cpp"
