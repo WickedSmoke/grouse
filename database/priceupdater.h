@@ -98,8 +98,10 @@ public:
 
 private:
   QThread thread;           // worker thread
-  PriceWorker *worker;      // worker class
-  PriceWorkerTicker *tickerworker;
+
+  // Only one of the following is used based upon constructor.
+  PriceWorker *worker;              // Used with QTACObject
+  PriceWorkerTicker *tickerworker;  // Used with StockTicker
 };
 
 #endif // PRICEUPDATER_H

@@ -130,54 +130,54 @@ void PriceWorkerTicker::terminate () NOEXCEPT
 // PriceUpdater
 
 
+static void _startWorker( QObject* worker, QThread* thread )
+{
+  worker->moveToThread(thread);
+  worker->connect(thread, SIGNAL(started()), SLOT(process()));
+  thread->start();
+  thread->setPriority (QThread::LowestPriority);
+}
+
 PriceUpdater::PriceUpdater (QString symbol, QString feed, QTACObject *parent)
 {
-  if (parent != NULL)
-    setParent (parent);
-
-  tickerworker = NULL;
   worker = new PriceWorker (symbol, feed);
-  if (parent != NULL)
+  tickerworker = nullptr;
+
+  if (parent)
   {
-    worker->setParentObject (parent);
+    setParent (parent);
     parent->onlineprice = true;
+    worker->setParentObject (parent);
   }
-  worker->moveToThread(&thread);
-  connect(&thread, SIGNAL(started()), worker, SLOT(process()));
-  thread.start();
-  thread.setPriority (QThread::LowestPriority);
+
+  _startWorker( worker, &thread );
 }
 
 PriceUpdater::PriceUpdater (StockTicker *parent)
 {
-  if (parent != NULL)
+  worker = nullptr;
+  tickerworker = new PriceWorkerTicker;
+
+  if (parent)
   {
     setParent (parent);
     setObjectName (QStringLiteral ("PriceUpdater"));
+    tickerworker->setParentObject (parent);
   }
 
-  worker = NULL;
-  tickerworker = new PriceWorkerTicker ();
-  if (parent != NULL)
-    tickerworker->setParentObject (parent);
-
-  tickerworker->moveToThread(&thread);
-  connect(&thread, SIGNAL(started()), tickerworker, SLOT(process()));
-  thread.start();
-  thread.setPriority (QThread::LowestPriority);
+  _startWorker( tickerworker, &thread );
 }
 
 PriceUpdater::~PriceUpdater ()
 {
-  if (worker != NULL)
+  if (worker)
   {
     worker->terminate ();
     thread.quit ();
     thread.wait ();
     delete worker;
   }
-
-  if (tickerworker != NULL)
+  else if( tickerworker )
   {
     tickerworker->terminate ();
     thread.quit ();
