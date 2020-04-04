@@ -43,11 +43,16 @@ PriceWorkerTicker::~PriceWorkerTicker ()
   runflag = 0;
 }
 
+#define COPY_QSTR(len,cs,qs) \
+    strncpy(cs, qs.toUtf8().constData(), len-1); \
+    cs[len-1] = '\0'
+
 void PriceWorkerTicker::process()
 {
   const int sleepms = 50;
+  TickerPrices prices;
+  TickerPrice tmp;
   RTPrice fprice;
-  RTPriceList lrtprice;
   qint32 counter = 0;
 
   state = 1;
@@ -65,17 +70,19 @@ void PriceWorkerTicker::process()
 
       max = lsymbol.size ();
 
-      lrtprice.clear ();
-      lrtprice.reserve (max);
+      prices.clear();
+      prices.reserve(max);
 
       for (qint32 i = 0; i < max && runflag.fetchAndAddAcquire (0); i ++)
       {
         if (runflag.fetchAndAddAcquire (0) == 1)
         {
 #ifdef SIMULATE_FEED
-          fprice.symbol = lsymbol.at(i);
-          fprice.price  = QStringLiteral("666.00");
-          lrtprice.push_back( fprice );
+          static const char* _pct[4] = { "", "1.00%", "-0.70%", "0" };
+          COPY_QSTR(8, tmp.symbol, lsymbol.at(i));
+          strcpy(tmp.price, "666.00");
+          strcpy(tmp.prcchange, _pct[i & 3]);
+          prices.push_back( tmp );
 #else
           fprice.price.clear();
           switch( InstrumentDatabase::feedSource( lfeed.at(i) ) )
@@ -94,7 +101,12 @@ void PriceWorkerTicker::process()
               break;
           }
           if( ! fprice.price.isEmpty() )
-            lrtprice.push_back( fprice );
+          {
+            COPY_QSTR( 8, tmp.symbol, fprice.symbol);
+            COPY_QSTR( 8, tmp.price, fprice.price);
+            COPY_QSTR(10, tmp.prcchange, fprice.prcchange);
+            prices.push_back( tmp );
+          }
 #endif
         }
       }
@@ -102,7 +114,7 @@ void PriceWorkerTicker::process()
       if (runflag.fetchAndAddAcquire (0) == 1)
       {
         // The list should get copied by Qt::QueuedConnection.
-        emit updatePrices(lrtprice);
+        emit updatePrices(prices);
       }
     }
 
@@ -160,8 +172,8 @@ PriceUpdater::PriceUpdater(StockTicker *parent) :
   worker = nullptr;
   tickerworker = new PriceWorkerTicker;
 
-  connect(tickerworker, SIGNAL(updatePrices(RTPriceList)),
-          parent, SLOT(updatePrices(RTPriceList)), Qt::QueuedConnection);
+  connect(tickerworker, SIGNAL(updatePrices(TickerPrices)),
+          parent, SLOT(updatePrices(TickerPrices)), Qt::QueuedConnection);
 
   _startWorker( tickerworker, &thread );
 }

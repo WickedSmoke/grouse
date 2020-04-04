@@ -18,7 +18,6 @@
 
 #include <QTextDocument>
 #include "StockTicker.h"
-#include "priceupdater.h"
 
 #ifndef GUI_DESKTOP
 #include "mainwindow.h"
@@ -47,7 +46,7 @@ StockTicker::StockTicker (QWidget * parent):
   gs->setItemIndexMethod (QTCGraphicsScene::NoIndex);
   gs->setBackgroundBrush (Qt::black);
 
-  qRegisterMetaType<RTPriceList> ("RTPriceList");
+  qRegisterMetaType<TickerPrices> ("TickerPrices");
   tickerdata = new PriceUpdater (this);
 
   tickerlabel = new QGraphicsTextItem;
@@ -82,48 +81,27 @@ void StockTicker::ticker()
 
     tickerstr.reserve (2048);
     tickerstr = QStringLiteral ("<table border=0 cellpadding=0 cellspacing=0><tr>");
-    foreach (RTPrice rtp, rtplist)
+    TickerPrices::const_iterator it;
+    for( it = rtplist.begin(); it != rtplist.end(); ++it )
     {
-      QString prc;
-      QChar c;
-      const char green[] = "<td bgcolor=black><font size=5 color=green>%1</font></td>",
-                 red[] = "<td bgcolor=black><font size = 5 color=red>%1</font></td>",
-                 white[] = "<td bgcolor=black><font size = 5 color=white>%1</font></td>",
-                 space[] = "<td bgcolor=black><font size = 5 color=black>&nbsp;</font></td>",
-                 *fmt;
-
-      // rtp.symbol = rtp.symbol.remove ("INDEX");
-      prc = rtp.prcchange.replace (QStringLiteral ("%"), QStringLiteral (" "));
-      float p = prc.toFloat ();
+      const char *color;
+      double p = atof( (*it).prcchange );
       if (p > 0)
-        fmt = green;
+        color = "green";
       else if (p < 0)
-        fmt = red;
+        color = "red";
       else
-        fmt = white;
+        color = "white";
 
-      tickerstr += QString (space) % QString (space);
-      foreach (c, rtp.symbol)
-      {
-        tickerstr += QString (fmt).arg (c);
-      }
-      tickerstr += QString (space);
-
-      foreach (c, rtp.price)
-      {
-        tickerstr += QString (fmt).arg (c);
-      }
-      tickerstr += QString (space);
-
-      foreach (c, rtp.prcchange)
-      {
-        tickerstr += QString (fmt).arg (c);
-      }
-
-      if (rtp.prcchange.size () > 0)
-        tickerstr += QString (fmt).arg ("%");
-
-      tickerstr += QString (space) % QString (space);
+      tickerstr.append( "<td bgcolor=black><font size=5 color=" );
+      tickerstr.append( color );
+      tickerstr.append( ">&nbsp;&nbsp;" );
+      tickerstr.append( (*it).symbol );
+      tickerstr.append( "&nbsp;" );
+      tickerstr.append( (*it).price );
+      tickerstr.append( "&nbsp;" );
+      tickerstr.append( (*it).prcchange );
+      tickerstr.append( "&nbsp;&nbsp;</font></td>" );
     }
     tickerstr += QStringLiteral ("</tr></table>");
     tickerstring = tickerstr;
@@ -187,24 +165,32 @@ void StockTicker::timerEvent(QTimerEvent *)
     ticker();
 }
 
-/// slots
-void StockTicker::updatePrices(RTPriceList rtprice)
+
+static bool samePrice( const TickerPrice& p1, const TickerPrice& p2 )
 {
-    int rs = rtplist.size();
-    if (rs != rtprice.size())
+    if( strcmp(p1.symbol, p2.symbol) || strcmp(p1.price, p2.price) )
+        return false;
+    return true;
+}
+
+
+/// slots
+void StockTicker::updatePrices(TickerPrices prices)
+{
+    size_t rs = rtplist.size();
+    if (rs != prices.size())
     {
-        rtplist = rtprice;
+        rtplist = prices;
         newdata = true;
     }
     else
     {
         rs = rtplist.size();
-        for (int i = 0; i < rs; ++i)
+        for (size_t i = 0; i < rs; ++i)
         {
-            if (rtplist.at(i).symbol != rtprice.at(i).symbol ||
-                rtplist.at(i).price != rtprice.at(i).price)
+            if (! samePrice(rtplist[i], prices[i]))
             {
-                rtplist = rtprice;
+                rtplist = prices;
                 newdata = true;
                 break;
             }

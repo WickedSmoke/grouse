@@ -22,10 +22,8 @@
 #include <QGraphicsView>
 #include <QGraphicsTextItem>
 #include "qtcgraphicsscene.h"
-#include "idb.h"
+#include "priceupdater.h"
 
-
-class PriceUpdater;
 
 // stock ticker widget
 class StockTicker : public QGraphicsView
@@ -50,13 +48,13 @@ public:
   void setSpeed (qint16 speed);
 
 public slots:
-  void updatePrices (RTPriceList rtprice);
+  void updatePrices(TickerPrices);
 
 private:
   PriceUpdater *tickerdata;				// thread: update the prices
   QGraphicsPixmapItem *pixtickerlabel;	// ticker's pixmap
   QGraphicsTextItem *tickerlabel;		// ticker's label
-  RTPriceList rtplist;					// list of real time prices and symbols
+  TickerPrices rtplist;                 // list of real time prices and symbols
   QString tickerstring;					// html string of ticker for tickerlabel
   bool newdata;							// true: new data arrived
   bool ticker_running;					// true: ticker is running

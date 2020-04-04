@@ -49,8 +49,6 @@ typedef struct alignas (8)
 
 Q_DECLARE_METATYPE (RTPrice);
 Q_DECLARE_TYPEINFO (RTPrice, Q_MOVABLE_TYPE);
-typedef QList < RTPrice > RTPriceList;
-Q_DECLARE_METATYPE (RTPriceList);
 
 
 // Lists populated by SQL statements

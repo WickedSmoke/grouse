@@ -19,6 +19,7 @@
 #ifndef PRICEUPDATER_H
 #define PRICEUPDATER_H
 
+#include <vector>
 #include "feedyahoo.h"
 #include "feediex.h"
 #include "feedav.h"
@@ -54,7 +55,19 @@ private:
 };
 
 
-class StockTicker;
+struct TickerPrice
+{
+    char symbol[8];
+    char price[8];
+    char prcchange[10];
+};
+
+Q_DECLARE_METATYPE(TickerPrice);
+Q_DECLARE_TYPEINFO(TickerPrice, Q_MOVABLE_TYPE);
+
+typedef std::vector< TickerPrice > TickerPrices;
+Q_DECLARE_METATYPE(TickerPrices);
+
 
 // Price worker for a symbol list
 class PriceWorkerTicker : public QObject
@@ -67,7 +80,7 @@ public:
   bool isRunning () { return (bool) state.fetchAndAddAcquire (0); }
 
 signals:
-  void updatePrices(RTPriceList);
+  void updatePrices(TickerPrices);
 
 public slots:
   void process();               // thread process
@@ -81,6 +94,8 @@ private:
   AlphaVantageFeed *afeed;
 };
 
+
+class StockTicker;
 
 class PriceUpdater: public QObject
 {

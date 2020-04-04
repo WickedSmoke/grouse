@@ -375,7 +375,7 @@ void MainWindow::toggleTicker( bool on )
 
             // TODO: Set height based upon font used.
             // Does not appear in QDockWidget without some minimum height.
-            _ticker->setFixedHeight( 32 );
+            _ticker->setFixedHeight( 33 );
 
             if(_tdock)
             {
