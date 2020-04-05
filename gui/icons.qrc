@@ -8,6 +8,8 @@
     <file alias="File_Table.png">../ChartGeany/images/icons/PNG/File_Table.png</file>
     <file alias="Trash_Delete.png">../ChartGeany/images/icons/PNG/Trash_Delete.png</file>
     <file alias="Search.png">../ChartGeany/images/icons/PNG/Search.png</file>
+    <file alias="add_item.png">images/add_item.png</file>
+    <file alias="remove_item.png">images/remove_item.png</file>
   </qresource>
   <qresource prefix="png">
     <file alias="images/icons/PNG/fullscreen.png">../ChartGeany/images/icons/PNG/fullscreen.png</file>

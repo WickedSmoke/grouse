@@ -49,6 +49,7 @@ protected:
 private slots:
     void tabChanged(int);
     void addTickerSymbol();
+    void removeTickerSymbol();
     void colorSel(const QColor&);
     void setChartStyle(int);
     void colorClicked();
@@ -57,7 +58,6 @@ private slots:
 private:
     void populateTickerSymbols();
     void updateTickerSymbols();
-    void removeTickerSymbol();
     int chartStyle();
 
     QColorDialog* _colorDialog;

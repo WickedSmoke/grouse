@@ -133,18 +133,25 @@ OptionsDialog::OptionsDialog(QWidget* parent) :
         _tickerList->setEditTriggers( QAbstractItemView::NoEditTriggers );
         _tickerList->setSelectionBehavior( QAbstractItemView::SelectRows );
         _tickerList->installEventFilter(this);
-        grid->addWidget( _tickerList, 0, 0, 2, 3 );
+        grid->addWidget( _tickerList, 0, 0, 2, 4 );
 
         _tsymbol = new QLineEdit;
         _tfeed = new QComboBox;
         _tfeed->addItem("IEX", 0);
         _tfeed->addItem("YAHOO", 1);
-        QPushButton* btn = new QPushButton("Add Symbol");
-        connect( btn, SIGNAL(clicked(bool)), this, SLOT(addTickerSymbol()) );
-        _tsymbol->setMaximumWidth( btn->sizeHint().width() );
+        QToolButton* add = new QToolButton;
+        add->setIcon( QIcon(":/icons/add_item.png") );
+        add->setIconSize(QSize(20, 20));
+        connect( add, SIGNAL(clicked(bool)), this, SLOT(addTickerSymbol()) );
+        QToolButton* rem = new QToolButton;
+        rem->setIcon( QIcon(":/icons/remove_item.png") );
+        rem->setIconSize(QSize(20, 20));
+        connect( rem, SIGNAL(clicked(bool)), this, SLOT(removeTickerSymbol()) );
+        _tsymbol->setMaximumWidth( _tfeed->sizeHint().width() );
         grid->addWidget( _tsymbol, 2, 0 );
         grid->addWidget( _tfeed, 2, 1 );
-        grid->addWidget( btn, 2, 2 );
+        grid->addWidget( add, 2, 2 );
+        grid->addWidget( rem, 2, 3 );
 
         grid->addWidget( new QLabel("Scroll Speed:"), 0, 4, Qt::AlignRight );
         _tspeed = new QSpinBox;
@@ -306,8 +313,12 @@ void OptionsDialog::updateTickerSymbols()
 
 void OptionsDialog::addTickerSymbol()
 {
+    const QString& symbol = _tsymbol->text();
+    if( symbol.isEmpty() )
+        return;
+
     QList<QTreeWidgetItem*> found =
-        _tickerList->findItems( _tsymbol->text(), Qt::MatchFixedString, 0);
+        _tickerList->findItems( symbol, Qt::MatchFixedString, 0);
     if( ! found.isEmpty() )
     {
         showMessage("Symbol already in ticker.", this);
@@ -315,7 +326,7 @@ void OptionsDialog::addTickerSymbol()
     }
 
     QStringList istr;
-    istr << _tsymbol->text() << _tfeed->currentText();
+    istr << symbol << _tfeed->currentText();
     _tickerList->addTopLevelItem( new QTreeWidgetItem( istr ) );
     _tickerList->scrollToBottom();
 
