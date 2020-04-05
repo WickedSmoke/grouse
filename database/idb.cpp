@@ -591,28 +591,27 @@ static int sqlcb_table_data(void *user, int argc, char **argv,
 
   for (qint32 counter = 0; counter < argc; counter ++)
   {
-    QString colname = QString::fromUtf8(column[counter]);
-    colname = colname.toUpper ();
+    const char* colname = column[counter];
     // key, symbol,  timeframe, description, adjusted, base, market, source
-    if (colname == QLatin1String ("KEY"))
+    if (stringEqualI(colname, "KEY"))
       tdc.tablename = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("SYMBOL"))
+    if (stringEqualI(colname, "SYMBOL"))
       tdc.symbol = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("TIMEFRAME"))
+    if (stringEqualI(colname, "TIMEFRAME"))
       tdc.timeframe = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("DESCRIPTION"))
+    if (stringEqualI(colname, "DESCRIPTION"))
       tdc.name = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("ADJUSTED"))
+    if (stringEqualI(colname, "ADJUSTED"))
       tdc.adjusted = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("BASE"))
+    if (stringEqualI(colname, "BASE"))
       tdc.base = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("MARKET"))
+    if (stringEqualI(colname, "MARKET"))
       tdc.market = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("SOURCE"))
+    if (stringEqualI(colname, "SOURCE"))
       tdc.source = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("LASTUPDATE"))
+    if (stringEqualI(colname, "LASTUPDATE"))
       tdc.lastupdate = QString (argv[counter]).toUpper ();
-    if (colname == QLatin1String ("CURRENCY"))
+    if (stringEqualI(colname, "CURRENCY"))
       tdc.currency = QString (argv[counter]);
   }
   ((TableDataVector*) user)->push_back(tdc);

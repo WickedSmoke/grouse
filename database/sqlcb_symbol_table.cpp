@@ -28,69 +28,12 @@
 #include "datamanagerdialog.h"
 #endif
 
-// symbol list poppulate
-static void
-populate_table (DataManagerDialog *dialog, char *str, int col)
-{
-  switch (col)
-  {
-  case 0:
-    dialog->symbolList << QString::fromUtf8 (str);
-    break;
+#endif
 
-  case 1:
-    dialog->descList << QString::fromUtf8 (str);
-    break;
-
-  case 2:
-    dialog->marketList << QString::fromUtf8 (str);
-    break;
-
-  case 3:
-    dialog->sourceList << QString::fromUtf8 (str);
-    break;
-
-  case 4:
-    dialog->timeframeList << QString::fromUtf8 (str);
-    break;
-
-  case 5:
-    dialog->datefromList << QString::fromUtf8 (str);
-    break;
-
-  case 6:
-    dialog->datetoList << QString::fromUtf8 (str);
-    break;
-
-  case 7:
-    dialog->currencyList << QString::fromUtf8 (str);
-    break;
-
-  case 8:
-    dialog->keyList << QString::fromUtf8 (str);
-    break;
-
-  case 9:
-    dialog->adjustedList << QString::fromUtf8 (str);
-    break;
-
-  case 10:
-    dialog->baseList << QString::fromUtf8 (str);
-    break;
-
-  case 11:
-    dialog->pathList << QString::fromUtf8 (str);
-    break;
-
-  case 12:
-    dialog->formatList << QString::fromUtf8 (str);
-    break;
-
-  case 13:
-    dialog->lastupdateList << QString::fromUtf8 (str);
-    break;
-  }
-}
+#ifdef _WIN32
+#define stringEqualI(A,B)  (_stricmp(A,B) == 0)
+#else
+#define stringEqualI(A,B)  (strcasecmp(A,B) == 0)
 #endif
 
 // sqlite3_exec callback for retrieving symbol table
@@ -102,66 +45,55 @@ sqlcb_symbol_table(void *classptr, int argc, char **argv, char **column)
   SymbolRec    *srec = new SymbolRec;
 #else
   DataManagerDialog *dialog = static_cast <DataManagerDialog *> (classptr);
+  QStringList* list;
 #endif
 
   for (qint32 counter = 0; counter < argc; counter ++)
   {
-    QString colname = QString::fromUtf8(column[counter]);
-    colname = colname.toUpper ();
+    const char* colname = column[counter];
 #ifdef CGTOOL
-   if (colname == QLatin1String ("SYMBOL"))
+   if (stringEqualI(colname, "SYMBOL"))
      srec->symbol = QString (argv[counter]);
-   else
-   if (colname == QLatin1String ("DESCRIPTION"))
+   else if (stringEqualI(colname, "DESCRIPTION"))
      srec->name = QString (argv[counter]);
-   else
-   if (colname == QLatin1String ("SOURCE"))
+   else if (stringEqualI(colname, "SOURCE"))
      srec->feed = QString (argv[counter]);
-   else
-   if (colname == QLatin1String ("KEY2"))
+   else if (stringEqualI(colname, "KEY2"))
      srec->key = QString (argv[counter]);
 #else
-    if (colname == QLatin1String ("SYMBOL"))
-      populate_table (dialog, argv[counter], 0);
+    if (stringEqualI(colname, "SYMBOL"))
+      list = &dialog->symbolList;
+    else if (stringEqualI(colname, "DESCRIPTION"))
+      list = &dialog->descList;
+    else if (stringEqualI(colname, "MARKET"))
+      list = &dialog->marketList;
+    else if (stringEqualI(colname, "SOURCE"))
+      list = &dialog->sourceList;
+    else if (stringEqualI(colname, "TIMEFRAME"))
+      list = &dialog->timeframeList;
+    else if (stringEqualI(colname, "DATEFROM"))
+      list = &dialog->datefromList;
+    else if (stringEqualI(colname, "DATETO"))
+      list = &dialog->datetoList;
+    else if (stringEqualI(colname, "CURRENCY"))
+      list = &dialog->currencyList;
+    else if (stringEqualI(colname, "KEY"))
+      list = &dialog->keyList;
+    else if (stringEqualI(colname, "ADJUSTED"))
+      list = &dialog->adjustedList;
+    else if (stringEqualI(colname, "BASE"))
+      list = &dialog->baseList;
+    else if (stringEqualI(colname, "DNLSTRING"))
+      list = &dialog->pathList;
+    else if (stringEqualI(colname, "FORMAT"))
+      list = &dialog->formatList;
+    else if (stringEqualI(colname, "LASTUPDATE"))
+      list = &dialog->lastupdateList;
     else
-    if (colname == QLatin1String ("DESCRIPTION"))
-      populate_table (dialog, argv[counter], 1);
-    else
-    if (colname == QLatin1String ("MARKET"))
-      populate_table (dialog, argv[counter], 2);
-    else
-    if (colname == QLatin1String ("SOURCE"))
-      populate_table (dialog, argv[counter], 3);
-    else
-    if (colname == QLatin1String ("TIMEFRAME"))
-      populate_table (dialog, argv[counter], 4);
-    else
-    if (colname == QLatin1String ("DATEFROM"))
-      populate_table (dialog, argv[counter], 5);
-    else
-    if (colname == QLatin1String ("DATETO"))
-      populate_table (dialog, argv[counter], 6);
-    else
-    if (colname == QLatin1String ("CURRENCY"))
-      populate_table (dialog, argv[counter], 7);
-    else
-    if (colname == QLatin1String ("KEY"))
-      populate_table (dialog, argv[counter], 8);
-    else
-    if (colname == QLatin1String ("ADJUSTED"))
-      populate_table (dialog, argv[counter], 9);
-    else
-    if (colname == QLatin1String ("BASE"))
-      populate_table (dialog, argv[counter], 10);
-    else
-    if (colname == QLatin1String ("DNLSTRING"))
-      populate_table (dialog, argv[counter], 11);
-    else
-    if (colname == QLatin1String ("FORMAT"))
-      populate_table (dialog, argv[counter], 12);
-    else
-    if (colname == QLatin1String ("LASTUPDATE"))
-      populate_table (dialog, argv[counter], 13);
+      list = nullptr;
+
+    if (list)
+      list->append(QString::fromUtf8(argv[counter]));
 #endif
   }
 
