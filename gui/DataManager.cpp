@@ -436,8 +436,8 @@ void DataManager::updateButton_clicked ()
   IEXFeed EF;
   AlphaVantageFeed AF;
 
-  QStringList symbol, timeframe, currency, feed, dateto, adjusted,
-              base, key, name, market, path, format;
+  QStringList symbol, timeframe, currency, feed,
+              base, name, market, path, format;
   QString prevbase = QStringLiteral ("");
   CG_ERR_RESULT result = CG_ERR_OK;
   int row, maxrow, errcounter = 0;
@@ -453,18 +453,15 @@ void DataManager::updateButton_clicked ()
             tableWidget->item (row, 8)->text ())
           if (!base.contains (tableWidget->item (counter, 10)->text (), Qt::CaseSensitive))
           {
-            symbol << tableWidget->item (row, 0)->text ();
-            name << tableWidget->item (row, 1)->text ();
-            market << tableWidget->item (row, 2)->text ();
+            symbol    << tableWidget->item (row, 0)->text ();
+            name      << tableWidget->item (row, 1)->text ();
+            market    << tableWidget->item (row, 2)->text ();
             timeframe << tableWidget->item (row, 4)->text ();
-            currency << tableWidget->item (row, 7)->text ();
-            feed << tableWidget->item (row, 3)->text ();
-            dateto << tableWidget->item (row, 6)->text ();
-            key << tableWidget->item (row, 8)->text ();
-            adjusted << tableWidget->item (row, 9)->text ();
-            base << tableWidget->item (row, 10)->text ();
-            path << tableWidget->item (row, 11)->text ();
-            format << tableWidget->item (row, 12)->text ();
+            currency  << tableWidget->item (row, 7)->text ();
+            feed      << tableWidget->item (row, 3)->text ();
+            base      << tableWidget->item (row, 10)->text ();
+            path      << tableWidget->item (row, 11)->text ();
+            format    << tableWidget->item (row, 12)->text ();
           }
       }
   }
@@ -649,7 +646,7 @@ void DataManager::updateButton_clicked ()
 
 void DataManager::browserButton_clicked ()
 {
-  QString tablename, symbol, timeframe, name, adjusted, base, wtitle;
+  QString tablename, symbol, name, adjusted, wtitle;
   int row, maxrow, selected = 0;
 
   maxrow = tableWidget->rowCount ();
@@ -659,11 +656,9 @@ void DataManager::browserButton_clicked ()
       if (selected == 0)
       {
         tablename = tableWidget->item (row, 8)->text ();
-        symbol = tableWidget->item (row, 0)->text ();
-        name = tableWidget->item (row, 1)->text ();
-        timeframe = tableWidget->item (row, 4)->text ();
-        adjusted = tableWidget->item (row, 9)->text ();
-        base = tableWidget->item (row, 10)->text ();
+        symbol    = tableWidget->item (row, 0)->text ();
+        name      = tableWidget->item (row, 1)->text ();
+        adjusted  = tableWidget->item (row, 9)->text ();
         selected = row + 1;
       }
     }
@@ -689,7 +684,7 @@ void DataManager::browserButton_clicked ()
 void DataManager::chartButton_clicked()
 {
     MainWindow* view;
-    QStringList tablename, symbol, timeframe, name, adjusted, base;
+    QStringList tablename, adjusted, base;
     int row, maxrow;
 
     maxrow = tableWidget->rowCount ();
@@ -698,9 +693,6 @@ void DataManager::chartButton_clicked()
         if (tableWidget->item (row, 0)->isSelected ())
         {
             tablename << tableWidget->item(row, 8)->text();
-            symbol    << tableWidget->item(row, 0)->text();
-            name      << tableWidget->item(row, 1)->text();
-            timeframe << tableWidget->item(row, 4)->text();
             adjusted  << tableWidget->item(row, 9)->text();
             base      << tableWidget->item(row, 10)->text();
         }
