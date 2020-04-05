@@ -23,6 +23,8 @@
 #include "mainwindow.h"
 #endif
 
+const int UPDATE_INTERVAL = 125;
+
 
 StockTicker::StockTicker (QWidget * parent):
     QGraphicsView (parent), timerId(0)
@@ -135,7 +137,7 @@ void StockTicker::ticker()
 
   pixtickerlabel->setPos (counter, -4);
   scene ()->update ();
-  counter -= 3;
+  counter -= tickerspeed / 2;
 
 #ifndef GUI_DESKTOP
   if (firstrun)
@@ -199,7 +201,7 @@ void StockTicker::updatePrices(TickerPrices prices)
 
     if (newdata && timerId == 0)
     {
-        timerId = startTimer( 1000 / tickerspeed );
+        timerId = startTimer( UPDATE_INTERVAL );
     }
 }
 
@@ -210,8 +212,11 @@ void StockTicker::setSpeed (qint16 speed)
     if( speed != tickerspeed )
     {
         tickerspeed = speed;
+#if 0
+        // Would be used if the UPDATE_INTERVAL was variable.
         if( timerId )
             killTimer( timerId );
-        timerId = startTimer( 1000 / tickerspeed );
+        timerId = startTimer( UPDATE_INTERVAL );
+#endif
     }
 }
