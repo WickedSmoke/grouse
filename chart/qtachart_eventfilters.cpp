@@ -341,13 +341,33 @@ QTAChartSceneEventFilter::eventFilter (QObject * object, QEvent * event)
       QGraphicsSceneWheelEvent *qWheel;
       qWheel = static_cast <QGraphicsSceneWheelEvent *> (event);
 
+#ifdef GUI_DESKTOP
+      // Zoom
       if (qWheel->delta () > 0)
-        core->chartForward (1); // right
+      {
+        if (core->framewidth < 25)
+        {
+            core->framewidth++;
+            core->draw();
+        }
+      }
       else
-        core->chartBackward (1);    //left
+      {
+        if (core->framewidth > 3)
+        {
+            core->framewidth--;
+            core->draw();
+        }
+      }
+#else
+      if (qWheel->delta () > 0)
+        core->chartForward (1);     // right
+      else
+        core->chartBackward (1);    // left
 
       core->setRullerCursor (core->ruller_cursor_y);
       core->setBottomText (core->last_x);
+#endif
     }
     return false;
   }

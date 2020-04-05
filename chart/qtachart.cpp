@@ -668,7 +668,7 @@ QTAChart::keyPressEvent (QKeyEvent * event)
     return;
 
   // plus
-  if (event->key () == Qt::Key_Plus)
+  if (event->key () == Qt::Key_Plus || event->key () == Qt::Key_Equal)
   {
     if (core->framewidth < 25)
       core->framewidth++;
