@@ -346,7 +346,13 @@ void MainWindow::open()
 
 void MainWindow::showDataManager()
 {
-    CREATE_DIALOG( _dataManager, DataManager );
+    if(! _dataManager)
+    {
+        _dataManager = new DataManager(this);
+        if(! _dataManager) return;
+        connect( _dataManager, SIGNAL(showChart(const TableDataVector&)),
+                 SLOT(showChart(const TableDataVector&)) );
+    }
     _dataManager->show();
 }
 
@@ -361,6 +367,25 @@ void MainWindow::showOptions()
                  SLOT(tickerSpeed(int)) );
     }
     _optionsDialog->show();
+}
+
+
+void MainWindow::showChart( const TableDataVector& tv )
+{
+    QStringList symkeys = getTabKeys("Chart");
+    if (symkeys.size() != 0)
+    {
+      for (int i = 0; i < symkeys.size(); ++i)
+      {
+        if (tv[0].tablename == symkeys[i])
+        {
+          _tabWidget->setCurrentIndex(i);
+          return;
+        }
+      }
+    }
+
+    addChart(tv);
 }
 
 

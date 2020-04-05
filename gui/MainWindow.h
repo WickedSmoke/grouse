@@ -25,11 +25,8 @@ public:
 
     MainWindow();
 
-    CG_ERR_RESULT addChart( const TableDataVector& );
-    bool expandedChart() const;
+    bool expandedChart() const;     // Used by QTAChart
     void setExpandChart( bool );
-
-    QStringList getTabKeys( const QString& type );
 
 public slots:
 
@@ -45,12 +42,14 @@ private slots:
     void addMarker( QAction* );
     void showDataManager();
     void showOptions();
+    void showChart( const TableDataVector& );
     void toggleTicker(bool);
     void closeTab(int);
     void tickerSpeed(int);
 
 private:
-
+    CG_ERR_RESULT addChart( const TableDataVector& );
+    QStringList getTabKeys( const QString& type );
     void createMenus();
     void addStudyItems();
 

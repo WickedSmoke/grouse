@@ -59,6 +59,9 @@ public:
     QStringList sqlite_master_type; // type columnt of sqlite_master table
     TableDataVector TDVector; // vector of TableDataClass
 
+signals:
+    void showChart(const TableDataVector&);
+
 protected:
     virtual void closeEvent(QCloseEvent *event);
     virtual void showEvent(QShowEvent * event);

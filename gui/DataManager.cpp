@@ -27,7 +27,6 @@
 #include <QTableWidget>
 #include <QToolButton>
 #include <QDateTime>
-#include "MainWindow.h"
 #include "DataManager.h"
 #include "common.h"
 #include "databrowserdialog.h"
@@ -37,7 +36,15 @@
 #include "feedav.h"
 #include "feediex.h"
 
-static const int NCOLUMNS = 14;
+
+enum ColumnContent
+{
+    COL_Symbol,
+    COL_Adjusted = 9,
+    COL_Base,
+    NCOLUMNS = 14
+};
+
 
 extern int
 sqlcb_symbol_table(void *classptr, int argc, char **argv, char **column);
@@ -683,71 +690,49 @@ void DataManager::browserButton_clicked ()
 
 void DataManager::chartButton_clicked()
 {
-    MainWindow* view;
-    QStringList tablename, adjusted, base;
-    int row, maxrow;
-
-    maxrow = tableWidget->rowCount ();
-    for (row = 0; row < maxrow; row ++)
-    {
-        if (tableWidget->item (row, 0)->isSelected ())
-        {
-            tablename << tableWidget->item(row, 8)->text();
-            adjusted  << tableWidget->item(row, 9)->text();
-            base      << tableWidget->item(row, 10)->text();
-        }
-    }
-
-    maxrow = tablename.size();
-    if (maxrow == 0)
+    QModelIndexList mlist = tableWidget->selectionModel()->selectedRows( 0 );
+    if (mlist.isEmpty())
     {
         showMessage("Select symbols first please.", this);
         return;
     }
 
-    view = qobject_cast<MainWindow*>( parent() );
-    if( ! view )
-        return;
-
     updateBeforeOpen = true;
-    for (row = 0; row < maxrow; row ++)
-    {
-        QStringList symkeys;
-        int index = -1;
 
-        int rc = gDatabase->loadTableData( base.at(row), adjusted.at(row),
-                                           &TDVector );
+    bool updated = false;
+    int row, i;
+    int count = mlist.size();
+    for (i = 0; i < count; i ++)
+    {
+        //printf("KR item %d,%d\n", mlist.at(i).column(), mlist.at(i).row());
+
+        row = mlist.at(i).row();
+        int rc = gDatabase->loadTableData(
+                        tableWidget->item(row, COL_Base)->text(),
+                        tableWidget->item(row, COL_Adjusted)->text(),
+                        &TDVector );
         if (rc != CG_ERR_OK)
         {
             showMessage(errorMessage(rc), this);
             return;
         }
 
-        symkeys = view->getTabKeys("Chart");
-        if (symkeys.size() != 0)
+        // Check for auto update.  If needed, update all charts at once
+        // using updateButton_clicked(), then skip the check for the
+        // remaining items.
+
+        if( Application_Options->autoupdate && ! updated &&
+            qAbs(TDVector[0].lastupdate.toLongLong() -
+                 (QDateTime::currentMSecsSinceEpoch() / 1000)) > 7200 )
         {
-          for (qint32 counter = 0; counter < symkeys.size(); counter ++)
-            if (TDVector[0].tablename == symkeys[counter])
-              index = counter;
+            updateButton_clicked();
+            updated = true;
         }
 
-        if (index != -1)
-        {
-            hide();
-            view->_tabWidget->setCurrentIndex(index);
-        }
-        else
-        {
-            if( qAbs(TDVector[0].lastupdate.toLongLong() -
-                (QDateTime::currentMSecsSinceEpoch() / 1000)) > 7200 &&
-                Application_Options->autoupdate )
-                updateButton_clicked();
-            hide();
-            view->addChart(TDVector);
-        }
-
-        qApp->processEvents(QEventLoop::ExcludeUserInputEvents, 100);
+        emit showChart( TDVector );
     }
+
+    hide();
     updateBeforeOpen = false;
 }
 
