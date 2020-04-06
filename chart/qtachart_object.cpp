@@ -1632,9 +1632,9 @@ QTACObject::setSymbol (const char *symbol)
 // set objects attributes
 void
 QTACObject::setAttributes_common (QTAChartDataSet dstype,
-                                  int per, QString perParamName,
+                                  int per, const QString& perParamName,
                                   qreal xmin, qreal xmax,
-                                  QColor color, QString colParamName)
+                                  QColor color, const QString& colParamName)
 {
   QTAChartCore *core = chartdata;
 
@@ -1682,11 +1682,11 @@ QTACObject::setAttributes_common (QTAChartDataSet dstype,
 
 void
 QTACObject::setAttributes (QTAChartDataSet dstype,
-                           int per, QString perParamName,
+                           int per, const QString& perParamName,
                            DataSet (*tafunc) (const DataSet, int),
                            qreal xmin,
                            qreal xmax,
-                           QColor color, QString colParamName)
+                           QColor color, const QString& colParamName)
 {
   TAfunc = tafunc;
   setAttributes_common (dstype, per, perParamName, xmin, xmax, color, colParamName);
@@ -1694,11 +1694,11 @@ QTACObject::setAttributes (QTAChartDataSet dstype,
 
 void
 QTACObject::setAttributes (QTAChartDataSet dstype,
-                           int per, QString perParamName,
+                           int per, const QString& perParamName,
                            DataSet (*tafunc) (const FrameVector *, int),
                            qreal xmin,
                            qreal xmax,
-                           QColor color, QString colParamName)
+                           QColor color, const QString& colParamName)
 {
   TAfunc2 = tafunc;
   setAttributes_common (dstype, per, perParamName, xmin, xmax, color, colParamName);

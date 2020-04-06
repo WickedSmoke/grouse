@@ -203,27 +203,27 @@ public:
   void removeChild (QTACObject *child); // remove a child object
   void setAttributes (QTAChartDataSet dstype,
                       int period,
-                      QString periodParamName,
+                      const QString& periodParamName,
                       DataSet (*TAfunc) (const DataSet, int),
                       qreal rangemin,
                       qreal rangemax,
                       QColor color,
-                      QString colorParamName);  // set object's attributes
+                      const QString& colorParamName);
   void setAttributes (QTAChartDataSet dstype,
                       int period,
-                      QString periodParamName,
+                      const QString& periodParamName,
                       DataSet (*TAfunc2) (const FrameVector *, int),
                       qreal rangemin,
                       qreal rangemax,
                       QColor color,
-                      QString colorParamName);  // set object's attributes
+                      const QString& colorParamName);
   void setAttributes_common (QTAChartDataSet dstype,
                              int period,
-                             QString periodParamName,
+                             const QString& periodParamName,
                              qreal rangemin,
                              qreal rangemax,
                              QColor color,
-                             QString colorParamName);  // set object's attributes
+                             const QString& colorParamName);
   void setCGScriptDebug (bool mode); // set's CGScript debug mode (true from debug)
   void setDataTitle (int x); // set subchart's title to display indicator's data
   void setForDelete (void);  // set object for delete
