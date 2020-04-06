@@ -101,7 +101,7 @@ DownloadDataDialog::DownloadDataDialog(QWidget* parent) :
     err = gDatabase->loadDatafeeds( *ComboItems );
     if (err != CG_ERR_OK)
     {
-        showMessage(errorMessage(err));
+        showMessage(errorMessage(err), this);
         hide();
     }
     else
@@ -113,7 +113,7 @@ DownloadDataDialog::DownloadDataDialog(QWidget* parent) :
     err = gDatabase->loadCurrencies( *ComboItems );
     if (err != CG_ERR_OK)
     {
-        showMessage(errorMessage(err));
+        showMessage(errorMessage(err), this);
         hide();
     }
     else
@@ -205,9 +205,9 @@ void DownloadDataDialog::checkYahoosymbolExistence()
   }
 
   if (GlobalError.fetchAndAddAcquire (0)!= CG_ERR_OK)
-    showMessage (errorMessage (GlobalError.fetchAndAddAcquire (0)));
+    showMessage (errorMessage (GlobalError.fetchAndAddAcquire (0)), this);
   else
-    showMessage ("Symbol not found.");
+    showMessage ("Symbol not found.", this);
 }
 
 
@@ -224,9 +224,9 @@ void DownloadDataDialog::downloadYahooControl ()
                             adjustCheckBox->isChecked ());
 
   if (result == CG_ERR_OK)
-    showMessage (QStringLiteral ("Import complete."));
+    showMessage (QStringLiteral ("Import complete."), this);
   else
-    showMessage (errorMessage (result));
+    showMessage (errorMessage (result), this);
 }
 
 
@@ -258,9 +258,9 @@ void DownloadDataDialog::checkIEXsymbolExistence ()
   }
 
   if (GlobalError.fetchAndAddAcquire (0)!= CG_ERR_OK)
-    showMessage (errorMessage (GlobalError.fetchAndAddAcquire (0)));
+    showMessage (errorMessage (GlobalError.fetchAndAddAcquire (0)), this);
   else
-    showMessage ("Symbol not found.");
+    showMessage ("Symbol not found.", this);
 }
 
 
@@ -277,9 +277,9 @@ void DownloadDataDialog::downloadIEXControl ()
                             adjustCheckBox->isChecked ());
 
   if (result == CG_ERR_OK)
-    showMessage ("Import complete.");
+    showMessage ("Import complete.", this);
   else
-    showMessage (errorMessage (result));
+    showMessage (errorMessage (result), this);
 }
 
 
@@ -313,9 +313,9 @@ void DownloadDataDialog::checkAlphaVantagesymbolExistence ()
   }
 
   if (GlobalError.fetchAndAddAcquire (0)!= CG_ERR_OK)
-    showMessage (errorMessage (GlobalError.fetchAndAddAcquire (0)));
+    showMessage (errorMessage (GlobalError.fetchAndAddAcquire (0)), this);
   else
-    showMessage ("Symbol not found.");
+    showMessage ("Symbol not found.", this);
 }
 
 
@@ -332,9 +332,9 @@ void DownloadDataDialog::downloadAlphaVantageControl ()
                             adjustCheckBox->isChecked ());
 
   if (result == CG_ERR_OK)
-    showMessage (QStringLiteral ("Import complete."));
+    showMessage (QStringLiteral ("Import complete."), this);
   else
-    showMessage (errorMessage (result));
+    showMessage (errorMessage (result), this);
 }
 
 
