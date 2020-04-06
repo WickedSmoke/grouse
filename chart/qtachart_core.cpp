@@ -609,7 +609,7 @@ QTAChartCore::changeForeColor (QColor color)
             font-weight: bold;").arg(textcolor.name()));
 
   foreach (QTACObject *object, Object)
-    object->changeForeColor (forecolor);
+    object->changeSubChartForeColor (forecolor);
 
   bottom_text->setDefaultTextColor (forecolor);
 

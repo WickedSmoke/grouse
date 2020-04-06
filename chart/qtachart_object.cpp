@@ -294,6 +294,7 @@ QTACObject::QTACObject_constructor_common ()
   price = 0;
   vadjust = QTACHART_OBJ_VADJUST_NORMAL;
   hadjust = QTACHART_OBJ_HADJUST_NORMAL;
+  foreIntensity = 100;
 
   if (parentObject == nullptr)
     setParent (core);
@@ -627,9 +628,9 @@ QTACObject::updateOnlinePriceSlot (RTPrice rtprice)
     drawObject (this);
 }
 
-// change foreground color
+// change foreground color of a sub-chart
 void
-QTACObject::changeForeColor (QColor color)
+QTACObject::changeSubChartForeColor (QColor color)
 {
   if (enabled == false)
     return;
@@ -642,14 +643,16 @@ QTACObject::changeForeColor (QColor color)
 
   foreach (QTACObject *child, children)
   {
+    QColor col = color.darker( child->foreIntensity );
+
     if (child->type == QTACHART_OBJ_VBARS && type == QTACHART_VOLUME)
-      child->forecolor = forecolor;
+      child->forecolor = col;
 
     if (child->type == QTACHART_OBJ_HLINE)
     {
-      child->forecolor = forecolor;
-      child->hvline->setPen (forecolor);
-      child->title->setDefaultTextColor (forecolor);
+      child->forecolor = col;
+      child->hvline->setPen (col);
+      child->title->setDefaultTextColor (forecolor);    // Don't fade text.
     }
   }
 

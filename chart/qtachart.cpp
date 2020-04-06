@@ -1527,19 +1527,30 @@ QTACObject* QTAChart::addStudyADX( const QString& name, int period, int Weak,
       return nullptr;
 
     obj = new QTACObject (ccore, QTACHART_OBJ_SUBCHART);
-    obj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), ADX, 0, 100, color, QStringLiteral (""));
+    obj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"),
+                        ADX, 0, 100, color, QStringLiteral (""));
     obj->setTitle (name);
+
     childobj = new QTACObject (obj, QTACHART_OBJ_CURVE);
-    childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), ADX, 0, 100, color, QStringLiteral ("Color"));
+    childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"),
+                             ADX, 0, 100, color, QStringLiteral ("Color"));
+
     childobj = new QTACObject (obj, QTACHART_OBJ_HLINE);
     childobj->setHLine (NULL, Weak);
-    childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Weak"), DUMMY, 0, 100, color, QStringLiteral (""));
+    childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Weak"),
+                             DUMMY, 0, 100, color, QStringLiteral (""));
+
     childobj = new QTACObject (obj, QTACHART_OBJ_HLINE);
     childobj->setHLine (NULL, Strong);
-    childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Strong"), DUMMY, 0, 100, color, QStringLiteral (""));
+    childobj->foreIntensity = 300;
+    childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Strong"),
+                             DUMMY, 0, 100, color, QStringLiteral (""));
+
     childobj = new QTACObject (obj, QTACHART_OBJ_HLINE);
     childobj->setHLine (NULL, Verystrong);
-    childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Very strong"), DUMMY, 0, 100, color, QStringLiteral (""));
+    childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Very strong"),
+                             DUMMY, 0, 100, color, QStringLiteral (""));
+    childobj->foreIntensity = 300;
 
     return obj;
 }

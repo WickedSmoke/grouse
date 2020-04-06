@@ -142,7 +142,7 @@ public:
   QTACObject (void *, QString, QString);                // constructor
   ~QTACObject (void);                                   // destructor
 
-  void changeForeColor (QColor color); // change the foreground color
+  void changeSubChartForeColor (QColor color); // change the foreground color
   void clearITEMS (void) NOEXCEPT;  // clear all the objects on the chart
   void deleteITEMS (void);  // delete all the objects on the chart
   void drawVBars (void);    // draw vertical bars
@@ -347,8 +347,9 @@ public:
   int period;               // TAfunc's period
   int lastperiod;           // period used for last calculation
   int valuesetsize;         // size of valueset
-  int hadjust;              // horizontal adjustment
-  int vadjust;              // verical adjustment
+  uint8_t hadjust;          // horizontal QTAChartObjectTextAdjustment
+  uint8_t vadjust;          // verical QTAChartObjectTextAdjustment
+  uint16_t foreIntensity;   // For sub-chart lines: 100=1.0, 200=0.5
   QTAChartDataSet dataset_type;   // object's dataset type
   bool enabled;             // true if enabled, false othrwise (modules only)
   bool dynamic;             // true if created by a module
