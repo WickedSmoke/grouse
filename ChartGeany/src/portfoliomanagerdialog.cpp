@@ -23,7 +23,11 @@
 #include <QDateTime>
 #include "ui_portfoliomanagerdialog.h"
 #include "portfoliomanagerdialog.h"
+#ifdef GUI_DESKTOP
+#include "MainWindow.h"
+#else
 #include "mainwindow.h"
+#endif
 #include "common.h"
 
 static const int NCOLUMNS = 6;

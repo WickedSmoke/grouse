@@ -20,6 +20,8 @@
 #include "common.h"
 #include "DataManager.h"
 #include "OptionsDialog.h"
+#include "portfolio.h"
+#include "portfoliomanagerdialog.h"
 #include "qtachart.h"
 #include "qtachart_object.h"
 #include "StockTicker.h"
@@ -36,7 +38,7 @@
 
 
 MainWindow::MainWindow() :
-    _dataManager(nullptr), _optionsDialog(nullptr),
+    _dataManager(nullptr), _portfolioManager(nullptr), _optionsDialog(nullptr),
     _tdock(nullptr), _ticker(nullptr)
 {
     setWindowTitle("Chart Grouse");
@@ -166,14 +168,12 @@ QStringList MainWindow::getTabKeys( const QString& type )
             QTAChart* chart = qobject_cast <QTAChart *> (wid);
             keys += chart->getSymbolKey();
         }
-/*
         else if( wid->objectName() == type &&
                  type == QLatin1String("Portfolio") )
         {
             Portfolio* portfolio = qobject_cast <Portfolio *> (wid);
             keys += QString::number(portfolio->id());
         }
-*/
         else
             keys += QStringLiteral("");
     }
@@ -224,8 +224,10 @@ void MainWindow::createMenus()
     QMenuBar* bar = menuBar();
 
     QMenu* file = bar->addMenu( "&File" );
-    file->addAction( "&Manage Data...", this, SLOT(showDataManager()),
+    file->addAction( "Manage &Data...", this, SLOT(showDataManager()),
                      QKeySequence("F1") );
+    file->addAction( "Manage &Portfolios...", this,SLOT(showPortfolioManager()),
+                     QKeySequence("F2") );
     file->addAction( "&Edit Options...", this, SLOT(showOptions()),
                      QKeySequence("CTRL+E") );
     act = file->addAction( "Show &Ticker", this, SLOT(toggleTicker(bool)),
@@ -252,6 +254,49 @@ void MainWindow::createMenus()
 
     QMenu* help = bar->addMenu( "&Help" );
     help->addAction( "&About", this, SLOT(showAbout()) );
+}
+
+
+CG_ERR_RESULT MainWindow::addPortfolio(int pf_id, QString title,
+                                       QString currency, QString feed)
+{
+    CG_ERR_RESULT result = CG_ERR_OK;
+    Portfolio *portfolio;
+    QStringList tabkeys;
+
+    tabkeys = getTabKeys("Portfolio");
+    if (tabkeys.size() > 0)
+    {
+        for (qint32 counter = 0; counter < tabkeys.size(); counter ++)
+        {
+            if (tabkeys[counter].toInt() == pf_id)
+            {
+                _tabWidget->setCurrentIndex(counter);
+                return result;
+            }
+        }
+    }
+
+    portfolio = new (std::nothrow) Portfolio(pf_id, _tabWidget);
+    if (!portfolio)
+    {
+        result = CG_ERR_NOMEM;
+        setGlobalError(result, __FILE__, __LINE__);
+        showMessage(errorMessage(result), this);
+        return result;
+    }
+
+    portfolio->setObjectName("Portfolio");
+    portfolio->setTitle(title);
+    portfolio->setFeed(feed);
+    portfolio->setCurrency(currency);
+    connect(portfolio, SIGNAL(showChart(const TableDataVector&)),
+    SLOT(showChart(const TableDataVector&)) );
+
+    _tabWidget->addTab(portfolio, title);
+    _tabWidget->setCurrentIndex(_tabWidget->count() - 1);
+
+    return result;
 }
 
 
@@ -342,6 +387,13 @@ void MainWindow::showDataManager()
                  SLOT(showChart(const TableDataVector&)) );
     }
     _dataManager->show();
+}
+
+
+void MainWindow::showPortfolioManager()
+{
+    CREATE_DIALOG( _portfolioManager, PortfolioManagerDialog )
+    _portfolioManager->show();
 }
 
 

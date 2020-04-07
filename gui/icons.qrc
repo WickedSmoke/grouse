@@ -29,6 +29,16 @@
     <file alias="images/icons/PNG/Trash_Full.png">../ChartGeany/images/icons/PNG/Trash_Full.png</file>
     <file alias="images/icons/PNG/Folder_Chart.png">../ChartGeany/images/icons/PNG/Folder_Chart.png</file>
     <file alias="images/icons/PNG/Folder_Upload.png">../ChartGeany/images/icons/PNG/Folder_Upload.png</file>
+    <file alias="images/icons/PNG/Portfolio.png">../ChartGeany/images/icons/PNG/Portfolio.png</file>
+    <file alias="images/icons/PNG/Window_Config.png">../ChartGeany/images/icons/PNG/Window_Config.png</file>
+    <file alias="images/icons/PNG/Gold-Coin-Stacks-icon.png">../ChartGeany/images/icons/PNG/Gold-Coin-Stacks-icon.png</file>
+    <file alias="images/icons/PNG/Add_Symbol.png">../ChartGeany/images/icons/PNG/Add_Symbol.png</file>
+    <file alias="images/icons/PNG/Pencil_2.png">../ChartGeany/images/icons/PNG/Pencil_2.png</file>
+    <file alias="images/icons/PNG/Import.png">../ChartGeany/images/icons/PNG/Import.png</file>
+    <file alias="images/icons/PNG/Export.png">../ChartGeany/images/icons/PNG/Export.png</file>
+    <file alias="images/icons/PNG/Wallet.png">../ChartGeany/images/icons/PNG/Wallet.png</file>
+    <file alias="images/icons/PNG/Exit.png">../ChartGeany/images/icons/PNG/Exit.png</file>
+    <file alias="images/icons/PNG/Window_App_Splitscreen_3Columns.png">../ChartGeany/images/icons/PNG/Window_App_Splitscreen_3Columns.png</file>
   </qresource>
   <qresource>
     <file>images/cg-logo.png</file>

@@ -12,6 +12,7 @@
 
 
 class DataManager;
+class PortfolioManagerDialog;
 class OptionsDialog;
 class StockTicker;
 class QTabWidget;
@@ -24,6 +25,9 @@ class MainWindow : public QMainWindow
 public:
 
     MainWindow();
+
+    CG_ERR_RESULT addPortfolio(int pf_id, QString title,
+                               QString currency, QString feed);
 
 public slots:
 
@@ -38,6 +42,7 @@ private slots:
     void addStudy();
     void addMarker( QAction* );
     void showDataManager();
+    void showPortfolioManager();
     void showOptions();
     void showChart( const TableDataVector& );
     void toggleTicker(bool);
@@ -54,6 +59,7 @@ private:
     QMenu* _markers;
 
     DataManager* _dataManager;
+    PortfolioManagerDialog* _portfolioManager;
     OptionsDialog* _optionsDialog;
     QTabWidget*  _tabWidget;
     QDockWidget* _tdock;
