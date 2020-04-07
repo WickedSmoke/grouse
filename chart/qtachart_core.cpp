@@ -1089,22 +1089,20 @@ QTAChartCore::deleteITEMS ()
 QString
 QTAChartCore::getBottomText (int x)
 {
-  QString btext = QStringLiteral (" ");
-  static int last_bar = -1;
-  int bar = 0;
+  QString btext;
+  int bar = barOnX (x);
 
-  bar = barOnX (x);
+  //printf( "QTAChartCore::getBottomText b:%d, c:%d\n", bar, currentbar );
 
   if (bar == -1)
     return btext;
 
-  if (bar == last_bar)
+  if (bar == currentbar)
     return bottom_text->toPlainText ();
 
-  if (Q_LIKELY (bar != -1))
-    btext = (*HLOC).at (bar).Text;
+  btext = (*HLOC).at (bar).Text;
 
-  currentbar = last_bar = bar;
+  currentbar = bar;
 
   foreach (QTACObject *obj, Object)
     obj->moduleEvent (EV_MOUSE_ON_BAR);
@@ -1115,22 +1113,19 @@ QTAChartCore::getBottomText (int x)
 QString
 QTAChartCore::getBottomTextHA (int x)
 {
-  QString btext = QStringLiteral (" ");
-  static int last_bar = -1;
-  int bar = 0;
-
-  bar = barOnX (x);
+  QString btext;
+  int bar = barOnX (x);
 
   if (bar == -1)
     return btext;
 
-  if (bar == last_bar)
+  if (bar == currentbar)
     return bottom_text->toPlainText ();
 
-  if (Q_LIKELY (bar != -1 && bar < (*HEIKINASHI).size ()))
+  if (Q_LIKELY (bar < (*HEIKINASHI).size ()))
     btext = (*HEIKINASHI).at(bar).Text;
 
-  currentbar = last_bar = bar;
+  currentbar = bar;
 
   foreach (QTACObject *obj, Object)
     obj->moduleEvent (EV_MOUSE_ON_BAR);
@@ -1629,6 +1624,11 @@ QTAChartCore::setLinearScale (bool scale)
 void
 QTAChartCore::setBottomText (int x)
 {
+  // Reset currentbar to prevent getBottomText() from returning our empty
+  // string back to us.
+  if( bottom_text->toPlainText().isEmpty() )
+      currentbar = -1;
+
   if (chart_style == QTACHART_HEIKINASHI)
     bottom_text->setPlainText (getBottomTextHA (x));
   else

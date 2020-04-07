@@ -354,7 +354,11 @@ public:
   qint32 GRIDsize;          // size of GRID;
   qint32 fracdig;           // fractional digits on grid
   qint32 classError;        // error code for this class
+
+private:
   qint32 currentbar;        // bar under mouse pointer
+
+public:
   bool show_volumes;    // default true
   bool show_onlineprice; // default false
   bool show_grid;       // default true

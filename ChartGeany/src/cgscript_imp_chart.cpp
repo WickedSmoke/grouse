@@ -72,6 +72,5 @@ extern "C" Q_DECL_EXPORT int
 ChartCurrentBar_imp (const void *ptr) NOEXCEPT
 {
   const QTAChartCore *core =  static_cast <const QTAChartCore *> (ptr);
-
-  return core->currentbar;
+  return core->getCurrentBar();
 }
