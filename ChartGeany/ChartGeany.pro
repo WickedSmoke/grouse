@@ -206,7 +206,6 @@ SOURCES += \
         src/downloaddatadialog.cpp \
         src/dynparamsdialog.cpp \
         src/editorwidget.cpp \
-        src/function_dataset.cpp \
         src/highlighter.cpp \
         src/infodialog.cpp \
         src/licensedialog.cpp \
@@ -229,6 +228,7 @@ SOURCES += \
         src/waitdialog.cpp \
         ../gui/StockTicker.cpp \
         ../chart/chartapp.cpp \
+        ../chart/function_dataset.cpp \
         ../chart/qtachart_core_barchart.cpp \
         ../chart/qtachart_core_candlechart.cpp \
         ../chart/qtachart_core.cpp \

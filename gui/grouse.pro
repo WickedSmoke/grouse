@@ -72,7 +72,6 @@ SOURCES += MainWindow.cpp \
 	../ChartGeany/src/symbollistdialog.cpp \
 	../ChartGeany/src/textobjectdialog.cpp \
 	../ChartGeany/src/templatemanagerdialog.cpp \
-	../ChartGeany/src/function_dataset.cpp \
 	../ChartGeany/src/lineobjectdialog.cpp \
 	../ChartGeany/src/progressdialog.cpp \
 	../ChartGeany/src/native_segvfpe.cpp \
@@ -88,6 +87,7 @@ SOURCES += MainWindow.cpp \
 	../ChartGeany/src/cgscript_imp_strings.cpp \
 	../ChartGeany/src/cgscript_imp_tafunc.cpp \
 	../chart/chartapp.cpp \
+	../chart/function_dataset.cpp \
 	../chart/qtachart_core_barchart.cpp \
 	../chart/qtachart_core_candlechart.cpp \
 	../chart/qtachart_core.cpp \
