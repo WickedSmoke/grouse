@@ -51,7 +51,7 @@ public:
   DataManagerDialog *datamanagerdlg;    // data manager
   bool newversion;        // new version flag
 
-  CG_ERR_RESULT addChart (TableDataVector & datavector);    // add a new chart
+  CG_ERR_RESULT addChart (const TableDataVector & datavector);  // add a new chart
   // using tablename data
   CG_ERR_RESULT addPortfolio (int pf_id, QString title,
                               QString currency, QString feed);  // add a new portfolio
@@ -99,6 +99,7 @@ private slots:
   void closeTab_clicked (int);
   void currentTab_changed (int);
   void expandChartToggle ();
+  void showChart( const TableDataVector& );
   // void commitData(QSessionManager& manager);
 
 protected:

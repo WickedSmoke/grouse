@@ -190,6 +190,7 @@ protected:
 signals:
   void updatePortfolioPrices (int pfid); // update portfolio prices
   void expandChartToggle ();
+  void showChart (const TableDataVector&);
 };
 
 #endif // PORTFOLIO_H

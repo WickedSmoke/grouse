@@ -16,13 +16,15 @@
  *
  */
 
+#include <QCheckBox>
 #include <QTextStream>
 #include <QHBoxLayout>
 #include <QResizeEvent>
 #include <QScrollBar>
+#include <QGraphicsTextItem>
 #include "ui_portfolio.h"
 #include "portfolio.h"
-#include "mainwindow.h"
+#include "common.h"
 
 typedef QList<QTableWidgetItem *> RowCells;
 static const int TRNCOLUMNS = 10;
@@ -1739,22 +1741,8 @@ Portfolio::chartButton_clicked (void)
     return;
   }
 
-  QStringList symkeys;
-  int index = -1;
-
-  symkeys = ((qobject_cast <MainWindow*> (parent ()->parent ()->parent ()->parent ()))->getTabKeys ("Chart"));
-  if (symkeys.size () != 0)
-  {
-    for (qint32 counter = 0; counter < symkeys.size (); counter ++)
-      if (tdv[0].tablename == symkeys[counter])
-        index = counter;
-  }
-
   progressdialog->hide ();
-  if (index != -1)
-    (qobject_cast <MainWindow*> (parent ()->parent ()->parent ()->parent ()))->tabWidget->setCurrentIndex (index);
-  else
-    (qobject_cast <MainWindow*> (parent ()->parent ()->parent ()->parent ()))->addChart (tdv);
+  emit showChart (tdv);
 }
 
 // portfolioButton_clicked ()

@@ -409,7 +409,7 @@ MainWindow::disableTickerButton ()
 
 // add a new chart
 CG_ERR_RESULT
-MainWindow::addChart (TableDataVector & datavector)
+MainWindow::addChart (const TableDataVector & datavector)
 {
   QList<QAbstractButton*> allPButtons;
   QTAChart *tachart;
@@ -484,6 +484,24 @@ MainWindow::addChart (TableDataVector & datavector)
   return result;
 }
 
+void MainWindow::showChart( const TableDataVector& tv )
+{
+    QStringList symkeys = getTabKeys("Chart");
+    if (symkeys.size() != 0)
+    {
+      for (int i = 0; i < symkeys.size(); ++i)
+      {
+        if (tv[0].tablename == symkeys[i])
+        {
+          ui->tabWidget->setCurrentIndex(i);
+          return;
+        }
+      }
+    }
+
+    addChart(tv);
+}
+
 // add a new portfolio
 CG_ERR_RESULT
 MainWindow::addPortfolio (int pf_id, QString title, QString currency, QString feed)
@@ -519,6 +537,8 @@ MainWindow::addPortfolio (int pf_id, QString title, QString currency, QString fe
   portfolio->setFeed (feed);
   portfolio->setCurrency (currency);
   connect(portfolio, SIGNAL(expandChartToggle()), SLOT(expandChartToggle()) );
+  connect(portfolio, SIGNAL(showChart(const TableDataVector&)),
+          SLOT(showChart(const TableDataVector&)) );
 
   ui->tabWidget->addTab (portfolio, title);
   ui->tabWidget->setCurrentIndex (ui->tabWidget->count () - 1);
