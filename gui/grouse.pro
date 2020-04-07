@@ -27,6 +27,7 @@ HEADERS += MainWindow.h \
 	ParameterDialog.h \
 	DownloadDataDialog.h \
 	OptionsDialog.h \
+	PortfolioManager.h \
 	StockTicker.h \
 	../ChartGeany/include/addportfoliodialog.h \
 	../ChartGeany/include/addpricedialog.h \
@@ -40,7 +41,6 @@ HEADERS += MainWindow.h \
 	../ChartGeany/include/templatemanagerdialog.h \
 	../ChartGeany/include/lineobjectdialog.h \
 	../ChartGeany/include/progressdialog.h \
-	../ChartGeany/include/portfoliomanagerdialog.h \
 	../ChartGeany/include/portfolio.h \
 	../ChartGeany/include/waitdialog.h \
 	../chart/chartapp.h \
@@ -68,6 +68,7 @@ SOURCES += MainWindow.cpp \
 	ParameterDialog.cpp \
 	DownloadDataDialog.cpp \
 	OptionsDialog.cpp \
+	PortfolioManager.cpp \
 	StockTicker.cpp \
 	../ChartGeany/src/addportfoliodialog.cpp \
 	../ChartGeany/src/addpricedialog.cpp \
@@ -82,7 +83,6 @@ SOURCES += MainWindow.cpp \
 	../ChartGeany/src/templatemanagerdialog.cpp \
 	../ChartGeany/src/lineobjectdialog.cpp \
 	../ChartGeany/src/progressdialog.cpp \
-	../ChartGeany/src/portfoliomanagerdialog.cpp \
 	../ChartGeany/src/portfolio.cpp \
 	../ChartGeany/src/native_segvfpe.cpp \
 	../ChartGeany/src/waitdialog.cpp \

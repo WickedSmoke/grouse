@@ -21,7 +21,7 @@
 #include "DataManager.h"
 #include "OptionsDialog.h"
 #include "portfolio.h"
-#include "portfoliomanagerdialog.h"
+#include "PortfolioManager.h"
 #include "qtachart.h"
 #include "qtachart_object.h"
 #include "StockTicker.h"
@@ -392,7 +392,7 @@ void MainWindow::showDataManager()
 
 void MainWindow::showPortfolioManager()
 {
-    CREATE_DIALOG( _portfolioManager, PortfolioManagerDialog )
+    CREATE_DIALOG( _portfolioManager, PortfolioManager )
     _portfolioManager->show();
 }
 

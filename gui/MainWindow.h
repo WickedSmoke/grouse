@@ -12,7 +12,7 @@
 
 
 class DataManager;
-class PortfolioManagerDialog;
+class PortfolioManager;
 class OptionsDialog;
 class StockTicker;
 class QTabWidget;
@@ -59,7 +59,7 @@ private:
     QMenu* _markers;
 
     DataManager* _dataManager;
-    PortfolioManagerDialog* _portfolioManager;
+    PortfolioManager* _portfolioManager;
     OptionsDialog* _optionsDialog;
     QTabWidget*  _tabWidget;
     QDockWidget* _tdock;

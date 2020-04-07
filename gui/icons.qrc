@@ -10,6 +10,9 @@
     <file alias="Search.png">../ChartGeany/images/icons/PNG/Search.png</file>
     <file alias="add_item.png">images/add_item.png</file>
     <file alias="remove_item.png">images/remove_item.png</file>
+    <file alias="Pencil_2.png">../ChartGeany/images/icons/PNG/Pencil_2.png</file>
+    <file alias="Add_Symbol.png">../ChartGeany/images/icons/PNG/Add_Symbol.png</file>
+    <file alias="Window_App_Splitscreen_3Columns.png">../ChartGeany/images/icons/PNG/Window_App_Splitscreen_3Columns.png</file>
   </qresource>
   <qresource prefix="png">
     <file alias="images/icons/PNG/fullscreen.png">../ChartGeany/images/icons/PNG/fullscreen.png</file>
@@ -32,13 +35,10 @@
     <file alias="images/icons/PNG/Portfolio.png">../ChartGeany/images/icons/PNG/Portfolio.png</file>
     <file alias="images/icons/PNG/Window_Config.png">../ChartGeany/images/icons/PNG/Window_Config.png</file>
     <file alias="images/icons/PNG/Gold-Coin-Stacks-icon.png">../ChartGeany/images/icons/PNG/Gold-Coin-Stacks-icon.png</file>
-    <file alias="images/icons/PNG/Add_Symbol.png">../ChartGeany/images/icons/PNG/Add_Symbol.png</file>
-    <file alias="images/icons/PNG/Pencil_2.png">../ChartGeany/images/icons/PNG/Pencil_2.png</file>
     <file alias="images/icons/PNG/Import.png">../ChartGeany/images/icons/PNG/Import.png</file>
     <file alias="images/icons/PNG/Export.png">../ChartGeany/images/icons/PNG/Export.png</file>
     <file alias="images/icons/PNG/Wallet.png">../ChartGeany/images/icons/PNG/Wallet.png</file>
     <file alias="images/icons/PNG/Exit.png">../ChartGeany/images/icons/PNG/Exit.png</file>
-    <file alias="images/icons/PNG/Window_App_Splitscreen_3Columns.png">../ChartGeany/images/icons/PNG/Window_App_Splitscreen_3Columns.png</file>
   </qresource>
   <qresource>
     <file>images/cg-logo.png</file>
