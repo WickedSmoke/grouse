@@ -713,23 +713,11 @@ QTAChart::propertiesBtn_clicked (void)
 void
 QTAChart::expandBtn_clicked (void)
 {
-  const QTAChartCore *core = ccore;
-  MainWindow *mainwindow;
-
-  if (core->object_drag)
+  if (ccore->object_drag)
     return;
 
-  mainwindow = (qobject_cast <MainWindow *> (this->parentWidget ()->parentWidget ()->
-                parentWidget ()->parentWidget ()));
-
-  if (core->events_enabled == true)
-  {
-    if (mainwindow->expandedChart ())
-      mainwindow->setExpandChart (false);
-    else
-      mainwindow->setExpandChart (true);
-    return;
-  }
+  if (ccore->events_enabled == true)
+    emit expandChartToggle();
   else
     backBtn_clicked ();
 

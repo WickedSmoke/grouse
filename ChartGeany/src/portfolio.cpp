@@ -471,7 +471,7 @@ Portfolio::Portfolio (int pfid, QWidget * parent):
   connect (ui->upToolButton, SIGNAL (clicked ()), this,
            SLOT (upButton_clicked ()));
   connect (ui->expandButton, SIGNAL (clicked ()), this,
-           SLOT (expandButton_clicked ()));
+           SIGNAL (expandChartToggle ()));
   connect(ui->portfolioTableWidget, SIGNAL(doubleClicked(const QModelIndex &)), this,
           SLOT(position_double_clicked ()));
   connect (ui->colDownToolButton, SIGNAL (clicked ()), this,
@@ -1637,22 +1637,6 @@ Portfolio::position_double_clicked (void)
       }
     }
   }
-}
-
-// expand / restore
-void
-Portfolio::expandButton_clicked (void)
-{
-  MainWindow *mainwindow;
-
-  mainwindow = (qobject_cast <MainWindow *>
-                (this->parentWidget ()->parentWidget ()->parentWidget ()->parentWidget ()));
-
-  if (mainwindow->expandedChart ())
-    mainwindow->setExpandChart (false);
-  else
-    mainwindow->setExpandChart (true);
-  return;
 }
 
 static int getTableDataVector( TableDataVector& td, const QString& key,

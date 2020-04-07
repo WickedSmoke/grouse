@@ -25,9 +25,6 @@ public:
 
     MainWindow();
 
-    bool expandedChart() const;     // Used by QTAChart
-    void setExpandChart( bool );
-
 public slots:
 
     void showAbout();

@@ -91,7 +91,7 @@ EditorWidget::EditorWidget (QWidget * parent):
   connect (ui->compileButton, SIGNAL (clicked ()), this,
            SLOT (compileButton_clicked ()));
   connect (ui->expandButton, SIGNAL (clicked ()), this,
-           SLOT (expandButton_clicked ()));
+           SIGNAL (expandChartToggle ()));
   connect (ui->messagesButton, SIGNAL (clicked ()), this,
            SLOT (messagesButton_clicked ()));
   connect (ui->debugButton, SIGNAL (clicked ()), this,
@@ -145,7 +145,7 @@ EditorWidget::EditorWidget (QWidget * parent):
 
   CompileHighlighter *compilehighlighter;
   compilehighlighter = new CompileHighlighter(ui->messagePlainTextEdit->document ());
-  
+
   Q_UNUSED (compilehighlighter)
 }
 
@@ -160,25 +160,6 @@ EditorWidget::~EditorWidget ()
 #if QT_VERSION > QT_VERSION_CHECK(5, 6, 0)
   delete highlighter;
 #endif
-}
-
-
-/// Events and signals
-// expand button clicked
-void
-EditorWidget::expandButton_clicked (void)
-{
-  MainWindow *mainwindow;
-
-  mainwindow = (qobject_cast <MainWindow *>
-                (this->parentWidget ()->parentWidget ()->parentWidget ()->parentWidget ()));
-
-  if (mainwindow->expandedChart ())
-    mainwindow->setExpandChart (false);
-  else
-    mainwindow->setExpandChart (true);
-
-  return;
 }
 
 // resize

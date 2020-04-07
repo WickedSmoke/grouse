@@ -469,6 +469,7 @@ MainWindow::addChart (TableDataVector & datavector)
 
   tachart->setAlwaysRedraw (true);
   tachart->setTitle (title, subtitle);
+  connect(tachart, SIGNAL(expandChartToggle()), SLOT(expandChartToggle()));
 
   ui->tabWidget->addTab (tachart, datavector[0].symbol % QStringLiteral (" ") % (datavector[0].adjusted == QStringLiteral ("NO")?QStringLiteral ("RAW"):QStringLiteral ("ADJ")));
   ui->tabWidget->setCurrentIndex (ui->tabWidget->count () - 1);
@@ -517,17 +518,12 @@ MainWindow::addPortfolio (int pf_id, QString title, QString currency, QString fe
   portfolio->setTitle (title);
   portfolio->setFeed (feed);
   portfolio->setCurrency (currency);
+  connect(portfolio, SIGNAL(expandChartToggle()), SLOT(expandChartToggle()) );
+
   ui->tabWidget->addTab (portfolio, title);
   ui->tabWidget->setCurrentIndex (ui->tabWidget->count () - 1);
 
   return result;
-}
-
-// expanded chart
-bool
-MainWindow::expandedChart () const NOEXCEPT
-{
-  return expandedChartFlag;
 }
 
 // expand/shrink chart
@@ -597,6 +593,13 @@ MainWindow::setExpandChart (bool expandflag)
       ui->tabWidget->widget(counter)->resize (ui->tabWidget->width () - 2,
                                               ui->tabWidget->height () - 20);
   }
+}
+
+// expand / restore
+void
+MainWindow::expandChartToggle ()
+{
+  setExpandChart (! expandedChartFlag);
 }
 
 // set developer's mode
@@ -687,6 +690,7 @@ MainWindow::developButton_clicked ()
   EditorWidget *editor;
   editor = new (std::nothrow) EditorWidget (ui->tabWidget);
   editor->setObjectName ("Editor");
+  connect(editor, SIGNAL(expandChartToggle()), SLOT(expandChartToggle()) );
   ui->tabWidget->addTab (editor, "New Module.cgs");
   ui->tabWidget->setCurrentIndex (ui->tabWidget->count () - 1);
 }

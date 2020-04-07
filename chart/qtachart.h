@@ -148,6 +148,9 @@ Q_OBJECT public:
   void addMarkerTrendLine();
   void addMarkerFibonacci();
 
+signals:
+  void expandChartToggle();
+
 private:
   Ui::QTAChart * ui;
 

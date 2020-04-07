@@ -149,18 +149,6 @@ fail:
 }
 
 
-bool MainWindow::expandedChart() const
-{
-    return false; // TODO expandedChartFlag;
-}
-
-
-void MainWindow::setExpandChart(bool)
-{
-    // TODO
-}
-
-
 QStringList MainWindow::getTabKeys( const QString& type )
 {
     static QStringList keys;
@@ -451,7 +439,6 @@ void MainWindow::closeTab(int index)
 {
     if(_tabWidget->count() == 1 )
     {
-        setExpandChart(false);
         _studies->setEnabled(false);
         _markers->setEnabled(false);
     }

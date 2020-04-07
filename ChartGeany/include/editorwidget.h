@@ -44,6 +44,9 @@ public:
   explicit EditorWidget (QWidget *parent = 0);
   ~EditorWidget (void);
 
+signals:
+  void expandChartToggle ();
+
 private:
   Ui::EditorWidget *ui;
 #if QT_VERSION < QT_VERSION_CHECK(5, 7, 0)
@@ -64,7 +67,6 @@ private slots:
   void saveButton_clicked (void);
   void saveAsButton_clicked (void);
   void compileButton_clicked (void);
-  void expandButton_clicked (void);
   void messagesButton_clicked (void);
   void debugButton_clicked (void);
   void fontsize_changed (int);

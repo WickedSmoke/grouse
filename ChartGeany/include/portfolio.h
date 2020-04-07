@@ -177,7 +177,6 @@ private slots:
   void filter_combol_changed (const QString &);
   void updatePortfolioPricesSlot (int pfid);
   void position_double_clicked (void);
-  void expandButton_clicked (void);
   void importButton_clicked (void);
   void exportButton_clicked (void);
   void setPriceButton_clicked (void);
@@ -190,7 +189,7 @@ protected:
 
 signals:
   void updatePortfolioPrices (int pfid); // update portfolio prices
-
+  void expandChartToggle ();
 };
 
 #endif // PORTFOLIO_H

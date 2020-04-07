@@ -66,7 +66,6 @@ public:
   {
     return ticker;
   }; // returns stock ticker
-  bool expandedChart () const NOEXCEPT;
 
 private:
   Ui::MainWindow *ui;
@@ -99,6 +98,7 @@ private slots:
   void exitButton_clicked (void);
   void closeTab_clicked (int);
   void currentTab_changed (int);
+  void expandChartToggle ();
   // void commitData(QSessionManager& manager);
 
 protected:
