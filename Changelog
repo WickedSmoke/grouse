@@ -1,11 +1,13 @@
                     Chart Grouse Change Log
 
-Version 1.0.0 - 2 Apr 2020
+Version 1.0.0 - 8 Apr 2020
   * Desktop oriented GUI added (work in progress).
   * Eliminated delays in program startup and shutdown.
   * Main window size is now preserved between runs.
   * Dialogs now appear over parent windows.
   * FIX: Indicator parameter dialogs are now always visible.
+  * FIX: Pointer detection over last chart bar.
+  * FIX: Portfolio memory leak.
 
                     Chart Geany Change Log
 
