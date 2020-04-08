@@ -12,7 +12,7 @@
     <file alias="remove_item.png">images/remove_item.png</file>
     <file alias="Pencil_2.png">../ChartGeany/images/icons/PNG/Pencil_2.png</file>
     <file alias="Add_Symbol.png">../ChartGeany/images/icons/PNG/Add_Symbol.png</file>
-    <file alias="Window_App_Splitscreen_3Columns.png">../ChartGeany/images/icons/PNG/Window_App_Splitscreen_3Columns.png</file>
+    <file alias="Window_3Columns.png">../ChartGeany/images/icons/PNG/Window_App_Splitscreen_3Columns.png</file>
   </qresource>
   <qresource prefix="png">
     <file alias="images/icons/PNG/fullscreen.png">../ChartGeany/images/icons/PNG/fullscreen.png</file>

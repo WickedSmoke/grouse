@@ -23,6 +23,7 @@
 
 
 class QTableWidget;
+class QToolButton;
 class AddPortfolioDialog;
 
 class PortfolioManager : public QDialog
@@ -31,7 +32,6 @@ class PortfolioManager : public QDialog
 
 public:
     explicit PortfolioManager(QWidget *parent = 0);
-    ~PortfolioManager();
 
 protected:
     virtual void showEvent(QShowEvent * event);
@@ -40,15 +40,18 @@ protected:
 private:
     QTableWidget* tableWidget;
     AddPortfolioDialog* addportfoliodlg;
+    QToolButton* editButton;
+    QToolButton* deleteButton;
+    QToolButton* openButton;
 
     void reloadPortfolios();    // reload the portfolios
-    void cleartable();          // clear QTableWidget
 
 private slots:
+    void selectionChanged();
     void newButton_clicked();
-    void editButton_clicked();
+    void editSelected();
+    void openSelected();
     void deleteSelected();
-    void openButton_clicked();
 };
 
 #endif // PORTFOLIOMANAGER_H

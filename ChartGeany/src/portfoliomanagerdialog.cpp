@@ -206,10 +206,9 @@ PortfolioManagerDialog::reloadPortfolios ()
   ui->tableWidget->setColumnCount (NCOLUMNS);
 
   for (int row = 0; row < count; row ++)
-    for (int col = 0; col < 8; col++)
+    for (int col = 0; col < NCOLUMNS; col++)
   {
-    QTableWidgetItem *item = new QTableWidgetItem (QTableWidgetItem::Type);
-    item->setText ("Empty");
+    QTableWidgetItem *item = new QTableWidgetItem ("Empty");
     ui->tableWidget->setItem (row, col, item);
   }
 

@@ -65,14 +65,11 @@ PortfolioManager::PortfolioManager(QWidget * parent) :
     QBoxLayout* lt = new QHBoxLayout;
     lo->addLayout( lt );
 
-    QToolButton* editButton = _pmToolButton(lt,
-                                "Pencil_2.png", "Edit Portfolio");
-    QToolButton* newButton = _pmToolButton(lt,
-                                "Add_Symbol.png", "Add Portfolio");
-    QToolButton* deleteButton = _pmToolButton(lt,
-                                "Trash_Delete.png", "Delete Portfolio");
-    QToolButton* openButton = _pmToolButton(lt,
-                    "Window_App_Splitscreen_3Columns.png", "Open Portfolio");
+    editButton   = _pmToolButton(lt, "Pencil_2.png",        "Edit Portfolio");
+    QToolButton*
+      newButton  = _pmToolButton(lt, "Add_Symbol.png",      "Add Portfolio");
+    deleteButton = _pmToolButton(lt, "Trash_Delete.png",    "Delete Portfolio");
+    openButton   = _pmToolButton(lt, "Window_3Columns.png", "Open Portfolio");
     lt->addStretch();
 
 
@@ -90,9 +87,10 @@ PortfolioManager::PortfolioManager(QWidget * parent) :
     tableWidget->setSortingEnabled(true);
     tableWidget->setColumnCount(NCOLUMNS);
     tableWidget->setHorizontalHeaderLabels(headings);
+    tableWidget->horizontalHeader()->setHighlightSections(false);
+    tableWidget->verticalHeader()->setHighlightSections(false);
     tableWidget->setColumnHidden(4, true);
     tableWidget->setColumnHidden(5, true);
-    tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     tableWidget->horizontalHeader()->setStretchLastSection(true);
     lo->addWidget( tableWidget );
 
@@ -105,11 +103,13 @@ PortfolioManager::PortfolioManager(QWidget * parent) :
     addportfoliodlg = new AddPortfolioDialog(this);
 
     // connect to signals
+    connect(tableWidget, SIGNAL(itemSelectionChanged()),
+            SLOT(selectionChanged()));
     connect(tableWidget, SIGNAL(doubleClicked(const QModelIndex &)),
-            SLOT(openButton_clicked()));
-    connect(openButton,   SIGNAL(clicked()), SLOT(openButton_clicked()));
+            SLOT(openSelected()));
+    connect(openButton,   SIGNAL(clicked()), SLOT(openSelected()));
     connect(newButton,    SIGNAL(clicked()), SLOT(newButton_clicked()));
-    connect(editButton,   SIGNAL(clicked()), SLOT(editButton_clicked()));
+    connect(editButton,   SIGNAL(clicked()), SLOT(editSelected()));
     connect(deleteButton, SIGNAL(clicked()), SLOT(deleteSelected()));
 
     setMinimumSize(QSize(750, 250));
@@ -134,28 +134,18 @@ PortfolioManager::PortfolioManager(QWidget * parent) :
         showMessage(errorMessage(CG_ERR_DBACCESS), this);
         hide();
     }
+
+    selectionChanged();     // Disable buttons.
 }
 
 
-PortfolioManager::~PortfolioManager()
+void PortfolioManager::selectionChanged()
 {
-    cleartable();
-}
+    bool on = tableWidget->selectionModel()->hasSelection();
 
-
-void PortfolioManager::cleartable()
-{
-    int row, nrows, col, ncols = NCOLUMNS;
-
-    nrows = tableWidget->rowCount();
-    for (row = 0; row < nrows; row ++)
-    {
-        for (col = 0; col < ncols; col ++)
-            delete tableWidget->takeItem(row,col);
-    }
-
-    tableWidget->setRowCount(0);
-    tableWidget->setSortingEnabled(false);
+    openButton->setEnabled( on );
+    editButton->setEnabled( on );
+    deleteButton->setEnabled( on );
 }
 
 
@@ -229,16 +219,16 @@ void PortfolioManager::reloadPortfolios()
     return;
   }
 
-  cleartable();
+  tableWidget->clearContents();
+  tableWidget->setSortingEnabled(false);
 
   tableWidget->setRowCount(count);
   tableWidget->setColumnCount(NCOLUMNS);
 
   for (int row = 0; row < count; row ++)
-    for (int col = 0; col < 8; col++)
+    for (int col = 0; col < NCOLUMNS; col++)
   {
-    QTableWidgetItem *item = new QTableWidgetItem(QTableWidgetItem::Type);
-    item->setText("Empty");
+    QTableWidgetItem *item = new QTableWidgetItem("Empty");
     tableWidget->setItem(row, col, item);
   }
 
@@ -276,12 +266,22 @@ void PortfolioManager::keyPressEvent(QKeyEvent * event)
 }
 
 
-void PortfolioManager::openButton_clicked ()
+// This message should never be shown as the buttons are disabled if there
+// is no selection.
+
+#define HANDLE_INVALID_ID \
+    if (pf_id == -1) { \
+        showMessage("Select a portfolio first please.", this); \
+        return; \
+    }
+
+
+void PortfolioManager::openSelected()
 {
     QString title, currency, feed;
     int pf_id = -1;
 
-    for (qint32 row = 0; row < tableWidget->rowCount (); row ++)
+    for (qint32 row = 0; row < tableWidget->rowCount(); row ++)
     {
         if (tableWidget->item (row, 0)->isSelected ())
         {
@@ -292,11 +292,7 @@ void PortfolioManager::openButton_clicked ()
         }
     }
 
-    if (pf_id == -1)
-    {
-        showMessage("Select a portfolio first please.", this);
-        return;
-    }
+    HANDLE_INVALID_ID
 
     (qobject_cast<MainWindow*> (parent()))->addPortfolio(pf_id, title,
                                                          currency, feed);
@@ -311,24 +307,20 @@ void PortfolioManager::newButton_clicked()
 }
 
 
-void PortfolioManager::editButton_clicked()
+void PortfolioManager::editSelected()
 {
-  int pf_id = -1;
+    int pf_id = -1;
 
-  for (int row = 0; row < tableWidget->rowCount(); row ++)
-  {
-    if (tableWidget->item(row, 0)->isSelected())
-      pf_id = tableWidget->item(row, 5)->text().toInt();
-  }
+    for (int row = 0; row < tableWidget->rowCount(); row ++)
+    {
+        if (tableWidget->item(row, 0)->isSelected())
+            pf_id = tableWidget->item(row, 5)->text().toInt();
+    }
 
-  if (pf_id == -1)
-  {
-    showMessage("Select a portfolio first please.", this);
-    return;
-  }
+    HANDLE_INVALID_ID
 
-  addportfoliodlg->setEditMode(pf_id);
-  addportfoliodlg->show();
+    addportfoliodlg->setEditMode(pf_id);
+    addportfoliodlg->show();
 }
 
 
@@ -343,11 +335,7 @@ void PortfolioManager::deleteSelected()
       pf_id = tableWidget->item(row, 5)->text().toInt();
   }
 
-  if (pf_id == -1)
-  {
-    showMessage("Select a portfolio first please.", this);
-    return;
-  }
+  HANDLE_INVALID_ID
 
   if (showOkCancel("Delete selected portfolio?", this) == false)
     return;
