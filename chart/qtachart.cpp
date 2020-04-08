@@ -21,7 +21,6 @@
 #include <QKeyEvent>
 #include <QShortcut>
 #include "defs.h"
-#include "ui_qtachart.h"
 #include "qtachart_core.h"
 #include "qtachart_properties.h"
 #include "qtachart_help.h"
@@ -36,7 +35,7 @@
 
 // constructor
 QTAChart::QTAChart (QWidget * parent):
-  QWidget (parent), ui (new Ui::QTAChart)
+  QWidget (parent)
 {
   QTAChartCore *core;
   QPalette palette;
@@ -58,7 +57,13 @@ QTAChart::QTAChart (QWidget * parent):
   ccore = core;
   tabText = QStringLiteral ("Default");
 
-  ui->setupUi (this);
+  setMinimumSize(200, 200);
+
+  graphicsView = new QGraphicsView(this);
+  graphicsView->setFrameShadow(QFrame::Plain);
+  graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  graphicsView->setResizeAnchor(QGraphicsView::AnchorViewCenter);
 
   // initialize
   core->firstshow = true;
@@ -180,15 +185,15 @@ QTAChart::QTAChart (QWidget * parent):
   core->leftedge->setLine (0, 0, 0, 0);
   core->leftedge->setPen (QPen (core->gridcolor));
 
-  core->chart = this->findChild < QGraphicsView * > ("graphicsView");
-  core->chart->setViewportUpdateMode (QGraphicsView::FullViewportUpdate);
-  core->chart->setCacheMode (QGraphicsView::CacheBackground);
-  core->chart->setAlignment (Qt::AlignLeft | Qt::AlignTop);
+  core->chart = graphicsView;
+  graphicsView->setViewportUpdateMode (QGraphicsView::FullViewportUpdate);
+  graphicsView->setCacheMode (QGraphicsView::CacheBackground);
+  graphicsView->setAlignment (Qt::AlignLeft | Qt::AlignTop);
 
-  core->chart->setScene (core->scene);
-  core->chart->installEventFilter (core->chartEventFilter);
-  core->chart->setMouseTracking (true);
-  core->chart->viewport()->setMouseTracking(true);
+  graphicsView->setScene (core->scene);
+  graphicsView->installEventFilter (core->chartEventFilter);
+  graphicsView->setMouseTracking (true);
+  graphicsView->viewport()->setMouseTracking(true);
 
   core->scene->setItemIndexMethod (QTCGraphicsScene::NoIndex);
   core->scene->setBackgroundBrush (core->backcolor);
@@ -390,8 +395,6 @@ QTAChart::~QTAChart ()
 
   ArrayDestroyAll_imp (this);
   StringDestroyAll_imp (this);
-
-  delete ui;
 }
 
 // back button implementation
@@ -478,7 +481,7 @@ QTAChart::resizeEvent (QResizeEvent * event)
   core->typetitle->setPos (core->chartrightmost - 100, 18);
   core->prxhelpBtn->setPos (core->chartrightmost + 5,
                             core->height - (core->bottomline_height + 2));
-  core->chart->resize (core->width, core->height);
+  graphicsView->resize (core->width, core->height);
   core->scene->setSceneRect (0, 0, core->width - 5, core->height - 5);
   if (core->events_enabled == true)
   {

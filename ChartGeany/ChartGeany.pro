@@ -487,7 +487,6 @@ FORMS += \
         forms/qtacdata.ui \
         forms/qtacdraw.ui \
         forms/qtacfunctions.ui \
-        forms/qtachart.ui \
         forms/qtachelp.ui \
         forms/qtacobjects.ui \
         forms/qtacproperties.ui \

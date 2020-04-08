@@ -66,12 +66,15 @@ namespace Ui
   class QTAChart;
 }
 
+class QGraphicsView;
 class QTAChartCore;
 class QTACObject;
 
 class QTAChart:public QWidget
 {
-Q_OBJECT public:
+  Q_OBJECT
+
+public:
   explicit QTAChart (QWidget * parent = 0);
   ~QTAChart (void);
   // valiables
@@ -152,7 +155,7 @@ signals:
   void expandChartToggle();
 
 private:
-  Ui::QTAChart * ui;
+  QGraphicsView *graphicsView;
 
   // variables
   QString tabText;              // parent tab's label
