@@ -135,7 +135,7 @@ _paramDialogFastStoch(const ButtonInitData& bd)
 }
 
 static DynParamsDialog*
-_paramDialogW_percent_R(const ButtonInitData& bd)
+_paramDialogW_pct_R(const ButtonInitData& bd)
 {
   DynParamsDialog* dlg = new DynParamsDialog(QStringLiteral("W%R"), bd.wparent);
   _addButton(bd, QStringLiteral("W%R"), dlg);

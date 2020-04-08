@@ -52,6 +52,12 @@ enum QTAChartObjectType
   QTACHART_OBJ_CONTAINER            // parent object for other objects
 };
 
+enum QTAChartObjectCategory
+{
+  QTACHART_CAT_INDICATOR,           // Calculated technical indicator
+  QTACHART_CAT_MARKER,              // User notation
+};
+
 // data sets
 enum QTAChartDataSet
 {
@@ -277,8 +283,9 @@ public:
   QGraphicsTextItem FiboLevelPrcLbl[7]; // text labels for FiboLevel prices
   PriceVector FiboLevelPrc; // percentage fibo levels 100, 76.4, 61.8, 50, 38.2, 23.6, 0
   qint32 subchart_dec;           // decrement of nsubcharts. initially 1, 0 if delete later
-  qint32 type;               // object's type
   qint32 ITEMSsize;          // size of ITEMS;
+  uint16_t type;             // object's QTAChartObjectType
+  uint16_t category;         // object's QTAChartObjectCategory
   bool deleteit;             // true if object is going to be deleted
   bool onlineprice;          // true for online price object
 

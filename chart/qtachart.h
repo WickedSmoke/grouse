@@ -108,40 +108,33 @@ public:
   void showOnlinePrice (bool);  // turn online price show on/off
   void showGrid (bool);     // turn grid on off
 
-  QTACObject* addStudyMACD( const QString& name, int period,
-                            QRgb colorMACD, QRgb colorSignal );
-  QTACObject* addStudySMA( const QString& name, int period, QRgb color );
-  QTACObject* addStudyEMA( const QString& name, int period, QRgb color );
-  QTACObject* addStudyMFI( const QString& name, int period, QRgb color,
-                           int highLevel, int lowLevel, int mediumLevel );
-  QTACObject* addStudyROC( const QString& name, int period, int Level,
-                           QRgb color );
-  QTACObject* addStudyRSI( const QString& name, int period, int Highlevel,
+  QTACObject* addStudyMACD( int period, QRgb colorMACD, QRgb colorSignal );
+  QTACObject* addStudySMA( int period, QRgb color );
+  QTACObject* addStudyEMA( int period, QRgb color );
+  QTACObject* addStudyMFI( int period, QRgb color, int highLevel,
+                           int lowLevel, int mediumLevel );
+  QTACObject* addStudyROC( int period, int Level, QRgb color );
+  QTACObject* addStudyRSI( int period, int Highlevel,
                            int Lowlevel, QRgb color );
-  QTACObject* addStudySlowStoch( const QString& name, int period,
-                                 int Highlevel, int Mediumlevel, int Lowlevel,
-                                 QRgb Kcolor, QRgb Dcolor );
-  QTACObject* addStudyFastStoch( const QString& name, int period,
-                                 int Highlevel, int Mediumlevel, int Lowlevel,
-                                 QRgb Kcolor, QRgb Dcolor );
-  QTACObject* addStudyW_percent_R( const QString& name, int period,
-                                   int Highlevel, int Lowlevel, QRgb color );
-  QTACObject* addStudyBollingerBands( const QString& name, int period,
-                                      QRgb color );
-  QTACObject* addStudyParabolicSAR( const QString& name, QRgb color );
-  QTACObject* addStudyADX( const QString& name, int period, int Weak,
-                           int Strong, int Verystrong, QRgb color );
-  QTACObject* addStudyAroon( const QString& name, int period,
-                             int Highlevel, int Mediumlevel, int Lowlevel,
-                             QRgb UpColor, QRgb DownColor );
-  QTACObject* addStudyCCI( const QString& name, int period,
-                           int Highlevel, int Lowlevel, QRgb color );
-  QTACObject* addStudySTDDEV( const QString& name, int period, QRgb color );
-  QTACObject* addStudyMomentum( const QString& name, int period,
-                                int Level, QRgb color );
-  QTACObject* addStudyDMI( const QString& name, int period, int Weak,
-                           int Strong, int veryStrong, QRgb color );
-  QTACObject* addStudyATR( const QString& name, int period, QRgb color );
+  QTACObject* addStudySlowStoch( int period, int Highlevel, int Mediumlevel,
+                                 int Lowlevel, QRgb Kcolor, QRgb Dcolor );
+  QTACObject* addStudyFastStoch( int period, int Highlevel, int Mediumlevel,
+                                 int Lowlevel, QRgb Kcolor, QRgb Dcolor );
+  QTACObject* addStudyW_pct_R( int period, int Highlevel, int Lowlevel,
+                               QRgb color );
+  QTACObject* addStudyBollingerBands( int period, QRgb color );
+  QTACObject* addStudyParabolicSAR( QRgb color );
+  QTACObject* addStudyADX( int period, int Weak, int Strong, int Verystrong,
+                           QRgb color );
+  QTACObject* addStudyAroon( int period, int Highlevel, int Mediumlevel,
+                             int Lowlevel, QRgb UpColor, QRgb DownColor );
+  QTACObject* addStudyCCI( int period, int Highlevel, int Lowlevel,
+                           QRgb color );
+  QTACObject* addStudySTDDEV( int period, QRgb color );
+  QTACObject* addStudyMomentum( int period, int Level, QRgb color );
+  QTACObject* addStudyDMI( int period, int Weak, int Strong, int veryStrong,
+                           QRgb color );
+  QTACObject* addStudyATR( int period, QRgb color );
 
 
   void addMarkerLabel();

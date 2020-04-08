@@ -162,6 +162,8 @@ TemplateManagerDialog::setReferenceChart (void *chart)
   referencechart = chart;
 }
 
+extern void _objectParameters(QTACObject* obj, ParamVector& pvec);
+
 // sql from object list
 QString
 TemplateManagerDialog::qtachart2sql (QString tableKey)
@@ -185,19 +187,26 @@ TemplateManagerDialog::qtachart2sql (QString tableKey)
   SQLCommand.append ('\n');
   foreach (QTACObject *object, Object)
   {
-    DynParamsDialog *paramDialog;
-    paramDialog = object->getParamDialog ();
-
-    if (object->dynamic == false)
+    if (object->dynamic == false && object->moduleName.isEmpty())
     {
-      if (object->moduleName == QLatin1String (""))
-      {
-        if (paramDialog != NULL) // technical indicator object
+        if (object->category == QTACHART_CAT_INDICATOR)
         {
-          const ParamVector& pvector = paramDialog->parameters ();
-          ParamVector::const_iterator it;
+          ParamVector pvector;
+          const ParamVector* pv;
+          DynParamsDialog *paramDialog = object->getParamDialog ();
+          if (paramDialog)
+          {
+            pv = &paramDialog->parameters ();
+          }
+          else
+          {
+            _objectParameters(object, pvector);
+            pv = &pvector;
+          }
 
-          FOREACH_PARAM(it, pvector)
+          ParamVector::const_iterator it;
+          //FOREACH_PARAM(it, pvector)
+          for(it = pv->begin(); it != pv->end(); ++it)
           {
             const DynParam* param = *it;
             SQLCommand += QStringLiteral ("INSERT INTO ") % tablename;
@@ -262,7 +271,6 @@ TemplateManagerDialog::qtachart2sql (QString tableKey)
             SQLCommand.append ('\n');
           }
         }
-      }
     }
 
     order ++;

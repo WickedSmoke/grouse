@@ -1254,19 +1254,26 @@ const DynParam* ParamVector::constParameter( const QString& name ) const
 }
 
 
-QTACObject* QTAChart::addStudyMACD( const QString& name, int period,
-                                    QRgb colorMACD, QRgb colorSignal )
+// Use after setAttributes as setTitle requires obj->period to be set.
+#define SET_IND_TITLE(name) \
+    obj->category = QTACHART_CAT_INDICATOR; \
+    obj->setTitle(name)
+
+
+QTACObject* QTAChart::addStudyMACD( int period, QRgb colorMACD,
+                                    QRgb colorSignal )
 {
+    QTACObject *obj, *childobj;
+
     if( period < 1 )
         return nullptr;
 
-    QTACObject* obj = new QTACObject(ccore, QTACHART_OBJ_SUBCHART);
+    obj = new QTACObject(ccore, QTACHART_OBJ_SUBCHART);
     obj->setAttributes(QTACHART_CLOSE, period, QStringLiteral("Period"),
                        MACD, QREAL_MIN, QREAL_MAX,
                        Qt::white, QStringLiteral(""));
-    obj->setTitle(name);
+    SET_IND_TITLE("MACD");
 
-    QTACObject* childobj;
     childobj = new QTACObject(obj, QTACHART_OBJ_CURVE);
     childobj->setAttributes(QTACHART_CLOSE, period, QStringLiteral("Period"),
                             MACD, QREAL_MIN, QREAL_MAX,
@@ -1290,7 +1297,7 @@ QTACObject* QTAChart::addStudyMACD( const QString& name, int period,
     return obj;
 }
 
-QTACObject* QTAChart::addStudySMA( const QString& name, int period, QRgb color )
+QTACObject* QTAChart::addStudySMA( int period, QRgb color )
 {
     if( period < 1 )
         return nullptr;
@@ -1298,11 +1305,11 @@ QTACObject* QTAChart::addStudySMA( const QString& name, int period, QRgb color )
     QTACObject* obj = new QTACObject(ccore, QTACHART_OBJ_CURVE);
     obj->setAttributes(QTACHART_CLOSE, period, QStringLiteral("Period"),
                        SMA, 0, 0, color, QStringLiteral("Color"));
-    obj->setTitle(name);
+    SET_IND_TITLE("SMA");
     return obj;
 }
 
-QTACObject* QTAChart::addStudyEMA( const QString& name, int period, QRgb color )
+QTACObject* QTAChart::addStudyEMA( int period, QRgb color )
 {
     if( period < 1 )
         return nullptr;
@@ -1310,33 +1317,33 @@ QTACObject* QTAChart::addStudyEMA( const QString& name, int period, QRgb color )
     QTACObject* obj = new QTACObject(ccore, QTACHART_OBJ_CURVE);
     obj->setAttributes(QTACHART_CLOSE, period, QStringLiteral("Period"),
                        EMA, 0, 0, color, QStringLiteral("Color"));
-    obj->setTitle(name);
+    SET_IND_TITLE("EMA");
     return obj;
 }
 
-QTACObject* QTAChart::addStudyParabolicSAR( const QString& name, QRgb color )
+QTACObject* QTAChart::addStudyParabolicSAR( QRgb color )
 {
-    QTACObject* obj = new QTACObject (ccore, QTACHART_OBJ_DOT);
+    QTACObject* obj = new QTACObject(ccore, QTACHART_OBJ_DOT);
     obj->setAttributes(QTACHART_CLOSE, 1, QStringLiteral(""),
                        PSAR, 0, 0, color, QStringLiteral("Color"));
-    obj->setTitle(name);
+    SET_IND_TITLE("Parabolic SAR");
     return obj;
 }
 
-QTACObject* QTAChart::addStudyRSI( const QString& name, int period,
-                                   int highLevel, int lowLevel, QRgb color )
+QTACObject* QTAChart::addStudyRSI( int period, int highLevel, int lowLevel,
+                                   QRgb color )
 {
     QTACObject *obj, *childobj;
 
     if( period < 1 )
         return nullptr;
 
-    obj = new QTACObject (ccore, QTACHART_OBJ_SUBCHART);
+    obj = new QTACObject(ccore, QTACHART_OBJ_SUBCHART);
     obj->setAttributes(QTACHART_CLOSE, period, QStringLiteral ("Period"),
                        DUMMY, 0, 100, color, QStringLiteral (""));
-    obj->setTitle (name);
+    SET_IND_TITLE("RSI");
 
-    childobj = new QTACObject (obj, QTACHART_OBJ_CURVE);
+    childobj = new QTACObject(obj, QTACHART_OBJ_CURVE);
     childobj->setAttributes(QTACHART_CLOSE, period, QStringLiteral("Period"),
                             RSI, 0, 100, color, QStringLiteral ("Color"));
     childobj = new QTACObject (obj, QTACHART_OBJ_HLINE);
@@ -1352,19 +1359,19 @@ QTACObject* QTAChart::addStudyRSI( const QString& name, int period,
     return obj;
 }
 
-QTACObject* QTAChart::addStudyMFI( const QString& name, int period, QRgb color,
-                                   int highLevel, int lowLevel,
-                                   int mediumLevel )
+QTACObject* QTAChart::addStudyMFI( int period, QRgb color, int highLevel,
+                                   int lowLevel, int mediumLevel )
 {
-    QTACObject *childobj;
+    QTACObject *obj, *childobj;
 
     if( period < 1 )
         return nullptr;
 
-    QTACObject* obj = new QTACObject (ccore, QTACHART_OBJ_SUBCHART);
+    obj = new QTACObject(ccore, QTACHART_OBJ_SUBCHART);
     obj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"),
                         DUMMY, 0, 100, color, QStringLiteral (""));
-    obj->setTitle (name);
+    SET_IND_TITLE("MFI");
+
     childobj = new QTACObject (obj, QTACHART_OBJ_CURVE);
     childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"),
                              MFI, 0, 100, color, QStringLiteral ("Color"));
@@ -1387,17 +1394,17 @@ QTACObject* QTAChart::addStudyMFI( const QString& name, int period, QRgb color,
     return obj;
 }
 
-QTACObject* QTAChart::addStudyROC( const QString& name, int period, int Level,
-                                   QRgb color )
+QTACObject* QTAChart::addStudyROC( int period, int Level, QRgb color )
 {
     QTACObject *obj, *childobj;
 
     if (period < 1)
       return nullptr;
 
-    obj = new QTACObject (ccore, QTACHART_OBJ_SUBCHART);
+    obj = new QTACObject(ccore, QTACHART_OBJ_SUBCHART);
     obj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), ROC, QREAL_MIN, QREAL_MAX, color, QStringLiteral (""));
-    obj->setTitle (name);
+    SET_IND_TITLE("ROC");
+
     childobj = new QTACObject (obj, QTACHART_OBJ_CURVE);
     childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), ROC, QREAL_MIN, QREAL_MAX, color, QStringLiteral ("Color"));
     childobj = new QTACObject (obj, QTACHART_OBJ_HLINE);
@@ -1407,18 +1414,19 @@ QTACObject* QTAChart::addStudyROC( const QString& name, int period, int Level,
     return obj;
 }
 
-QTACObject* QTAChart::addStudySlowStoch( const QString& name, int period,
-                               int Highlevel, int Mediumlevel, int Lowlevel,
-                               QRgb Kcolor, QRgb Dcolor )
+QTACObject* QTAChart::addStudySlowStoch( int period, int Highlevel,
+                                         int Mediumlevel, int Lowlevel,
+                                         QRgb Kcolor, QRgb Dcolor )
 {
     QTACObject *obj, *childobj;
 
     if (period < 1)
       return nullptr;
 
-    obj = new QTACObject (ccore, QTACHART_OBJ_SUBCHART);
+    obj = new QTACObject(ccore, QTACHART_OBJ_SUBCHART);
     obj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), DUMMY, 0, 100, Dcolor, QStringLiteral (""));
-    obj->setTitle (name);
+    SET_IND_TITLE("Slow Stoch");
+
     childobj = new QTACObject (obj, QTACHART_OBJ_CURVE);
     childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), STOCHSLOWD, 0, 100, Dcolor, "%D color");
     childobj = new QTACObject (obj, QTACHART_OBJ_CURVE);
@@ -1436,7 +1444,7 @@ QTACObject* QTAChart::addStudySlowStoch( const QString& name, int period,
     return obj;
 }
 
-QTACObject* QTAChart::addStudyFastStoch( const QString& name, int period,
+QTACObject* QTAChart::addStudyFastStoch( int period,
                                  int Highlevel, int Mediumlevel, int Lowlevel,
                                  QRgb Kcolor, QRgb Dcolor )
 {
@@ -1445,9 +1453,10 @@ QTACObject* QTAChart::addStudyFastStoch( const QString& name, int period,
     if (period < 1)
       return nullptr;
 
-    obj = new QTACObject (ccore, QTACHART_OBJ_SUBCHART);
+    obj = new QTACObject(ccore, QTACHART_OBJ_SUBCHART);
     obj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), DUMMY, 0, 100, Dcolor, QStringLiteral (""));
-    obj->setTitle (name);
+    SET_IND_TITLE("Fast Stoch");
+
     childobj = new QTACObject (obj, QTACHART_OBJ_CURVE);
     childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), STOCHFASTD, 0, 100, Dcolor, "%D color");
     childobj = new QTACObject (obj, QTACHART_OBJ_CURVE);
@@ -1465,18 +1474,18 @@ QTACObject* QTAChart::addStudyFastStoch( const QString& name, int period,
     return obj;
 }
 
-QTACObject* QTAChart::addStudyW_percent_R( const QString& name, int period,
-                                           int Highlevel, int Lowlevel,
-                                           QRgb color )
+QTACObject* QTAChart::addStudyW_pct_R( int period, int Highlevel, int Lowlevel,
+                                       QRgb color )
 {
     QTACObject *obj, *childobj;
 
     if (period < 1)
       return nullptr;
 
-    obj = new QTACObject (ccore, QTACHART_OBJ_SUBCHART);
+    obj = new QTACObject(ccore, QTACHART_OBJ_SUBCHART);
     obj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), DUMMY, -100, 0, color, QStringLiteral (""));
-    obj->setTitle (name);
+    SET_IND_TITLE("W%R");
+
     childobj = new QTACObject (obj, QTACHART_OBJ_CURVE);
     childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), WILLR, -100, 0, color, QStringLiteral ("Color"));
     childobj = new QTACObject (obj, QTACHART_OBJ_HLINE);
@@ -1485,31 +1494,35 @@ QTACObject* QTAChart::addStudyW_percent_R( const QString& name, int period,
     childobj = new QTACObject (obj, QTACHART_OBJ_HLINE);
     childobj->setHLine (NULL, Lowlevel);
     childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Low level"), DUMMY, -100, 0, color, QStringLiteral (""));
+
     return obj;
 }
 
-QTACObject* QTAChart::addStudyBollingerBands( const QString& name, int period,
-                                              QRgb color )
+QTACObject* QTAChart::addStudyBollingerBands( int period, QRgb color )
 {
     QTACObject *obj, *childobj;
 
     if (period < 1)
       return nullptr;
 
-    obj = new QTACObject (ccore, QTACHART_OBJ_CURVE);
-    obj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), BBANDSMIDDLE, 0, 0, color, QStringLiteral ("Color"));
-    obj->setTitle (name);
+    obj = new QTACObject(ccore, QTACHART_OBJ_CURVE);
+    obj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"),
+                        BBANDSMIDDLE, 0, 0, color, QStringLiteral ("Color"));
+    SET_IND_TITLE("Bollinger Bands");
+
     childobj = new QTACObject (obj, QTACHART_OBJ_CURVE);
-    childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), BBANDSUPPER, 0, 0, color, QStringLiteral ("Color"));
+    childobj->setAttributes(QTACHART_CLOSE, period, QStringLiteral ("Period"),
+                            BBANDSUPPER, 0, 0, color, QStringLiteral ("Color"));
     // childobj->setParamDialog (paramDialog->getPVector (), name);
     childobj = new QTACObject (obj, QTACHART_OBJ_CURVE);
-    childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), BBANDSLOWER, 0, 0, color, QStringLiteral ("Color"));
+    childobj->setAttributes(QTACHART_CLOSE, period, QStringLiteral ("Period"),
+                            BBANDSLOWER, 0, 0, color, QStringLiteral ("Color"));
     // childobj->setParamDialog (paramDialog->getPVector (), name);
 
     return obj;
 }
 
-QTACObject* QTAChart::addStudyADX( const QString& name, int period, int Weak,
+QTACObject* QTAChart::addStudyADX( int period, int Weak,
                                    int Strong, int Verystrong, QRgb color )
 {
     QTACObject *obj, *childobj;
@@ -1517,10 +1530,10 @@ QTACObject* QTAChart::addStudyADX( const QString& name, int period, int Weak,
     if (period < 1)
       return nullptr;
 
-    obj = new QTACObject (ccore, QTACHART_OBJ_SUBCHART);
+    obj = new QTACObject(ccore, QTACHART_OBJ_SUBCHART);
     obj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"),
                         ADX, 0, 100, color, QStringLiteral (""));
-    obj->setTitle (name);
+    SET_IND_TITLE("ADX");
 
     childobj = new QTACObject (obj, QTACHART_OBJ_CURVE);
     childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"),
@@ -1546,8 +1559,7 @@ QTACObject* QTAChart::addStudyADX( const QString& name, int period, int Weak,
     return obj;
 }
 
-QTACObject* QTAChart::addStudyAroon( const QString& name, int period,
-                                     int Highlevel, int Mediumlevel,
+QTACObject* QTAChart::addStudyAroon( int period, int Highlevel, int Mediumlevel,
                                      int Lowlevel,
                                      QRgb UpColor, QRgb DownColor )
 {
@@ -1556,9 +1568,10 @@ QTACObject* QTAChart::addStudyAroon( const QString& name, int period,
     if (period < 1)
       return nullptr;
 
-    obj = new QTACObject (ccore, QTACHART_OBJ_SUBCHART);
+    obj = new QTACObject(ccore, QTACHART_OBJ_SUBCHART);
     obj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), DUMMY, 0, 100, DownColor, QStringLiteral (""));
-    obj->setTitle (name);
+    SET_IND_TITLE("Aroon");
+
     childobj = new QTACObject (obj, QTACHART_OBJ_CURVE);
     childobj->setAttributes (QTACHART_CLOSE, period, QStringLiteral ("Period"), AROONDOWN, 0, 100, DownColor, "Down color");
     childobj = new QTACObject (obj, QTACHART_OBJ_CURVE);
@@ -1576,7 +1589,7 @@ QTACObject* QTAChart::addStudyAroon( const QString& name, int period,
     return obj;
 }
 
-QTACObject* QTAChart::addStudyCCI( const QString& name, int period,
+QTACObject* QTAChart::addStudyCCI( int period,
                                    int Highlevel, int Lowlevel, QRgb color )
 {
     QTACObject *obj, *childobj;
@@ -1584,10 +1597,11 @@ QTACObject* QTAChart::addStudyCCI( const QString& name, int period,
     if (period < 1)
       return nullptr;
 
-    obj = new QTACObject (ccore, QTACHART_OBJ_SUBCHART);
+    obj = new QTACObject(ccore, QTACHART_OBJ_SUBCHART);
     obj->setAttributes(QTACHART_CLOSE, period, QStringLiteral ("Period"),
                        DUMMY, QREAL_MIN, QREAL_MAX, color, QStringLiteral (""));
-    obj->setTitle (name);
+    SET_IND_TITLE("CCI");
+
     childobj = new QTACObject (obj, QTACHART_OBJ_CURVE);
     childobj->setAttributes(QTACHART_CLOSE, period, QStringLiteral ("Period"),
                             CCI, QREAL_MIN, QREAL_MAX,
@@ -1606,18 +1620,18 @@ QTACObject* QTAChart::addStudyCCI( const QString& name, int period,
     return obj;
 }
 
-QTACObject* QTAChart::addStudySTDDEV( const QString& name, int period,
-                                      QRgb color )
+QTACObject* QTAChart::addStudySTDDEV( int period, QRgb color )
 {
     QTACObject *obj, *childobj;
 
     if (period < 1)
       return nullptr;
 
-    obj = new QTACObject (ccore, QTACHART_OBJ_SUBCHART);
+    obj = new QTACObject(ccore, QTACHART_OBJ_SUBCHART);
     obj->setAttributes(QTACHART_CLOSE, period, QStringLiteral ("Period"),
                        DUMMY, 0, QREAL_MAX, color, QStringLiteral (""));
-    obj->setTitle (name);
+    SET_IND_TITLE("STDDEV");
+
     childobj = new QTACObject (obj, QTACHART_OBJ_CURVE);
     childobj->setAttributes(QTACHART_CLOSE, period, QStringLiteral ("Period"),
                             STDDEV, 0, QREAL_MAX,
@@ -1626,19 +1640,19 @@ QTACObject* QTAChart::addStudySTDDEV( const QString& name, int period,
     return obj;
 }
 
-QTACObject* QTAChart::addStudyMomentum( const QString& name, int period,
-                                        int Level, QRgb color )
+QTACObject* QTAChart::addStudyMomentum( int period, int Level, QRgb color )
 {
     QTACObject *obj, *childobj;
 
     if (period < 1)
       return nullptr;
 
-    obj = new QTACObject (ccore, QTACHART_OBJ_SUBCHART);
+    obj = new QTACObject(ccore, QTACHART_OBJ_SUBCHART);
     obj->setAttributes(QTACHART_CLOSE, period, QStringLiteral ("Period"),
                        MOMENTUM, QREAL_MIN, QREAL_MAX,
                        color, QStringLiteral(""));
-    obj->setTitle (name);
+    SET_IND_TITLE("Momentum");
+
     childobj = new QTACObject (obj, QTACHART_OBJ_CURVE);
     childobj->setAttributes(QTACHART_CLOSE, period, QStringLiteral ("Period"),
                             MOMENTUM, QREAL_MIN, QREAL_MAX,
@@ -1651,7 +1665,7 @@ QTACObject* QTAChart::addStudyMomentum( const QString& name, int period,
     return obj;
 }
 
-QTACObject* QTAChart::addStudyDMI( const QString& name, int period, int Weak,
+QTACObject* QTAChart::addStudyDMI( int period, int Weak,
                                    int Strong, int veryStrong, QRgb color )
 {
     QTACObject *obj, *childobj;
@@ -1659,10 +1673,11 @@ QTACObject* QTAChart::addStudyDMI( const QString& name, int period, int Weak,
     if (period < 1)
       return nullptr;
 
-    obj = new QTACObject (ccore, QTACHART_OBJ_SUBCHART);
+    obj = new QTACObject(ccore, QTACHART_OBJ_SUBCHART);
     obj->setAttributes(QTACHART_CLOSE, period, QStringLiteral ("Period"),
                        DMX, 0, 100, color, QStringLiteral (""));
-    obj->setTitle (name);
+    SET_IND_TITLE("DMI");
+
     childobj = new QTACObject (obj, QTACHART_OBJ_CURVE);
     childobj->setAttributes(QTACHART_CLOSE, period, QStringLiteral ("Period"),
                             DMX, 0, 100, color, QStringLiteral ("Color"));
@@ -1683,7 +1698,7 @@ QTACObject* QTAChart::addStudyDMI( const QString& name, int period, int Weak,
     return obj;
 }
 
-QTACObject* QTAChart::addStudyATR( const QString& name, int period, QRgb color )
+QTACObject* QTAChart::addStudyATR( int period, QRgb color )
 {
     QTACObject *obj, *childobj;
 
@@ -1693,7 +1708,8 @@ QTACObject* QTAChart::addStudyATR( const QString& name, int period, QRgb color )
     obj = new QTACObject(ccore, QTACHART_OBJ_SUBCHART);
     obj->setAttributes(QTACHART_CLOSE, period, QStringLiteral("Period"),
                        ATR, 0, QREAL_MAX, color, QStringLiteral(""));
-    obj->setTitle(name);
+    SET_IND_TITLE("ATR");
+
     childobj = new QTACObject(obj, QTACHART_OBJ_CURVE);
     childobj->setAttributes(QTACHART_CLOSE, period, QStringLiteral("Period"),
                             ATR, 0, QREAL_MAX, color, QStringLiteral("Color"));

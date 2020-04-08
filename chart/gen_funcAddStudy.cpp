@@ -3,73 +3,73 @@
 
   if (fname == QLatin1String ("SMA"))
   {
-    obj = referencechart->addStudySMA( fname, (qint32) PARAM("Period"), PARAM("Color") );
+    obj = referencechart->addStudySMA( (qint32) PARAM("Period"), PARAM("Color") );
   }
   else if (fname == QLatin1String ("EMA"))
   {
-    obj = referencechart->addStudyEMA( fname, (qint32) PARAM("Period"), PARAM("Color") );
+    obj = referencechart->addStudyEMA( (qint32) PARAM("Period"), PARAM("Color") );
   }
   else if (fname == QLatin1String ("MACD"))
   {
-    obj = referencechart->addStudyMACD( fname, (qint32) PARAM("Period"), PARAM("MACD color"), PARAM("Signal color") );
+    obj = referencechart->addStudyMACD( (qint32) PARAM("Period"), PARAM("MACD color"), PARAM("Signal color") );
   }
   else if (fname == QLatin1String ("MFI"))
   {
-    obj = referencechart->addStudyMFI( fname, (qint32) PARAM("Period"), (qint32) PARAM("High level"), (qint32) PARAM("Medium level"), (qint32) PARAM("Low level"), PARAM("Color") );
+    obj = referencechart->addStudyMFI( (qint32) PARAM("Period"), (qint32) PARAM("High level"), (qint32) PARAM("Medium level"), (qint32) PARAM("Low level"), PARAM("Color") );
   }
   else if (fname == QLatin1String ("ROC"))
   {
-    obj = referencechart->addStudyROC( fname, (qint32) PARAM("Period"), (qint32) PARAM("Level"), PARAM("Color") );
+    obj = referencechart->addStudyROC( (qint32) PARAM("Period"), (qint32) PARAM("Level"), PARAM("Color") );
   }
   else if (fname == QLatin1String ("RSI"))
   {
-    obj = referencechart->addStudyRSI( fname, (qint32) PARAM("Period"), (qint32) PARAM("High level"), (qint32) PARAM("Low level"), PARAM("Color") );
+    obj = referencechart->addStudyRSI( (qint32) PARAM("Period"), (qint32) PARAM("High level"), (qint32) PARAM("Low level"), PARAM("Color") );
   }
   else if (fname == QLatin1String ("Slow Stoch"))
   {
-    obj = referencechart->addStudySlowStoch( fname, (qint32) PARAM("Period"), (qint32) PARAM("High level"), (qint32) PARAM("Medium level"), (qint32) PARAM("Low level"), PARAM("%K color"), PARAM("%D color") );
+    obj = referencechart->addStudySlowStoch( (qint32) PARAM("Period"), (qint32) PARAM("High level"), (qint32) PARAM("Medium level"), (qint32) PARAM("Low level"), PARAM("%K color"), PARAM("%D color") );
   }
   else if (fname == QLatin1String ("Fast Stoch"))
   {
-    obj = referencechart->addStudyFastStoch( fname, (qint32) PARAM("Period"), (qint32) PARAM("High level"), (qint32) PARAM("Medium level"), (qint32) PARAM("Low level"), PARAM("%K color"), PARAM("%D color") );
+    obj = referencechart->addStudyFastStoch( (qint32) PARAM("Period"), (qint32) PARAM("High level"), (qint32) PARAM("Medium level"), (qint32) PARAM("Low level"), PARAM("%K color"), PARAM("%D color") );
   }
   else if (fname == QLatin1String ("W%R"))
   {
-    obj = referencechart->addStudyW_percent_R( fname, (qint32) PARAM("Period"), (qint32) PARAM("High level"), (qint32) PARAM("Low level"), PARAM("Color") );
+    obj = referencechart->addStudyW_pct_R( (qint32) PARAM("Period"), (qint32) PARAM("High level"), (qint32) PARAM("Low level"), PARAM("Color") );
   }
   else if (fname == QLatin1String ("Bollinger Bands"))
   {
-    obj = referencechart->addStudyBollingerBands( fname, (qint32) PARAM("Period"), PARAM("Color") );
+    obj = referencechart->addStudyBollingerBands( (qint32) PARAM("Period"), PARAM("Color") );
   }
   else if (fname == QLatin1String ("Parabolic SAR"))
   {
-    obj = referencechart->addStudyParabolicSAR( fname, PARAM("Color") );
+    obj = referencechart->addStudyParabolicSAR( PARAM("Color") );
   }
   else if (fname == QLatin1String ("ADX"))
   {
-    obj = referencechart->addStudyADX( fname, (qint32) PARAM("Period"), (qint32) PARAM("Weak"), (qint32) PARAM("Strong"), (qint32) PARAM("Very strong"), PARAM("Color") );
+    obj = referencechart->addStudyADX( (qint32) PARAM("Period"), (qint32) PARAM("Weak"), (qint32) PARAM("Strong"), (qint32) PARAM("Very strong"), PARAM("Color") );
   }
   else if (fname == QLatin1String ("Aroon"))
   {
-    obj = referencechart->addStudyAroon( fname, (qint32) PARAM("Period"), (qint32) PARAM("High level"), (qint32) PARAM("Medium level"), (qint32) PARAM("Low level"), PARAM("Up color"), PARAM("Down color") );
+    obj = referencechart->addStudyAroon( (qint32) PARAM("Period"), (qint32) PARAM("High level"), (qint32) PARAM("Medium level"), (qint32) PARAM("Low level"), PARAM("Up color"), PARAM("Down color") );
   }
   else if (fname == QLatin1String ("CCI"))
   {
-    obj = referencechart->addStudyCCI( fname, (qint32) PARAM("Period"), (qint32) PARAM("High level"), (qint32) PARAM("Low level"), PARAM("Color") );
+    obj = referencechart->addStudyCCI( (qint32) PARAM("Period"), (qint32) PARAM("High level"), (qint32) PARAM("Low level"), PARAM("Color") );
   }
   else if (fname == QLatin1String ("STDDEV"))
   {
-    obj = referencechart->addStudySTDDEV( fname, (qint32) PARAM("Period"), PARAM("Color") );
+    obj = referencechart->addStudySTDDEV( (qint32) PARAM("Period"), PARAM("Color") );
   }
   else if (fname == QLatin1String ("Momentum"))
   {
-    obj = referencechart->addStudyMomentum( fname, (qint32) PARAM("Period"), (qint32) PARAM("Level"), PARAM("Color") );
+    obj = referencechart->addStudyMomentum( (qint32) PARAM("Period"), (qint32) PARAM("Level"), PARAM("Color") );
   }
   else if (fname == QLatin1String ("DMI"))
   {
-    obj = referencechart->addStudyDMI( fname, (qint32) PARAM("Period"), (qint32) PARAM("Weak"), (qint32) PARAM("Strong"), (qint32) PARAM("Very strong"), PARAM("Color") );
+    obj = referencechart->addStudyDMI( (qint32) PARAM("Period"), (qint32) PARAM("Weak"), (qint32) PARAM("Strong"), (qint32) PARAM("Very strong"), PARAM("Color") );
   }
   else if (fname == QLatin1String ("ATR"))
   {
-    obj = referencechart->addStudyATR( fname, (qint32) PARAM("Period"), PARAM("Color") );
+    obj = referencechart->addStudyATR( (qint32) PARAM("Period"), PARAM("Color") );
   }

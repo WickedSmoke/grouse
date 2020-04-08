@@ -255,6 +255,7 @@ QTACObject::QTACObject_constructor_common ()
   QTAChartCore *core = chartdata;
   QFont font;
 
+  category = QTACHART_CAT_MARKER;
   parentModule = nullptr;
 
   if (type == QTACHART_OBJ_LABEL)

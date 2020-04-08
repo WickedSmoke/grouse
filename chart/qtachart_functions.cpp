@@ -116,7 +116,7 @@ Slow-Stoch:     Period  5  High-level 80   Medium-level 50  Low-level 20
                            "%K color" 0,255,255  "%D color" 255,255,0
 Fast-Stoch:     Period  5  High-level 80   Medium-level 50  Low-level 20
                            "%K color" 0,255,255  "%D color" 255,255,0
-W_percent_R:    Period 14  High-level -20  Low-level -80  Color 0,255,255
+W_pct_R:        Period 14  High-level -20  Low-level -80  Color 0,255,255
 Bollinger-Bands:Period 20  Color 255,0,255
 Parabolic-SAR:             Color 0,255,255
 ADX:            Period 13  Weak 25  Strong 50  Very-strong 75  Color 0,255,255
@@ -159,7 +159,7 @@ QTACFunctions::createButtons (void)
   _paramDialogRSI(bd);
   _paramDialogSlowStoch(bd);
   _paramDialogFastStoch(bd);
-  _paramDialogW_percent_R(bd);
+  _paramDialogW_pct_R(bd);
   _paramDialogBollingerBands(bd);
   _paramDialogParabolicSAR(bd);
   _paramDialogADX(bd);

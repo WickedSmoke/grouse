@@ -2,74 +2,74 @@
 // This is the switch in MainWindow::addStudy().
 
         case 0:
-            chart->addStudySMA( "SMA", 14, qRgb(0,255,255) );
+            chart->addStudySMA( 14, qRgb(0,255,255) );
             chart->goBack();
             break;
         case 1:
-            chart->addStudyEMA( "EMA", 14, qRgb(0,255,255) );
+            chart->addStudyEMA( 14, qRgb(0,255,255) );
             chart->goBack();
             break;
         case 2:
-            chart->addStudyMACD( "MACD", 14, qRgb(255,255,0), qRgb(255,0,0) );
+            chart->addStudyMACD( 14, qRgb(255,255,0), qRgb(255,0,0) );
             chart->goBack();
             break;
         case 3:
-            chart->addStudyMFI( "MFI", 14, 80, 50, 20, qRgb(0,255,255) );
+            chart->addStudyMFI( 14, 80, 50, 20, qRgb(0,255,255) );
             chart->goBack();
             break;
         case 4:
-            chart->addStudyROC( "ROC", 10, 0, qRgb(0,255,255) );
+            chart->addStudyROC( 10, 0, qRgb(0,255,255) );
             chart->goBack();
             break;
         case 5:
-            chart->addStudyRSI( "RSI", 14, 70, 30, qRgb(0,255,255) );
+            chart->addStudyRSI( 14, 70, 30, qRgb(0,255,255) );
             chart->goBack();
             break;
         case 6:
-            chart->addStudySlowStoch( "Slow Stoch", 5, 80, 50, 20, qRgb(0,255,255), qRgb(255,255,0) );
+            chart->addStudySlowStoch( 5, 80, 50, 20, qRgb(0,255,255), qRgb(255,255,0) );
             chart->goBack();
             break;
         case 7:
-            chart->addStudyFastStoch( "Fast Stoch", 5, 80, 50, 20, qRgb(0,255,255), qRgb(255,255,0) );
+            chart->addStudyFastStoch( 5, 80, 50, 20, qRgb(0,255,255), qRgb(255,255,0) );
             chart->goBack();
             break;
         case 8:
-            chart->addStudyW_percent_R( "W%R", 14, -20, -80, qRgb(0,255,255) );
+            chart->addStudyW_pct_R( 14, -20, -80, qRgb(0,255,255) );
             chart->goBack();
             break;
         case 9:
-            chart->addStudyBollingerBands( "Bollinger Bands", 20, qRgb(255,0,255) );
+            chart->addStudyBollingerBands( 20, qRgb(255,0,255) );
             chart->goBack();
             break;
         case 10:
-            chart->addStudyParabolicSAR( "Parabolic SAR", qRgb(0,255,255) );
+            chart->addStudyParabolicSAR( qRgb(0,255,255) );
             chart->goBack();
             break;
         case 11:
-            chart->addStudyADX( "ADX", 13, 25, 50, 75, qRgb(0,255,255) );
+            chart->addStudyADX( 13, 25, 50, 75, qRgb(0,255,255) );
             chart->goBack();
             break;
         case 12:
-            chart->addStudyAroon( "Aroon", 25, 70, 50, 30, qRgb(0,255,0), qRgb(255,0,0) );
+            chart->addStudyAroon( 25, 70, 50, 30, qRgb(0,255,0), qRgb(255,0,0) );
             chart->goBack();
             break;
         case 13:
-            chart->addStudyCCI( "CCI", 20, 100, -100, qRgb(0,255,255) );
+            chart->addStudyCCI( 20, 100, -100, qRgb(0,255,255) );
             chart->goBack();
             break;
         case 14:
-            chart->addStudySTDDEV( "STDDEV", 10, qRgb(0,255,255) );
+            chart->addStudySTDDEV( 10, qRgb(0,255,255) );
             chart->goBack();
             break;
         case 15:
-            chart->addStudyMomentum( "Momentum", 12, 0, qRgb(0,255,255) );
+            chart->addStudyMomentum( 12, 0, qRgb(0,255,255) );
             chart->goBack();
             break;
         case 16:
-            chart->addStudyDMI( "DMI", 13, 25, 50, 75, qRgb(0,255,255) );
+            chart->addStudyDMI( 13, 25, 50, 75, qRgb(0,255,255) );
             chart->goBack();
             break;
         case 17:
-            chart->addStudyATR( "ATR", 14, qRgb(0,255,255) );
+            chart->addStudyATR( 14, qRgb(0,255,255) );
             chart->goBack();
             break;
