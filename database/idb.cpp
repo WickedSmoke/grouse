@@ -648,6 +648,33 @@ int InstrumentDatabase::loadTableData( const QString& base,
 }
 
 
+extern int
+sqlcb_symbol_table(void *classptr, int argc, char **argv, char **column);
+
+
+/**
+  \param summary    Structure to fill with data.  It is NOT cleared before the
+                    database select operation is done.
+*/
+int InstrumentDatabase::loadSymbolSummary( SymbolSummary* summary,
+                                           const QString& symFilter )
+{
+    QString query = QStringLiteral(
+          "select SYMBOL, DESCRIPTION, MARKET, SOURCE, TIMEFRAME, LASTUPDATE, "
+          "DATEFROM, DATETO, CURRENCY, KEY, ADJUSTED, BASE, DNLSTRING, FORMAT "
+          "from SYMBOLS_ORDERED where SYMBOL like '"
+        ) % symFilter % QStringLiteral("%';");
+
+    int rc = selectfromdb(query.toUtf8(), sqlcb_symbol_table, summary);
+    if (rc != SQLITE_OK)
+    {
+        setGlobalError(CG_ERR_DBACCESS, __FILE__, __LINE__);
+        return CG_ERR_DBACCESS;
+    }
+    return CG_ERR_OK;
+}
+
+
 int sqlcb_dbversion(void *versionptr, int argc, char **argv, char **column);
 
 /**

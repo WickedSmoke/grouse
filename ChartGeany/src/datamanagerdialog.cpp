@@ -33,9 +33,6 @@
 
 static const int NCOLUMNS = 14;
 
-extern int
-sqlcb_symbol_table(void *classptr, int argc, char **argv, char **column);
-
 #define CREATE_DIALOG(ptr,T) \
   if(! ptr) { \
     ptr = new T(this); \
@@ -188,67 +185,44 @@ DataManagerDialog::fillcolumn (QStringList list, int col)
 void
 DataManagerDialog::reloadSymbols ()
 {
-  int rc;
-  QString SQLCommand;
+  SymbolSummary summary;
 
-  symbolList.clear ();
-  descList.clear ();
-  marketList.clear ();
-  sourceList.clear ();
-  timeframeList.clear ();
-  datefromList.clear ();
-  datetoList.clear ();
-  currencyList.clear ();
-  keyList.clear ();
-  adjustedList.clear ();
-  baseList.clear ();
-  pathList.clear ();
-  formatList.clear ();
-  lastupdateList.clear ();
-
-  SQLCommand =  QStringLiteral ("select SYMBOL, DESCRIPTION, MARKET, SOURCE, TIMEFRAME, LASTUPDATE, ") %
-                QStringLiteral ("DATEFROM, DATETO, CURRENCY, KEY, ADJUSTED, BASE, DNLSTRING, FORMAT ") %
-                QStringLiteral ("from SYMBOLS_ORDERED where SYMBOL like '") % symFilter % QStringLiteral ("%';");
-
-  rc = selectfromdb(SQLCommand.toUtf8 (), sqlcb_symbol_table, this);
-  if (rc != SQLITE_OK)
+  int rc = gDatabase->loadSymbolSummary( &summary, symFilter );
+  if( rc != CG_ERR_OK )
   {
-    setGlobalError(CG_ERR_DBACCESS, __FILE__, __LINE__);
-    showMessage (errorMessage (CG_ERR_DBACCESS), this);
-    this->hide ();
+    showMessage(errorMessage(rc), this);
+    hide();
     return;
   }
 
-  cleartable ();
-  ui->tableWidget->setSortingEnabled (false);
-  ui->tableWidget->setRowCount (symbolList.size ());
-  fillcolumn (symbolList, 0);
-  fillcolumn (descList, 1);
-  fillcolumn (marketList, 2);
-  fillcolumn (sourceList, 3);
-  fillcolumn (timeframeList, 4);
-  fillcolumn (datefromList, 5);
-  fillcolumn (datetoList, 6);
-  fillcolumn (currencyList, 7);
-  fillcolumn (keyList, 8);
-  fillcolumn (adjustedList, 9);
-  fillcolumn (baseList, 10);
-  fillcolumn (pathList, 11);
-  fillcolumn (formatList, 12);
-  fillcolumn (lastupdateList, 13);
+  cleartable();
 
-  ui->tableWidget->resizeColumnToContents (0);
-  ui->tableWidget->resizeColumnToContents (1);
-  ui->tableWidget->resizeColumnToContents (2);
-  ui->tableWidget->resizeColumnToContents (3);
-  ui->tableWidget->resizeColumnToContents (4);
-  ui->tableWidget->resizeColumnToContents (5);
-  ui->tableWidget->resizeColumnToContents (6);
-  ui->tableWidget->resizeColumnToContents (7);
-  ui->tableWidget->resizeColumnToContents (9);
+  ui->tableWidget->setSortingEnabled(false);
+  ui->tableWidget->setRowCount(summary.symbolList.size());
+  fillcolumn(summary.symbolList, 0);
+  fillcolumn(summary.descList, 1);
+  fillcolumn(summary.marketList, 2);
+  fillcolumn(summary.sourceList, 3);
+  fillcolumn(summary.timeframeList, 4);
+  fillcolumn(summary.datefromList, 5);
+  fillcolumn(summary.datetoList, 6);
+  fillcolumn(summary.currencyList, 7);
+  fillcolumn(summary.keyList, 8);
+  fillcolumn(summary.adjustedList, 9);
+  fillcolumn(summary.baseList, 10);
+  fillcolumn(summary.pathList, 11);
+  fillcolumn(summary.formatList, 12);
+  fillcolumn(summary.lastupdateList, 13);
+
+  for( int i = 0; i < 10; ++i )
+  {
+    if( i == 8 )
+        continue;
+    ui->tableWidget->resizeColumnToContents(i);
+  }
+
   ui->tableWidget->viewport()->update();
-
-  ui->tableWidget->setSortingEnabled (true);
+  ui->tableWidget->setSortingEnabled(true);
 }
 
 /// Signals

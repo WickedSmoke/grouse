@@ -20,14 +20,7 @@
 #include <QLatin1String>
 #include "cgtool.h"
 #else
-
-#ifdef GUI_DESKTOP
-#include "DataManager.h"
-#define DataManagerDialog   DataManager
-#else
-#include "datamanagerdialog.h"
-#endif
-
+#include "idb.h"
 #endif
 
 #ifdef _WIN32
@@ -44,7 +37,7 @@ sqlcb_symbol_table(void *classptr, int argc, char **argv, char **column)
   SymbolVector *vec = static_cast <SymbolVector *> (classptr);
   SymbolRec    *srec = new SymbolRec;
 #else
-  DataManagerDialog *dialog = static_cast <DataManagerDialog *> (classptr);
+  SymbolSummary *summ = static_cast <SymbolSummary *> (classptr);
   QStringList* list;
 #endif
 
@@ -62,33 +55,33 @@ sqlcb_symbol_table(void *classptr, int argc, char **argv, char **column)
      srec->key = QString (argv[counter]);
 #else
     if (stringEqualI(colname, "SYMBOL"))
-      list = &dialog->symbolList;
+      list = &summ->symbolList;
     else if (stringEqualI(colname, "DESCRIPTION"))
-      list = &dialog->descList;
+      list = &summ->descList;
     else if (stringEqualI(colname, "MARKET"))
-      list = &dialog->marketList;
+      list = &summ->marketList;
     else if (stringEqualI(colname, "SOURCE"))
-      list = &dialog->sourceList;
+      list = &summ->sourceList;
     else if (stringEqualI(colname, "TIMEFRAME"))
-      list = &dialog->timeframeList;
+      list = &summ->timeframeList;
     else if (stringEqualI(colname, "DATEFROM"))
-      list = &dialog->datefromList;
+      list = &summ->datefromList;
     else if (stringEqualI(colname, "DATETO"))
-      list = &dialog->datetoList;
+      list = &summ->datetoList;
     else if (stringEqualI(colname, "CURRENCY"))
-      list = &dialog->currencyList;
+      list = &summ->currencyList;
     else if (stringEqualI(colname, "KEY"))
-      list = &dialog->keyList;
+      list = &summ->keyList;
     else if (stringEqualI(colname, "ADJUSTED"))
-      list = &dialog->adjustedList;
+      list = &summ->adjustedList;
     else if (stringEqualI(colname, "BASE"))
-      list = &dialog->baseList;
+      list = &summ->baseList;
     else if (stringEqualI(colname, "DNLSTRING"))
-      list = &dialog->pathList;
+      list = &summ->pathList;
     else if (stringEqualI(colname, "FORMAT"))
-      list = &dialog->formatList;
+      list = &summ->formatList;
     else if (stringEqualI(colname, "LASTUPDATE"))
-      list = &dialog->lastupdateList;
+      list = &summ->lastupdateList;
     else
       list = nullptr;
 

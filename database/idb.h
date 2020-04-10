@@ -75,6 +75,25 @@ typedef struct
 } SQLists;
 
 
+typedef struct
+{
+    QStringList symbolList;     // symbols column content
+    QStringList descList;       // name column content
+    QStringList marketList;     // markets column content
+    QStringList sourceList;     // source column content
+    QStringList timeframeList;  // timeframe column content
+    QStringList datefromList;   // from column content
+    QStringList datetoList;     // to column content
+    QStringList currencyList;   // currency column content
+    QStringList keyList;        // key column content
+    QStringList adjustedList;   // adjusted column content
+    QStringList baseList;       // base column content
+    QStringList pathList;       // download/import path
+    QStringList formatList;     // format
+    QStringList lastupdateList; // last update since epoch in secs
+} SymbolSummary;
+
+
 // symbol entry input data
 typedef struct
 {
@@ -167,6 +186,7 @@ public:
     int loadChartData( const QString& base, QTAChartData* data );
     int loadTableData( const QString& base, const QString& adjusted,
                        TableDataVector* data );
+    int loadSymbolSummary( SymbolSummary*, const QString& symFilter );
 
     CG_ERR_RESULT loadTickerSymbols(QStringList& symbol, QStringList& feed);
     CG_ERR_RESULT saveTickerSymbols(QStringList& symbol, QStringList& feed);

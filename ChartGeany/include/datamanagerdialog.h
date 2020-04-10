@@ -39,21 +39,6 @@ public:
   explicit DataManagerDialog (QWidget *parent = 0);
   ~DataManagerDialog (void);
 
-  QStringList symbolList;	  // symbols column content
-  QStringList descList;     // name column content
-  QStringList marketList;   // markets column content
-  QStringList sourceList;   // source column content
-  QStringList timeframeList;// timeframe column content
-  QStringList datefromList;  // from column content
-  QStringList datetoList;    // to column content
-  QStringList currencyList; // currency column content
-  QStringList keyList; // key column content
-  QStringList adjustedList; // adjusted column content
-  QStringList baseList; // base column content
-  QStringList pathList; // download/import path
-  QStringList formatList; // format
-  QStringList lastupdateList; // last update since epoch in secs
-
   QStringList sqlite_master_name; // name column of sqlite_master table
   QStringList sqlite_master_type; // type columnt of sqlite_master table
   TableDataVector TDVector; // vector of TableDataClass
