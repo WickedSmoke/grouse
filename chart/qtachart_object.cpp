@@ -1055,14 +1055,9 @@ void
 QTACObject::setHLine (QGraphicsLineItem *line, qreal value)
 {
   QTAChartCore *core = chartdata;
-  QRectF rectf;
-  qreal y;
 
   if (deleteit)
     return;
-
-  if (parentObject == nullptr)
-    title->setToolTip (QStringLiteral ( "<span style=\"font: 9px;color: black;\">Double click to edit</span>"));
 
   if (line == nullptr)
   {
@@ -1075,9 +1070,21 @@ QTACObject::setHLine (QGraphicsLineItem *line, qreal value)
 
   price = value;
   hvline = line;
+
+  if( parentObject )
+    forecolor = core->forecolor;
+  else
+    forecolor = hvline->pen().color();
+
+  titlestr = QString("%1").arg(price, 10, 'f', core->fracdig + 1);
+  title->setPlainText (titlestr);
+  title->setDefaultTextColor (forecolor);
+  titlestr.prepend( QStringLiteral("Horizontal line ") );
+
   if (parentObject == nullptr)
   {
     title->setParent (this);
+    title->setToolTip (QStringLiteral ( "<span style=\"font: 9px;color: black;\">Double click to edit</span>"));
 
     if (filter == nullptr)
     {
@@ -1086,22 +1093,12 @@ QTACObject::setHLine (QGraphicsLineItem *line, qreal value)
       title->setAcceptHoverEvents (true);
     }
 
-    titlestr = QString ("%1").arg (price, 10, 'f', core->fracdig + 1);
-    title->setPlainText (titlestr);
-    title->setDefaultTextColor (hvline->pen().color ());
-    titlestr = QStringLiteral ("Horizontal line ") % QString ("%1").arg (price, 10, 'f', core->fracdig + 1);
-
-    y = core->yOnPrice (price);
-    rectf = title->boundingRect();
-    hvline->setLine (core->chartleftmost, y, core->chartrightmost - rectf.width (), y);
+    qreal y = core->yOnPrice (price);
+    QRectF rectf = title->boundingRect();
+    hvline->setLine (core->chartleftmost, y,
+                     core->chartrightmost - rectf.width (), y);
     title->setPos (core->chartrightmost - rectf.width (), y - 10);
-    return;
   }
-
-  titlestr = QString ("%1").arg (value, 10, 'f', core->fracdig + 1);
-  title->setPlainText (titlestr);
-  title->setDefaultTextColor (core->forecolor);
-  titlestr = QStringLiteral ("Horizontal line ") % QString ("%1").arg (price, 10, 'f', core->fracdig + 1);
 }
 
 // set the price level for a horizontal line
@@ -1116,6 +1113,7 @@ QTACObject::setVLine (QGraphicsLineItem *line)
     return;
 
   hvline = line;
+  forecolor = hvline->pen().color();
   title->setParent (this);
 
   if (parentObject == nullptr)
@@ -1132,7 +1130,7 @@ QTACObject::setVLine (QGraphicsLineItem *line)
   trailerCandleText = core->getBottomText ((int) x);
   titlestr = trailerCandleText.mid (3, 20);
   title->setPlainText (titlestr);
-  title->setDefaultTextColor (hvline->pen().color ());
+  title->setDefaultTextColor (forecolor);
   titlestr = QStringLiteral ("Vertical line ") % titlestr;
 
   rectf = title->boundingRect();
@@ -1147,6 +1145,7 @@ QTACObject::setVLine (QGraphicsLineItem *line, QString text)
     return;
 
   hvline = line;
+  forecolor = hvline->pen().color();
   title->setParent (this);
 
   if (parentObject == nullptr)
@@ -1162,7 +1161,7 @@ QTACObject::setVLine (QGraphicsLineItem *line, QString text)
   trailerCandleText = text;
   titlestr = trailerCandleText.mid (3, 20);
   title->setPlainText (titlestr);
-  title->setDefaultTextColor (hvline->pen().color ());
+  title->setDefaultTextColor (forecolor);
   titlestr = QStringLiteral ("Vertical line ") % titlestr;
 }
 
@@ -1179,9 +1178,10 @@ QTACObject::setTLine (QGraphicsLineItem *sline)
   if (Q_UNLIKELY (deleteit))
     return;
 
-  title->setParent (this);
   hvline = sline;
   line = hvline->line ();
+  forecolor = hvline->pen().color();
+  title->setParent (this);
 
   // edge 1
   edge = Edge[0];
@@ -1195,7 +1195,7 @@ QTACObject::setTLine (QGraphicsLineItem *sline)
   prcstr = QString::number (edge->price, 'f', core->fracdig + 1);
   edge->pricetxt->setFont (title->font ());
   edge->pricetxt->setPlainText (prcstr);
-  edge->pricetxt->setDefaultTextColor (hvline->pen().color ());
+  edge->pricetxt->setDefaultTextColor (forecolor);
   titlestr = QStringLiteral ("Trend line ") % prcstr % QStringLiteral (" - ");
 
   // edge 2
@@ -1211,7 +1211,7 @@ QTACObject::setTLine (QGraphicsLineItem *sline)
   prcstr = QString::number (edge->price, 'f', core->fracdig + 1);
   edge->pricetxt->setFont (title->font ());
   edge->pricetxt->setPlainText (prcstr);
-  edge->pricetxt->setDefaultTextColor (hvline->pen().color ());
+  edge->pricetxt->setDefaultTextColor (forecolor);
   titlestr += prcstr;
 
   hvline->setLine (line.x1 (), line.y1 (), line.x2 (), line.y2 ());
@@ -1275,8 +1275,10 @@ QTACObject::setTLine (QGraphicsLineItem *sline, LineEdge e1, LineEdge e2)
     return;
 
   QTAChartCore *core = chartdata;
-  title->setParent (this);
+
   hvline = sline;
+  forecolor = hvline->pen().color();
+  title->setParent (this);
 
   Edge[0]->price = e1.price;
   Edge[0]->pad = e1.pad;
@@ -1284,7 +1286,7 @@ QTACObject::setTLine (QGraphicsLineItem *sline, LineEdge e1, LineEdge e2)
   Edge[0]->trailerCandleText = e1.trailerCandleText;
   Edge[0]->sequence = e1.sequence;
   Edge[0]->pricetxt->setPlainText (QString::number (e1.price, 'f', core->fracdig + 1));
-  Edge[0]->pricetxt->setDefaultTextColor (hvline->pen().color ());
+  Edge[0]->pricetxt->setDefaultTextColor (forecolor);
   scene->qtcAddItem (Edge[0]->pricetxt);
 
   Edge[1]->price = e2.price;
@@ -1293,7 +1295,7 @@ QTACObject::setTLine (QGraphicsLineItem *sline, LineEdge e1, LineEdge e2)
   Edge[1]->trailerCandleText = e2.trailerCandleText;
   Edge[1]->sequence = e2.sequence;
   Edge[1]->pricetxt->setPlainText (QString::number (e2.price, 'f', core->fracdig + 1));
-  Edge[1]->pricetxt->setDefaultTextColor (hvline->pen().color ());
+  Edge[1]->pricetxt->setDefaultTextColor (forecolor);
   scene->qtcAddItem (Edge[1]->pricetxt);
 
   titlestr = QStringLiteral ("Trend line ") % QString::number (e1.price, 'f', core->fracdig + 1) % QStringLiteral (" - ");
