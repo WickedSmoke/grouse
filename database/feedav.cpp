@@ -43,7 +43,7 @@ AlphaVantageFeed::~AlphaVantageFeed ()
 
 // validate symbol
 bool
-AlphaVantageFeed::validSymbol (QString symbol)
+AlphaVantageFeed::validSymbol (const QString& symbol)
 {
   for (qint32 counter = 0, max = symbol.size ();
        counter < max; counter ++)
@@ -62,7 +62,7 @@ AlphaVantageFeed::validSymbol (QString symbol)
 // return symbol check URL
 //https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=MSFT&apikey=key
 QString
-AlphaVantageFeed::symbolURL (QString symbol)
+AlphaVantageFeed::symbolURL (const QString& symbol)
 {
   QString urlstr = QStringLiteral ("");
 
@@ -79,7 +79,7 @@ AlphaVantageFeed::symbolURL (QString symbol)
 
 // alpha vantage does not support this info
 QString
-AlphaVantageFeed::symbolCurrencyURL (QString symbol)
+AlphaVantageFeed::symbolCurrencyURL (const QString& symbol)
 {
   Q_UNUSED (symbol);
   QString urlstr = QStringLiteral ("");
@@ -90,7 +90,7 @@ AlphaVantageFeed::symbolCurrencyURL (QString symbol)
 // return symbol statistics URL
 // alpha vantage does not support this info
 QString
-AlphaVantageFeed::symbolStatsURL (QString symbol)
+AlphaVantageFeed::symbolStatsURL (const QString& symbol)
 {
   Q_UNUSED (symbol);
   QString urlstr = QStringLiteral ("");
@@ -101,7 +101,7 @@ AlphaVantageFeed::symbolStatsURL (QString symbol)
 // return symbol statistics URL
 // alpha vantage does not support this info
 QString
-AlphaVantageFeed::symbolStatsURLjson (QString symbol)
+AlphaVantageFeed::symbolStatsURLjson (const QString& symbol)
 {
   Q_UNUSED (symbol);
   QString urlstr = QStringLiteral ("");
@@ -113,7 +113,7 @@ AlphaVantageFeed::symbolStatsURLjson (QString symbol)
 // eg: https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&
 //     symbol=MSFT&outputsize=full&apikey=4PYMW8I7CBQHSSEA&datatype=csv
 QString
-AlphaVantageFeed::downloadURL (QString symbol)
+AlphaVantageFeed::downloadURL (const QString& symbol)
 {
   QString downstr = QStringLiteral ("");
 
@@ -131,14 +131,14 @@ AlphaVantageFeed::downloadURL (QString symbol)
 
 // return real time price URL using csv api
 QString
-AlphaVantageFeed::realTimePriceURL (QString symbol)
+AlphaVantageFeed::realTimePriceURL (const QString& symbol)
 {
   return realTimePriceURLjson (symbol) % QStringLiteral ("&datatype=csv");
 }
 
 // return real time price URL using json api
 QString
-AlphaVantageFeed::realTimePriceURLjson (QString symbol)
+AlphaVantageFeed::realTimePriceURLjson (const QString& symbol)
 {
   QString urlstr = QStringLiteral ("");
 
@@ -155,14 +155,14 @@ AlphaVantageFeed::realTimePriceURLjson (QString symbol)
 
 // return update URL
 QString
-AlphaVantageFeed::updateURL (QString symbol)
+AlphaVantageFeed::updateURL (const QString& symbol)
 {
   return downloadURL (symbol);
 }
 
 // get real time price
 CG_ERR_RESULT
-AlphaVantageFeed::getRealTimePrice (QString symbol, RTPrice & rtprice, API api)
+AlphaVantageFeed::getRealTimePrice (const QString& symbol, RTPrice & rtprice, API api)
 {
   Q_UNUSED (api);
   QTemporaryFile tempFile;      // temporary file
@@ -257,7 +257,7 @@ getRealTimePrice_end:
 // download statistics
 // alpha vantage does not support this info
 CG_ERR_RESULT
-AlphaVantageFeed::downloadStats (QString symbol, API api)
+AlphaVantageFeed::downloadStats (const QString& symbol, API api)
 {
   Q_UNUSED (api);
   Q_UNUSED (symbol);
@@ -268,8 +268,8 @@ AlphaVantageFeed::downloadStats (QString symbol, API api)
 
 // check if symbol exists
 bool
-AlphaVantageFeed::symbolExistence (QString & symbol, QString & name, QString & market,
-                            QString & currency)
+AlphaVantageFeed::symbolExistence (const QString & symbol, QString & name,
+                                   QString & market, QString & currency)
 {
   QTemporaryFile tempFile;      // temporary file
   QTextStream in;
@@ -279,16 +279,13 @@ AlphaVantageFeed::symbolExistence (QString & symbol, QString & name, QString & m
   CG_ERR_RESULT ioresult = CG_ERR_OK;
   bool result = false;
 
-  symbol = symbol.trimmed ();
+  assert(symbol.indexOf(' ') == -1);
   if (!validSymbol (symbol))
     goto symbolExistence_end;
 
   urlstr = symbolURL (symbol);
   if (urlstr.size () == 0)
     goto symbolExistence_end;
-
-  Symbol = symbol;
-  symbolName = name;
 
   // open temporary file
   if (!tempFile.open ())
@@ -320,7 +317,9 @@ AlphaVantageFeed::symbolExistence (QString & symbol, QString & name, QString & m
         goto symbolExistence_end;
       }
 
+      Symbol = symbol;
       symbolName = Market = Currency = QStringLiteral ("");
+
       for (qint32 counter = 0; counter < node.size () && counter < 9; counter ++)
       {
         if (node.at (counter) == QLatin1String ("1. symbol"))
@@ -337,7 +336,6 @@ AlphaVantageFeed::symbolExistence (QString & symbol, QString & name, QString & m
           Currency = value.at (counter).simplified();
       }
 
-      symbol = Symbol;
       name = symbolName;
       market = Market;
       currency = Currency;
@@ -354,7 +352,7 @@ symbolExistence_end:
   setGlobalError(ioresult, __FILE__, __LINE__);
 
   if (result == false)
-    Symbol = QStringLiteral ("");
+    Symbol.clear();
 
   tempFile.close ();
   if (netservice != NULL)
@@ -365,8 +363,9 @@ symbolExistence_end:
 
 // download historical data
 CG_ERR_RESULT
-AlphaVantageFeed::downloadData (QString symbol, QString timeframe, QString currency,
-                         QString task, bool adjust)
+AlphaVantageFeed::downloadData (const QString& symbol, const QString& timeframe,
+                                const QString& currency, const QString& task,
+                                bool adjust)
 {
   QTemporaryFile tempFile;      // temporary file
   QString url;
@@ -385,7 +384,7 @@ AlphaVantageFeed::downloadData (QString symbol, QString timeframe, QString curre
   // check symbol existence
   if (symbol != Symbol)
   {
-    if (!symbolExistence (symbol, entry.name, entry.market, currency))
+    if (!symbolExistence (symbol, entry.name, entry.market, entry.currency))
     {
       result = GlobalError.fetchAndAddAcquire (0);
       if (result == CG_ERR_OK)

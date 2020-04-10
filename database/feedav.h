@@ -38,18 +38,18 @@ public:
   enum API { JSON, CSV };
 
   // functions
-  bool symbolExistence (QString & symbol,
+  bool symbolExistence (const QString & symbol,
                         QString & name,
                         QString & market,
                         QString & currency); // check if symbol exists
 
-  CG_ERR_RESULT downloadData (QString symbol,    // download
-                              QString timeframe, // historical
-                              QString currency,  // data
-                              QString task,
+  CG_ERR_RESULT downloadData (const QString& symbol,    // download
+                              const QString& timeframe, // historical
+                              const QString& currency,  // data
+                              const QString& task,
                               bool    adjust);
-  CG_ERR_RESULT downloadStats (QString symbol, API api); // download statistics
-  CG_ERR_RESULT getRealTimePrice (QString symbol,
+  CG_ERR_RESULT downloadStats (const QString& symbol, API api); // download statistics
+  CG_ERR_RESULT getRealTimePrice (const QString& symbol,
                                   RTPrice & rtprice, API api); // get real time price
   QString getTableName ()
   {
@@ -60,7 +60,7 @@ public:
     return symbolName;
   }; // get the name of the last symbol retrieved
 
-  bool validSymbol (QString symbol);	// validate yahoo symbol
+  bool validSymbol (const QString& symbol);	// validate yahoo symbol
 
 private:
   QString Symbol;		// symbol
@@ -82,14 +82,14 @@ private:
   SymbolEntry entry;	// symbol entry
 
   // functions
-  QString symbolURL (QString symbol); // returns symbol check URL
-  QString symbolCurrencyURL (QString symbol); // returns symbol's currency URL
-  QString symbolStatsURL (QString symbol); // returns symbol statistics URL
-  QString symbolStatsURLjson (QString symbol); // returns symbol statistics URL for json
-  QString downloadURL (QString symbol); // download URL
-  QString updateURL (QString symbol); // update URL
-  QString realTimePriceURL (QString symbol); // real time price URL
-  QString realTimePriceURLjson (QString symbol); // real time price URL for json
+  QString symbolURL (const QString& symbol); // returns symbol check URL
+  QString symbolCurrencyURL (const QString& symbol); // returns symbol's currency URL
+  QString symbolStatsURL (const QString& symbol); // returns symbol statistics URL
+  QString symbolStatsURLjson (const QString& symbol); // returns symbol statistics URL for json
+  QString downloadURL (const QString& symbol); // download URL
+  QString updateURL (const QString& symbol); // update URL
+  QString realTimePriceURL (const QString& symbol); // real time price URL
+  QString realTimePriceURLjson (const QString& symbol); // real time price URL for json
 };
 
 #endif

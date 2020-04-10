@@ -42,7 +42,7 @@ IEXFeed::~IEXFeed ()
 
 // validate symbol
 bool
-IEXFeed::validSymbol (QString symbol)
+IEXFeed::validSymbol (const QString& symbol)
 {
   for (qint32 counter = 0, max = symbol.size ();
        counter < max; counter ++)
@@ -61,7 +61,7 @@ IEXFeed::validSymbol (QString symbol)
 // eg old api: https://api.iextrading.com/1.0/stock/aapl/quote
 // eg iex cloud: https://cloud.iexapis.com/v1/stock/aapl/quote/?token=TOKEN
 QString
-IEXFeed::symbolURL (QString symbol)
+IEXFeed::symbolURL (const QString& symbol)
 {
   QString urlstr = QStringLiteral ("");
 
@@ -75,14 +75,14 @@ IEXFeed::symbolURL (QString symbol)
 }
 
 QString
-IEXFeed::realTimePriceURL (QString symbol)
+IEXFeed::realTimePriceURL (const QString& symbol)
 {
   return symbolURL (symbol);
 }
 
 // return symbol statistics URL from http
 QString
-IEXFeed::symbolStatsURL (QString symbol)
+IEXFeed::symbolStatsURL (const QString& symbol)
 {
   QString urlstr = QStringLiteral ("");
 
@@ -102,7 +102,7 @@ IEXFeed::symbolStatsURL (QString symbol)
 // eg iex cloud:
 // https://cloud.iexapis.com/v1/stock/aapl/chart/5y/?token=TOKEN
 QString
-IEXFeed::downloadURL (QString symbol)
+IEXFeed::downloadURL (const QString& symbol)
 {
   QString downstr = QStringLiteral ("");
 
@@ -118,14 +118,14 @@ IEXFeed::downloadURL (QString symbol)
 
 // return update URL
 QString
-IEXFeed::updateURL (QString symbol)
+IEXFeed::updateURL (const QString& symbol)
 {
   return downloadURL (symbol);
 }
 
 // get real time price
 CG_ERR_RESULT
-IEXFeed::getRealTimePrice (QString symbol, RTPrice & rtprice)
+IEXFeed::getRealTimePrice (const QString& symbol, RTPrice & rtprice)
 {
   QDateTime timestamp;
   QTemporaryFile tempFile;      // temporary file
@@ -225,7 +225,8 @@ getRealTimePrice_end:
 
 // check if symbol exists
 bool
-IEXFeed::symbolExistence (QString & symbol, QString & name, QString & market)
+IEXFeed::symbolExistence (const QString & symbol, QString & name,
+                          QString & market)
 {
   QTemporaryFile tempFile;      // temporary file
   QTextStream in;
@@ -235,16 +236,13 @@ IEXFeed::symbolExistence (QString & symbol, QString & name, QString & market)
   CG_ERR_RESULT ioresult = CG_ERR_OK;
   bool result = false;
 
-  symbol = symbol.trimmed ();
+  assert(symbol.indexOf(' ') == -1);
   if (!validSymbol (symbol))
     goto symbolExistence_end;
 
   urlstr = symbolURL (symbol);
   if (urlstr.size () == 0)
     goto symbolExistence_end;
-
-  Symbol = symbol;
-  symbolName = name;
 
   // open temporary file
   if (!tempFile.open ())
@@ -268,9 +266,11 @@ IEXFeed::symbolExistence (QString & symbol, QString & name, QString & market)
   {
     QStringList node, value;
 
-    symbolName = Market = QStringLiteral ("");
     if (json_parse (line, &node, &value, NULL))
     {
+      Symbol = symbol;
+      symbolName = Market = QStringLiteral ("");
+
       for (qint32 counter = 0; counter < node.size (); counter ++)
       {
         if (node.at (counter) == QLatin1String ("companyName"))
@@ -294,7 +294,7 @@ symbolExistence_end:
   setGlobalError(ioresult, __FILE__, __LINE__);
 
   if (result == false)
-    Symbol = QStringLiteral ("");
+    Symbol.clear();
 
   tempFile.close ();
   if (netservice != NULL)
@@ -305,8 +305,9 @@ symbolExistence_end:
 
 // download historical data
 CG_ERR_RESULT
-IEXFeed::downloadData (QString symbol, QString timeframe, QString currency,
-                          QString task, bool adjust)
+IEXFeed::downloadData (const QString& symbol, const QString& timeframe,
+                       const QString& currency, const QString& task,
+                       bool adjust)
 {
   QTemporaryFile tempFile;      // temporary file
   QString url;
@@ -424,7 +425,7 @@ downloadData_end:
 
 // download statistics
 CG_ERR_RESULT
-IEXFeed::downloadStats (QString symbol)
+IEXFeed::downloadStats (const QString& symbol)
 {
   QTemporaryFile tempFile;      // temporary file
   QTextStream in;

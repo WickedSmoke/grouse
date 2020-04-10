@@ -72,7 +72,7 @@ YahooFeed::validSymbol (QString symbol)
 // url='http://download.finance.yahoo.com/d/quotes.csv?s=IBM&f=nx'
 // and columns='name,exchange'
 QString
-YahooFeed::symbolURL (QString symbol)
+YahooFeed::symbolURL (const QString& symbol)
 {
   return symbolURLjson (symbol);
 /* Keep it here
@@ -90,7 +90,7 @@ YahooFeed::symbolURL (QString symbol)
 
 // https://query1.finance.yahoo.com/v7/finance/quote?symbols=IBM
 QString
-YahooFeed::symbolURLjson (QString symbol)
+YahooFeed::symbolURLjson (const QString& symbol)
 {
   QString urlstr = QStringLiteral ("");
 
@@ -105,7 +105,7 @@ YahooFeed::symbolURLjson (QString symbol)
 
 // http://finance.yahoo.com/d/quotes.csv?s=RIO.AX&f=c4
 QString
-YahooFeed::symbolCurrencyURL (QString symbol)
+YahooFeed::symbolCurrencyURL (const QString& symbol)
 {
   return symbolURL (symbol);
 /* Keep it here
@@ -126,7 +126,7 @@ YahooFeed::symbolCurrencyURL (QString symbol)
 // dividends
 // eg: http://real-chart.finance.yahoo.com/table.csv?s=ABB&g=v
 QString
-YahooFeed::symbolStatsURL (QString symbol)
+YahooFeed::symbolStatsURL (const QString& symbol)
 {
   return symbolURL (symbol);
 /* Keep it here
@@ -145,7 +145,7 @@ YahooFeed::symbolStatsURL (QString symbol)
 // return symbol statistics URL from yql
 // http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20csv%20where%20url%3D'http%3A%2F%2Fdownload.finance.yahoo.com%2Fd%2Fquotes.csv%3Fs%3DIBM%26f%3Db4j1j4rr5ye7e8ep5p6%26e%3D.csv'%20and%20columns%20%3D%20'bookvalue%2Cmarketcap%2Cebitda%2Cpe%2Cpeg%2Cyield%2Cepscy%2Cepsny%2Ces%2Cps%2Cpbv'&format=json&callback=
 QString
-YahooFeed::symbolStatsURLyql (QString symbol)
+YahooFeed::symbolStatsURLyql (const QString& symbol)
 {
   QString urlstr = QStringLiteral ("");
 
@@ -175,7 +175,8 @@ YahooFeed::symbolStatsURLyql (QString symbol)
 // *** New Yahoo Historical Data API
 // curl 'https://query1.finance.yahoo.com/v7/finance/download/%5EGSPC?period1=1492463852&period2=1495055852&interval=1d&events=history&crumb=XXXXXXX' -H 'user-agent: Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)' -H 'cookie: B=YYYYYY;' -H 'referer: https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC'
 QString
-YahooFeed::downloadURL (QString symbol, QString timeframe, QString crumb)
+YahooFeed::downloadURL (const QString& symbol, const QString& timeframe,
+                        const QString& crumb)
 {
   QString downstr = QStringLiteral ("");
   QDateTime today (QDate::currentDate()),
@@ -296,7 +297,8 @@ YahooFeed::updateURL (QString symbol, QString timeframe, QString datefrom)
 
 // get real time price
 CG_ERR_RESULT
-YahooFeed::getRealTimePrice (QString symbol, RTPrice & rtprice, YAHOO_API api)
+YahooFeed::getRealTimePrice (const QString& symbol, RTPrice & rtprice,
+                             YAHOO_API api)
 {
   Q_UNUSED (api)
 
@@ -692,7 +694,7 @@ downloadStats_end:
 
 // download statistics
 CG_ERR_RESULT
-YahooFeed::downloadStatsjson (QString symbol)
+YahooFeed::downloadStatsjson (const QString& symbol)
 {
   QTemporaryFile tempFile;      // temporary file
   QTextStream in;
@@ -767,10 +769,9 @@ downloadStats_end:
 
 // check if symbol exists
 bool
-YahooFeed::symbolExistence (QString & symbol, QString & name, QString & market,
-                            QString & currency)
+YahooFeed::symbolExistence (const QString & symbol, QString & name,
+                            QString & market, QString & currency)
 {
-
   return symbolExistencejson (symbol, name, market, currency);
 /* Keep it here
   QTemporaryFile tempFile;      // temporary file
@@ -781,16 +782,13 @@ YahooFeed::symbolExistence (QString & symbol, QString & name, QString & market,
   CG_ERR_RESULT ioresult = CG_ERR_OK;
   bool result = false;
 
-  symbol = symbol.trimmed ();
+  assert(symbol.indexOf(' ') == -1);
   if (!validSymbol (symbol))
     goto symbolExistence_end;
 
   urlstr = symbolURL (symbol);
   if (urlstr.size () == 0)
     goto symbolExistence_end;
-
-  Symbol = symbol;
-  symbolName = name;
 
   // open temporary file
   if (!tempFile.open ())
@@ -812,6 +810,8 @@ YahooFeed::symbolExistence (QString & symbol, QString & name, QString & market,
 
   if (line.size () != 0)
   {
+    Symbol = symbol;
+
     line.remove (10);
     line.remove (13);
     line.replace (QStringLiteral (","), QStringLiteral (" "));
@@ -854,7 +854,7 @@ symbolExistence_end:
   setGlobalError(ioresult, __FILE__, __LINE__);
 
   if (result == false)
-    Symbol = QStringLiteral ("");
+    Symbol.clear();
 
   tempFile.close ();
   if (netservice != NULL)
@@ -866,8 +866,8 @@ symbolExistence_end:
 
 // check if symbol exists from json
 bool
-YahooFeed::symbolExistencejson (QString & symbol, QString & name, QString & market,
-                            QString & currency)
+YahooFeed::symbolExistencejson (const QString & symbol, QString & name,
+                                QString & market, QString & currency)
 {
   QTemporaryFile tempFile;      // temporary file
   QTextStream in;
@@ -877,16 +877,13 @@ YahooFeed::symbolExistencejson (QString & symbol, QString & name, QString & mark
   CG_ERR_RESULT ioresult = CG_ERR_OK;
   bool result = false;
 
-  symbol = symbol.trimmed ();
+  assert(symbol.indexOf(' ') == -1);
   if (!validSymbol (symbol))
     goto symbolExistence_end;
 
   urlstr = symbolURL (symbol);
   if (urlstr.size () == 0)
     goto symbolExistence_end;
-
-  Symbol = symbol;
-  symbolName = name;
 
   // open temporary file
   if (!tempFile.open ())
@@ -912,6 +909,7 @@ YahooFeed::symbolExistencejson (QString & symbol, QString & name, QString & mark
 
     if (json_parse (line, &node, &value, NULL))
     {
+      Symbol = symbol;
       symbolName = Market = Currency = QStringLiteral ("");
       for (qint32 counter = 0; counter < node.size (); counter ++)
       {
@@ -949,7 +947,7 @@ symbolExistence_end:
   setGlobalError(ioresult, __FILE__, __LINE__);
 
   if (result == false)
-    Symbol = QStringLiteral ("");
+    Symbol.clear();
 
   tempFile.close ();
   if (netservice != NULL)
@@ -982,8 +980,9 @@ YahooFeed::getCrumb (const QString & namein)
 
 // download historical data
 CG_ERR_RESULT
-YahooFeed::downloadData (QString symbol, QString timeframe, QString currency,
-                         QString task, bool adjust)
+YahooFeed::downloadData (const QString& symbol, const QString& timeframe,
+                         const QString& currency, const QString& task,
+                         bool adjust)
 {
   QTemporaryFile tempFile;      // temporary file
   QString url;
@@ -996,7 +995,7 @@ YahooFeed::downloadData (QString symbol, QString timeframe, QString currency,
   // check symbol existence
   if (symbol != Symbol)
   {
-    if (!symbolExistence (symbol, entry.name, entry.market, currency))
+    if (!symbolExistence (symbol, entry.name, entry.market, entry.currency))
     {
       result = GlobalError.fetchAndAddAcquire (0);
       if (result == CG_ERR_OK)

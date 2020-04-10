@@ -38,24 +38,16 @@ public:
   enum YAHOO_API { HTTP, YQL, JSON };
 
   // functions
-  bool symbolExistence (QString & symbol,
+  bool symbolExistence (const QString & symbol,
                         QString & name,
                         QString & market,
                         QString & currency); // check if symbol exists
- 
-  bool symbolExistencejson (QString & symbol,
-                            QString & name,
-                            QString & market,
-                            QString & currency); // check if symbol exists from json                       
-
-  CG_ERR_RESULT downloadData (QString symbol,    // download
-                              QString timeframe, // historical
-                              QString currency,  // data
-                              QString task,
-                              bool    adjust);
+  CG_ERR_RESULT downloadData (const QString& symbol, const QString& timeframe,
+                              const QString& currency, const QString& task,
+                              bool adjust);     // download historical data
   CG_ERR_RESULT downloadStats (QString symbol, YAHOO_API api); // download statistics
-  CG_ERR_RESULT downloadStatsjson (QString symbol); // download statistics
-  CG_ERR_RESULT getRealTimePrice (QString symbol,
+  CG_ERR_RESULT downloadStatsjson (const QString& symbol); // download statistics
+  CG_ERR_RESULT getRealTimePrice (const QString& symbol,
                                   RTPrice & rtprice, YAHOO_API api); // get real time price
   CG_ERR_RESULT getRealTimePricejson (QString symbol, RTPrice & rtprice); // get real time price                                  
   QString getTableName () const
@@ -89,16 +81,19 @@ private:
   SymbolEntry entry;	// symbol entry
 
   // functions
-  QString symbolURL (QString symbol); // returns symbol check URL
-  QString symbolURLjson (QString symbol); // returns symbol check URL
-  QString symbolCurrencyURL (QString symbol); // returns symbol's currency URL
-  QString symbolStatsURL (QString symbol); // returns symbol statistics URL
-  QString symbolStatsURLyql (QString symbol); // returns symbol statistics URL for yql
-  QString downloadURL (QString symbol, QString timeframe, QString crumb); // download URL
+  QString symbolURL (const QString& symbol); // returns symbol check URL
+  QString symbolURLjson (const QString& symbol); // returns symbol check URL
+  QString symbolCurrencyURL (const QString& symbol); // returns symbol's currency URL
+  QString symbolStatsURL (const QString& symbol); // returns symbol statistics URL
+  QString symbolStatsURLyql (const QString& symbol); // returns symbol statistics URL for yql
+  QString downloadURL (const QString& symbol, const QString& timeframe,
+                       const QString& crumb); // download URL
   QString updateURL (QString symbol, QString timeframe, QString datefrom); // update URL
   QString realTimePriceURL (QString symbol); // real time price URL
   QString realTimePriceURLyql (QString symbol); // real time price URL for yql
   QString getCrumb (const QString & namein);
+  bool symbolExistencejson (const QString & symbol, QString & name,
+                            QString & market, QString & currency);
 };
 
 #endif
