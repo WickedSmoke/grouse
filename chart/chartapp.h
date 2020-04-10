@@ -20,7 +20,37 @@
 #define CHARTAPP_H
 
 #include <QApplication>
+#include "QTAChartData.h"
 #include "idb.h"
+
+// Application options structure
+struct AppOptions
+{
+  QTAChartProperties chart;
+  QString pak;                  // program activation key
+  QString avapikey;             // alpha vantage api key
+  QString iexapikey;            // iex api key
+  QString proxyhost;            // proxy host name or IP
+  QString proxyuser;            // proxy user name
+  QString proxypass;            // proxy password
+  QString platform;             // platform string
+  QString compiler;             // compiler path
+  QString compilerdbg;          // compiler debug options
+  QString compilerrel;          // compiler release options
+  QString linker;               // linker path
+  QString linkerdbg;            // linker debug options
+  QString linkerrel;            // linker release options
+  qint16  nettimeout;           // network timeout in seconds
+  qint16  proxyport;            // proxy port
+  qint16  scrollspeed;          // ticker's scroll speed
+  bool showsplashscreen;        // show splash screen
+  bool checknewversion;         // check new version
+  bool enableproxy;             // enable proxy
+  bool longbp;                  // convert london prices to gbp (divide by 100)
+  bool autoupdate;              // default setting for auto update quotes on chart opening
+  bool devmode;                 // default setting for developer mode
+};
+
 
 class QMutex;
 
@@ -35,6 +65,7 @@ public:
   bool openDatabase ();
   void moduleLock (QObject *obj);
   void moduleUnlock (QObject *obj);
+  CG_ERR_RESULT loadOptions ();
 
 private:
   InstrumentDatabase idb;
@@ -42,9 +73,12 @@ private:
   QMutex *modmutex;     // mutex for modules
 };
 
+extern AppOptions *Application_Options;
 extern SQLists *ComboItems;     // QStringLists used as combo box items and more
 extern QMutex *ResourceMutex;   // mutex to protect shared resources
 extern int NCORES;              // number of active cores
+
+CG_ERR_RESULT saveAppOptions (AppOptions *options);
 
 // show a message box
 extern void showMessage (const QString& message, QWidget* parent = nullptr);

@@ -69,7 +69,6 @@ public:
 
 private:
   Ui::MainWindow *ui;
-  AppOptions options;                   // application setting
   //   various comboboxes
   PortfolioManagerDialog *portfoliomanagerdlg;  // portfolio manager
   TemplateManagerDialog *templatemanagerdlg; // template manager

@@ -65,8 +65,6 @@ Q_OBJECT public:
   void setVolumes (bool);   // set volumes on off
   bool Volumes (void) const;        // returns volumes state
 
-  void setReferenceChart (void *chart);     // sets the reference chart
-
 private:
   Ui::QTACProperties * ui;
 

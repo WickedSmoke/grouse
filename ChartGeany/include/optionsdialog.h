@@ -104,16 +104,9 @@ private slots:
   void setOnlinePrice (bool);		// set online price on/off
   bool OnlinePrice (void);	// return online price state
 
-  QColor lineColor (void); // return the line color
   void setLineColor (QColor); // set line color
-
-  QColor barColor (void); // return the bar color
   void setBarColor (QColor); // set bar color
-
-  QColor foreColor (void); // return the foreground color
   void setForeColor (QColor); // set foreground color
-
-  QColor backColor (void); // return the background color
   void setBackColor (QColor); // set background color
 
   void setVolumes (bool);	// set volumes on off

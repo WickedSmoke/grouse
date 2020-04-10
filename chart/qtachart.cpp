@@ -71,14 +71,14 @@ QTAChart::QTAChart (QWidget * parent):
   core->hvline = NULL;
   core->events_enabled = true;
   core->tfinit = false;
-  core->forecolor = Application_Options->forecolor;
+  core->forecolor = Application_Options->chart.foreColor;
   core->framecolor = core->forecolor;
   core->textcolor = core->forecolor;
-  core->backcolor = Application_Options->backcolor;
+  core->backcolor = Application_Options->chart.backColor;
   core->gridcolor = core->forecolor;
   core->cursorcolor = Qt::yellow;
-  core->linecolor = Application_Options->linecolor;
-  core->barcolor = Application_Options->barcolor;
+  core->linecolor = Application_Options->chart.lineColor;
+  core->barcolor = Application_Options->chart.barColor;
 
   core->titletext[0] = 0;
   core->subtitletext[0] = 0;
@@ -93,10 +93,10 @@ QTAChart::QTAChart (QWidget * parent):
   core->chartframe = 10;
   core->nsubcharts = 0;
   core->lineprice = &core->CLOSE;
-  core->show_volumes = Application_Options->showvolume;
+  core->show_volumes = Application_Options->chart.showVolume;
   core->volumes = NULL;
-  core->show_grid = Application_Options->showgrid;
-  core->show_onlineprice = Application_Options->showonlineprice;
+  core->show_grid = Application_Options->chart.showGrid;
+  core->show_onlineprice = Application_Options->chart.showOnlinePrice;
   core->onlineprice = NULL;
   core->show_ruller = true;
   core->drag = false;
@@ -104,10 +104,10 @@ QTAChart::QTAChart (QWidget * parent):
   core->reloaded = false;
   core->redraw = true;
   core->recalc = true;
-  core->linear = Application_Options->linear;
+  core->linear = Application_Options->chart.linearScale;
   core->currenttf = QStringLiteral ("");
   core->always_redraw = true;
-  core->chart_style = Application_Options->chartstyle;
+  core->chart_style = Application_Options->chart.style;
   core->height = height ();
   core->width = width ();
   core->chartrightmost = (qint64) (core->width - core->right_border_width);
@@ -395,6 +395,68 @@ QTAChart::~QTAChart ()
 
   ArrayDestroyAll_imp (this);
   StringDestroyAll_imp (this);
+}
+
+void QTAChart::properties( QTAChartProperties& prop )
+{
+#if 1
+    const QTACProperties* propScr = ccore->propScr;
+
+    prop.style       = propScr->ChartStyle();
+    prop.linearScale = propScr->LinearScale();
+    prop.showVolume  = propScr->Volumes();
+    prop.showGrid    = propScr->Grid();
+    prop.showOnlinePrice = propScr->OnlinePrice();
+
+    prop.foreColor = propScr->foreColor().rgb();
+    prop.backColor = propScr->backColor().rgb();
+    prop.barColor  = propScr->barColor().rgb();
+    prop.lineColor = propScr->lineColor().rgb();
+#else
+    prop.style       = ccore->chart_style;
+    prop.linearScale = ccore->linear;
+    prop.showVolume  = ccore->show_volumes;
+    prop.showGrid    = ccore->show_grid;
+    prop.showOnlinePrice = ccore->show_onlineprice;
+
+    prop.foreColor = ccore->forecolor.rgb();
+    prop.backColor = ccore->backcolor.rgb();
+    prop.barColor  = ccore->barcolor.rgb();
+    prop.lineColor = ccore->linecolor.rgb();
+#endif
+}
+
+void QTAChart::setProperties( const QTAChartProperties& prop )
+{
+#if 1
+    QTACProperties* propScr = ccore->propScr;
+
+    propScr->setChartStyle( prop.style );
+    propScr->setLinearScale( prop.linearScale );
+    propScr->setVolumes( prop.showVolume );
+    propScr->setGrid( prop.showGrid );
+    propScr->setOnlinePrice ( prop.showOnlinePrice );
+    propScr->setForeColor( QRgb(prop.foreColor) );
+    propScr->setBackColor( QRgb(prop.backColor) );
+    propScr->setBarColor ( QRgb(prop.barColor) );
+    propScr->setLineColor( QRgb(prop.lineColor) );
+
+    goBack();
+#else
+    ccore->setChartStyle( prop.style );
+    ccore->setLinearScale( prop.linearScale );
+    ccore->show_volumes     = prop.showVolume;
+    ccore->show_grid        = prop.showGrid;
+    ccore->show_onlineprice = prop.showOnlinePrice;
+
+    ccore->forecolor = QRgb(prop.foreColor);
+    ccore->backcolor = QRgb(prop.backColor);
+    ccore->barcolor  = QRgb(prop.barColor);
+    ccore->linecolor = QRgb(prop.lineColor);
+
+    ccore->deleteITEMS();
+    ccore->draw();
+#endif
 }
 
 // back button implementation
@@ -1125,21 +1187,21 @@ loadFrames_end:
 
 // load data
 void
-QTAChart::loadData (QTAChartData data)
+QTAChart::loadData (const QTAChartData& data)
 {
-  QString textdata = QStringLiteral ("");
-
-  textdata += QStringLiteral ("Book Value:  ") % data.bv % QStringLiteral ("\n\n") %
-              QStringLiteral ("Market Cap:  ") % data.mc % QStringLiteral ("\n\n") %
-              QStringLiteral ("EBITDA:  ") % data.ebitda % QStringLiteral ("\n\n") %
-              QStringLiteral ("Price/Earnings:  ") % data.pe % QStringLiteral ("\n\n") %
-              QStringLiteral ("PEG Ratio:  ") % data.peg % QStringLiteral ("\n\n") %
-              QStringLiteral ("Dividend Yield:  ") % data.dy % QStringLiteral ("\n\n") %
-              QStringLiteral ("EPS Current:  ") % data.epscurrent % QStringLiteral ("\n\n") %
-              QStringLiteral ("EPS Next:  ") % data.epsnext % QStringLiteral ("\n\n") %
-              QStringLiteral ("Earnings/Share:  ") % data.es % QStringLiteral ("\n\n") %
-              QStringLiteral ("Price/Sales:  ") % data.ps % QStringLiteral ("\n\n") %
-              QStringLiteral ("Price/Book:  ") % data.pbv % QStringLiteral ("\n\n");
+  QString textdata;
+  textdata +=
+      QStringLiteral("Book Value:  ") % data.bv % QStringLiteral("\n\n") %
+      QStringLiteral("Market Cap:  ") % data.mc % QStringLiteral("\n\n") %
+      QStringLiteral("EBITDA:  ") % data.ebitda % QStringLiteral("\n\n") %
+      QStringLiteral("Price/Earnings:  ") % data.pe % QStringLiteral("\n\n") %
+      QStringLiteral("PEG Ratio:  ") % data.peg % QStringLiteral("\n\n") %
+      QStringLiteral("Dividend Yield:  ") % data.dy % QStringLiteral("\n\n") %
+      QStringLiteral("EPS Current:  ") % data.epscurrent % QStringLiteral("\n\n") %
+      QStringLiteral("EPS Next:  ") % data.epsnext % QStringLiteral("\n\n") %
+      QStringLiteral("Earnings/Share:  ") % data.es % QStringLiteral("\n\n") %
+      QStringLiteral("Price/Sales:  ") % data.ps % QStringLiteral("\n\n") %
+      QStringLiteral("Price/Book:  ") % data.pbv % QStringLiteral("\n\n");
   ccore->dataScr->setData (textdata);
 }
 

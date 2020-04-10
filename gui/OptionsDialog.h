@@ -20,17 +20,77 @@
 #define OPTIONSDIALOG_H
 
 #include <QDialog>
+#include "QTAChartData.h"
 
 
 class QCheckBox;
 class QColorDialog;
+class QRadioButton;
+class OptionColor;
+
+class ChartPropertiesWidget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    ChartPropertiesWidget(QWidget *parent = 0);
+    int chartStyle() const;
+    void setChartStyle(int);
+
+    void properties( QTAChartProperties& ) const;
+    void setProperties( const QTAChartProperties& );
+
+private slots:
+    void colorClicked();
+    void colorSel(const QColor&);
+
+private:
+    QColorDialog* _colorDialog;
+    OptionColor* _lastColorClicked;
+
+    QRadioButton* _lineChart;
+    QRadioButton* _candleChart;
+    QRadioButton* _heikinChart;
+    QRadioButton* _barChart;
+    OptionColor* _lineColor;
+    OptionColor* _barColor;
+
+    QCheckBox* _showGrid;
+    QCheckBox* _showVolumes;
+    QCheckBox* _linearScale;
+    QCheckBox* _onlinePrice;
+    OptionColor* _fgColor;
+    OptionColor* _bgColor;
+
+    //friend class OptionsDialog;
+    //friend class ChartPropertiesDialog;
+};
+
+
+class QTAChart;
+
+class ChartPropertiesDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    ChartPropertiesDialog(QWidget *parent = 0);
+    void setChart( QTAChart* );
+
+private slots:
+    void acceptProperties();
+
+private:
+    ChartPropertiesWidget* _prop;
+    QTAChart* _chart;
+};
+
+
 class QComboBox;
 class QLineEdit;
 class QGroupBox;
-class QRadioButton;
 class QSpinBox;
 class QTreeWidget;
-class OptionColor;
 
 class OptionsDialog : public QDialog
 {
@@ -50,18 +110,11 @@ private slots:
     void tabChanged(int);
     void addTickerSymbol();
     void removeTickerSymbol();
-    void colorSel(const QColor&);
-    void setChartStyle(int);
-    void colorClicked();
     void saveOptions();
 
 private:
     void populateTickerSymbols();
     void updateTickerSymbols();
-    int chartStyle();
-
-    QColorDialog* _colorDialog;
-    OptionColor* _lastColorClicked;
 
     QLineEdit* _keyIEX ;
     QLineEdit* _keyAlpha;
@@ -80,19 +133,7 @@ private:
     QLineEdit* _passwd;
     QSpinBox*  _timeout;
 
-    QRadioButton* _lineChart;
-    QRadioButton* _candleChart;
-    QRadioButton* _heikinChart;
-    QRadioButton* _barChart;
-    OptionColor* _lineColor;
-    OptionColor* _barColor;
-
-    QCheckBox* _showGrid;
-    QCheckBox* _showVolumes;
-    QCheckBox* _linearScale;
-    QCheckBox* _onlinePrice;
-    OptionColor* _fgColor;
-    OptionColor* _bgColor;
+    ChartPropertiesWidget* _charts;
 
     bool _enableproxyOrig;
     bool _tickerLoaded;

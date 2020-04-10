@@ -70,8 +70,207 @@ private:
 };
 
 
+ChartPropertiesWidget::ChartPropertiesWidget(QWidget *parent) :
+    QWidget(parent), _colorDialog(nullptr), _lastColorClicked(nullptr)
+{
+    QBoxLayout* lo2;
+    QGridLayout* grid = new QGridLayout( this );
+
+    QGroupBox* group = new QGroupBox("Chart Type");
+    grid->addWidget(group, 0, 0);
+
+        QGridLayout* g2 = new QGridLayout(group);
+        _lineChart   = new QRadioButton("Line");
+        _candleChart = new QRadioButton("Candle");
+        _heikinChart = new QRadioButton("Heikin-Ashi");
+        _barChart    = new QRadioButton("Bar");
+        g2->addWidget( _lineChart,   0, 1 );
+        g2->addWidget( _candleChart, 1, 1 );
+        g2->addWidget( _heikinChart, 2, 1 );
+        g2->addWidget( _barChart,    3, 1 );
+
+        _lineColor = new OptionColor( gPref->chart.lineColor );
+        COLOR_CONNECT( _lineColor );
+        g2->addWidget( _lineColor, 0, 0 );
+        _barColor = new OptionColor( gPref->chart.barColor );
+        COLOR_CONNECT( _barColor );
+        g2->addWidget( _barColor, 3, 0 );
+
+        g2->setRowStretch(4, 1);
+
+        setChartStyle( gPref->chart.style );
+
+    lo2 = new QVBoxLayout;
+    grid->addLayout(lo2, 0, 1);
+
+        _showGrid = new QCheckBox("Show Grid");
+        SET_CHECK( _showGrid, gPref->chart.showGrid );
+        lo2->addWidget(_showGrid);
+        _showVolumes = new QCheckBox("Show Volumes");
+        SET_CHECK( _showVolumes, gPref->chart.showVolume );
+        lo2->addWidget(_showVolumes);
+        _linearScale = new QCheckBox("Use Linear Scale");
+        SET_CHECK( _linearScale, gPref->chart.linearScale );
+        lo2->addWidget(_linearScale);
+        _onlinePrice = new QCheckBox("Show Online Price");
+        SET_CHECK( _onlinePrice, gPref->chart.showOnlinePrice );
+        lo2->addWidget(_onlinePrice);
+
+        lo2->addStretch();
+
+        g2 = new QGridLayout;
+        lo2->addLayout(g2);
+
+            _fgColor = new OptionColor( gPref->chart.foreColor );
+            COLOR_CONNECT( _fgColor );
+            g2->addWidget( _fgColor, 0, 0 );
+            g2->addWidget( new QLabel("Foreground Color"), 0, 1 );
+            _bgColor = new OptionColor( gPref->chart.backColor );
+            COLOR_CONNECT( _bgColor );
+            g2->addWidget( _bgColor, 1, 0 );
+            g2->addWidget( new QLabel("Background Color"), 1, 1 );
+}
+
+
+void ChartPropertiesWidget::properties( QTAChartProperties& pr ) const
+{
+    pr.style        = chartStyle();
+    pr.showGrid     = _showGrid->isChecked();
+    pr.showVolume   = _showVolumes->isChecked();
+    pr.linearScale  = _linearScale->isChecked();
+    pr.showOnlinePrice = _onlinePrice->isChecked();
+
+    pr.foreColor = _fgColor->color().rgb();
+    pr.backColor = _bgColor->color().rgb();
+    pr.barColor  = _barColor->color().rgb();
+    pr.lineColor = _lineColor->color().rgb();
+}
+
+
+void ChartPropertiesWidget::setProperties( const QTAChartProperties& pr )
+{
+    setChartStyle( pr.style );
+    _showGrid   ->setChecked(pr.showGrid);
+    _showVolumes->setChecked(pr.showVolume);
+    _linearScale->setChecked(pr.linearScale);
+    _onlinePrice->setChecked(pr.showOnlinePrice);
+
+    _fgColor  ->setColor( QRgb(pr.foreColor) );
+    _bgColor  ->setColor( QRgb(pr.backColor) );
+    _lineColor->setColor( QRgb(pr.lineColor) );
+    _barColor ->setColor( QRgb(pr.barColor) );
+}
+
+
+void ChartPropertiesWidget::colorClicked()
+{
+    if( ! _colorDialog )
+    {
+        _colorDialog = new QColorDialog(this);
+        if( ! _colorDialog )
+            return;
+        _colorDialog->setOption(QColorDialog::DontUseNativeDialog, true);
+        connect( _colorDialog, SIGNAL(colorSelected(const QColor&)),
+                 SLOT(colorSel(const QColor&)) );
+    }
+    _lastColorClicked = static_cast<OptionColor*>( sender() );
+    _colorDialog->setCurrentColor( _lastColorClicked->color() );
+    _colorDialog->open();
+}
+
+
+void ChartPropertiesWidget::colorSel(const QColor& col)
+{
+    if( _lastColorClicked )
+        _lastColorClicked->setColor(col);
+}
+
+
+int ChartPropertiesWidget::chartStyle() const
+{
+    if( _lineChart->isChecked() )
+        return QTACHART_LINE;
+    if( _candleChart->isChecked() )
+        return QTACHART_CANDLE;
+    if( _heikinChart->isChecked() )
+        return QTACHART_HEIKINASHI;
+    return QTACHART_BAR;
+}
+
+
+void ChartPropertiesWidget::setChartStyle( int style )
+{
+    switch( style )
+    {
+        case QTACHART_LINE:
+            _lineChart->setChecked(true);
+            break;
+        case QTACHART_CANDLE:
+            _candleChart->setChecked(true);
+            break;
+        case QTACHART_HEIKINASHI:
+            _heikinChart->setChecked(true);
+            break;
+        case QTACHART_BAR:
+            _barChart->setChecked(true);
+            break;
+    }
+}
+
+
+//----------------------------------------------------------------------------
+
+
+ChartPropertiesDialog::ChartPropertiesDialog(QWidget *parent ) :
+    QDialog(parent), _chart(nullptr)
+{
+    setWindowTitle( "Chart Properties" );
+    setWindowFlags(Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint);
+    setModal(true);
+
+    QBoxLayout* lo = new QVBoxLayout( this );
+
+    _prop = new ChartPropertiesWidget;
+    lo->addWidget( _prop );
+
+    lo->addSpacing( 8 );
+
+    QDialogButtonBox* bbox = new QDialogButtonBox;
+    bbox->setStandardButtons( QDialogButtonBox::Save |
+                              QDialogButtonBox::Cancel );
+    connect( bbox, SIGNAL(accepted()), this, SLOT(acceptProperties()));
+    connect( bbox, SIGNAL(rejected()), this, SLOT(reject()));
+    lo->addWidget( bbox );
+}
+
+
+void ChartPropertiesDialog::setChart( QTAChart* chartToEdit )
+{
+    _chart = chartToEdit;
+
+    QTAChartProperties tp;
+    _chart->properties( tp );
+    _prop->setProperties( tp );
+}
+
+
+void ChartPropertiesDialog::acceptProperties()
+{
+    if( _chart )
+    {
+        QTAChartProperties tp;
+        _prop->properties( tp );
+        _chart->setProperties( tp );
+    }
+    accept();
+}
+
+
+//----------------------------------------------------------------------------
+
+
 OptionsDialog::OptionsDialog(QWidget* parent) :
-    QDialog(parent), _colorDialog(nullptr), _lastColorClicked(nullptr)
+    QDialog(parent)
 {
     QFormLayout* form;
     QGridLayout* grid;
@@ -189,68 +388,13 @@ OptionsDialog::OptionsDialog(QWidget* parent) :
         form->addRow( "Timeout:", _timeout );
 
 
-    QWidget* charts = new QWidget;
-    grid = new QGridLayout( charts );
-
-        QGroupBox* group = new QGroupBox("Chart Type");
-        grid->addWidget(group, 0, 0);
-
-            QGridLayout* g2 = new QGridLayout(group);
-            _lineChart   = new QRadioButton("Line");
-            _candleChart = new QRadioButton("Candle");
-            _heikinChart = new QRadioButton("Heikin-Ashi");
-            _barChart    = new QRadioButton("Bar");
-            g2->addWidget( _lineChart,   0, 1 );
-            g2->addWidget( _candleChart, 1, 1 );
-            g2->addWidget( _heikinChart, 2, 1 );
-            g2->addWidget( _barChart,    3, 1 );
-
-            _lineColor = new OptionColor( gPref->linecolor );
-            COLOR_CONNECT( _lineColor );
-            g2->addWidget( _lineColor, 0, 0 );
-            _barColor = new OptionColor( gPref->barcolor );
-            COLOR_CONNECT( _barColor );
-            g2->addWidget( _barColor, 3, 0 );
-
-            g2->setRowStretch(4, 1);
-
-            setChartStyle( gPref->chartstyle );
-
-        lo2 = new QVBoxLayout;
-        grid->addLayout(lo2, 0, 1);
-
-            _showGrid = new QCheckBox("Show Grid");
-            SET_CHECK( _showGrid, gPref->showgrid );
-            lo2->addWidget(_showGrid);
-            _showVolumes = new QCheckBox("Show Volumes");
-            SET_CHECK( _showVolumes, gPref->showvolume );
-            lo2->addWidget(_showVolumes);
-            _linearScale = new QCheckBox("Use Linear Scale");
-            SET_CHECK( _linearScale, gPref->linear );
-            lo2->addWidget(_linearScale);
-            _onlinePrice = new QCheckBox("Show Online Price");
-            SET_CHECK( _onlinePrice, gPref->showonlineprice );
-            lo2->addWidget(_onlinePrice);
-
-            lo2->addStretch();
-
-            g2 = new QGridLayout;
-            lo2->addLayout(g2);
-
-                _fgColor = new OptionColor( gPref->forecolor );
-                COLOR_CONNECT( _fgColor );
-                g2->addWidget( _fgColor, 0, 0 );
-                g2->addWidget( new QLabel("Foreground Color"), 0, 1 );
-                _bgColor = new OptionColor( gPref->backcolor );
-                COLOR_CONNECT( _bgColor );
-                g2->addWidget( _bgColor, 1, 0 );
-                g2->addWidget( new QLabel("Background Color"), 1, 1 );
+    _charts = new ChartPropertiesWidget;
 
 
     tab->addTab( general, "General" );
     tab->addTab( ticker, "Ticker" );
     tab->addTab( _network, "Network" );
-    tab->addTab( charts, "Chart Defaults" );
+    tab->addTab( _charts, "Chart Defaults" );
     //tab->addTab( "Develop" );
 
     connect( tab, SIGNAL(currentChanged(int)), this, SLOT(tabChanged(int)) );
@@ -359,62 +503,6 @@ bool OptionsDialog::eventFilter(QObject* obj, QEvent* ev)
 }
 
 
-void OptionsDialog::colorClicked()
-{
-    if( ! _colorDialog )
-    {
-        _colorDialog = new QColorDialog(this);
-        if( ! _colorDialog )
-            return;
-        _colorDialog->setOption(QColorDialog::DontUseNativeDialog, true);
-        connect( _colorDialog, SIGNAL(colorSelected(const QColor&)),
-                 SLOT(colorSel(const QColor&)) );
-    }
-    _lastColorClicked = static_cast<OptionColor*>( sender() );
-    _colorDialog->setCurrentColor( _lastColorClicked->color() );
-    _colorDialog->open();
-}
-
-
-void OptionsDialog::colorSel(const QColor& col)
-{
-    if( _lastColorClicked )
-        _lastColorClicked->setColor(col);
-}
-
-
-int OptionsDialog::chartStyle()
-{
-    if( _lineChart->isChecked() )
-        return QTACHART_LINE;
-    if( _candleChart->isChecked() )
-        return QTACHART_CANDLE;
-    if( _heikinChart->isChecked() )
-        return QTACHART_HEIKINASHI;
-    return QTACHART_BAR;
-}
-
-
-void OptionsDialog::setChartStyle( int style )
-{
-    switch( style )
-    {
-        case QTACHART_LINE:
-            _lineChart->setChecked(true);
-            break;
-        case QTACHART_CANDLE:
-            _candleChart->setChecked(true);
-            break;
-        case QTACHART_HEIKINASHI:
-            _heikinChart->setChecked(true);
-            break;
-        case QTACHART_BAR:
-            _barChart->setChecked(true);
-            break;
-    }
-}
-
-
 void OptionsDialog::saveOptions()
 {
     // General
@@ -435,15 +523,7 @@ void OptionsDialog::saveOptions()
     gPref->nettimeout = _timeout->value();
 
     // Chart Defaults
-    gPref->linecolor  = _lineColor->color();
-    gPref->barcolor   = _barColor->color();
-    gPref->forecolor  = _fgColor->color();
-    gPref->backcolor  = _bgColor->color();
-    gPref->chartstyle = chartStyle();
-    gPref->showgrid   = _showGrid->isChecked();
-    gPref->showvolume = _showVolumes->isChecked();
-    gPref->linear     = _linearScale->isChecked();
-    gPref->showonlineprice = _onlinePrice->isChecked();
+    _charts->properties( gPref->chart );
 
     // TODO: Only apply if anything actually changed.  Until precise change
     // tracking is implemented we only skip apply if the proxy is now
@@ -485,15 +565,7 @@ void OptionsDialog::showEvent(QShowEvent *event)
     _timeout->setValue( gPref->nettimeout );
 
     // Chart Defaults
-    _lineColor->setColor( gPref->linecolor );
-    _barColor->setColor( gPref->barcolor );
-    _fgColor->setColor( gPref->forecolor );
-    _bgColor->setColor( gPref->backcolor );
-    setChartStyle( gPref->chartstyle );
-    _showGrid->setChecked( gPref->showgrid );
-    _showVolumes->setChecked( gPref->showvolume );
-    _linearScale->setChecked( gPref->linear );
-    _onlinePrice->setChecked( gPref->showonlineprice );
+    _charts->setProperties( gPref->chart );
 
     QDialog::showEvent(event);
 }

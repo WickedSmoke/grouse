@@ -36,11 +36,9 @@
 #include "templatemanagerdialog.h"
 #include "progressdialog.h"
 #include "waitdialog.h"
-#include "qtachart.h"
 
 // extern variables
 extern QProgressBar *GlobalProgressBar;         // progress bar proxy
-extern QTAChart *chartwidget;                   // widget of the chart
 extern ProgressDialog *progressdialog;          // dialog to show progress
 extern DebugDialog *debugdialog;                // debug console
 extern TemplateManagerDialog *templatemanager;  // template manager dialog

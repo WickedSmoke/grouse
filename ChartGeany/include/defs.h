@@ -38,7 +38,6 @@
 #endif
 
 // Is noexcept supported?
-#ifdef __cplusplus
 #ifndef NOEXCEPT
 #if \
     (defined(__GXX_EXPERIMENTAL_CXX0X__) && __GNUC__ * 10 + __GNUC_MINOR__ >= 46) || \
@@ -51,9 +50,6 @@
 #define NOEXCEPT
 #endif
 #endif
-#endif
-#else
-#define NOEXCEPT
 #endif
 
 #include <QtGlobal>
@@ -207,42 +203,6 @@ typedef const char * (*ModuleCompiler) (void);
 
 #include "errors.h"
 
-// Application options structure
-typedef struct
-{
-  QString pak;                  // program activation key
-  QString avapikey;             // alpha vantage api key
-  QString iexapikey;            // iex api key
-  QString proxyhost;            // proxy host name or IP
-  QString proxyuser;            // proxy user name
-  QString proxypass;            // proxy password
-  QString platform;             // platform string
-  QString compiler;             // compiler path
-  QString compilerdbg;          // compiler debug options
-  QString compilerrel;          // compiler release options
-  QString linker;               // linker path
-  QString linkerdbg;            // linker debug options
-  QString linkerrel;            // linker release options
-  QColor  forecolor;            // default foreground color
-  QColor  backcolor;            // default background color
-  QColor  linecolor;            // default color for line chart
-  QColor  barcolor;             // default color for bar chart
-  qint16  nettimeout;           // network timeout in seconds
-  qint16  proxyport;            // proxy port
-  qint16  scrollspeed;          // ticker's scroll speed
-  qint16  chartstyle;           // default chart style
-  bool showsplashscreen;        // show splash screen
-  bool checknewversion;         // check new version
-  bool enableproxy;             // enable proxy
-  bool longbp;                  // convert london prices to gbp (divide by 100)
-  bool showgrid;                // default setting for grid
-  bool showvolume;              // default setting for volume;
-  bool linear;                  // default setting for price scale
-  bool showonlineprice;         // default setting for online price
-  bool autoupdate;              // default setting for auto update quotes on chart opening
-  bool devmode;                 // default setting for developer mode
-} AppOptions;
-
 // toolchain record type
 typedef struct
 {
@@ -259,7 +219,6 @@ Q_DECLARE_TYPEINFO (ToolchainRec, Q_MOVABLE_TYPE);
 typedef QVector < ToolchainRec * > ToolchainVector;
 
 
-extern AppOptions *Application_Options;
 extern QString Year, Month, Day;
 
 // load a csv file to sqlite
@@ -278,12 +237,6 @@ sqlcb_toolchain (void *classptr, int argc, char **argv, char **column);
 
 extern int
 sqlcb_toolchains (void *classptr, int argc, char **argv, char **column);
-
-// load application options
-extern CG_ERR_RESULT loadAppOptions (AppOptions *options);
-
-// save application options
-extern CG_ERR_RESULT saveAppOptions (AppOptions *options);
 
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)

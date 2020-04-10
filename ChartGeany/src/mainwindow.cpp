@@ -49,7 +49,6 @@
 #include "unix_signals.h"
 #include "cgscript.h"
 
-AppOptions *Application_Options;
 TemplateManagerDialog *templatemanager;
 ProgressDialog *progressdialog;
 DebugDialog *debugdialog;
@@ -254,11 +253,8 @@ MainWindow::MainWindow (QWidget * parent):
           SLOT(commitData(QSessionManager)));
   */
 
-  // export application settings
-  Application_Options = &options;
-
   // load application's options
-  loadAppOptions (Application_Options);
+  static_cast <ChartApp*> (qApp)->loadOptions();
 
   // show developer mode buttons
   if (Application_Options->devmode == true)

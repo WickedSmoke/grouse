@@ -24,7 +24,7 @@
 #include <QFile>
 #include <QNetworkReply>
 #include <QNetworkCookie>
-#include "defs.h"
+#include "chartapp.h"
 
 // network request structure
 struct NetRequestClass

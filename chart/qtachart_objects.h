@@ -20,7 +20,7 @@
 #define QTACHART_OBJECTS_H
 
 #include <QWidget>
-#include "defs.h"
+#include "qtachart.h"
 #include "qtachart_object.h"
 
 namespace Ui

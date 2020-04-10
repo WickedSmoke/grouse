@@ -19,8 +19,8 @@
 #ifndef FUNCTION_DATASET_H
 #define FUNCTION_DATASET_H
 
-#include <QVector>
-#include "qtachart.h"
+#include "defs.h"
+#include "QTAChartData.h"
 
 typedef QVector < qreal >PriceVector;
 typedef PriceVector* DataSet;

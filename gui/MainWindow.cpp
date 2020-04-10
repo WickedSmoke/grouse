@@ -123,7 +123,7 @@ void SymbolBrowser::reload()
 
 MainWindow::MainWindow() :
     _dataManager(nullptr), _portfolioManager(nullptr), _optionsDialog(nullptr),
-    _tdock(nullptr), _ticker(nullptr)
+    _chartProp(nullptr), _tdock(nullptr), _ticker(nullptr)
 {
     setWindowTitle("Chart Grouse");
 
@@ -243,6 +243,7 @@ CG_ERR_RESULT MainWindow::addChart( const TableDataVector& datavector )
 
     _tabWidget->addTab( tachart, text );
     _tabWidget->setCurrentIndex( _tabWidget->count() - 1 );
+    _editMenu->setEnabled(true);
     _studies->setEnabled(true);
     _markers->setEnabled(true);
     tachart->setTabText( text );
@@ -369,12 +370,13 @@ void MainWindow::createMenus()
     file->addSeparator();
     file->addAction( "&Quit", this, SLOT(close()), QKeySequence::Quit );
 
+    _editMenu = bar->addMenu( "&Edit" );
+    _editMenu->addAction( "&Chart Properties...", this, SLOT(editChartProp()) );
+
     _studies = bar->addMenu( "&Studies" );
-    _studies->setEnabled( false );
     addStudyItems();
 
     _markers = bar->addMenu( "&Markers" );
-    _markers->setEnabled( false );
     connect( _markers, SIGNAL(triggered(QAction*)),
              this, SLOT(addMarker(QAction*)) );
     for( int i = 0; i < 6; ++i )
@@ -387,6 +389,11 @@ void MainWindow::createMenus()
 
     QMenu* help = bar->addMenu( "&Help" );
     help->addAction( "&About", this, SLOT(showAbout()) );
+
+    // Disable until chart shown.
+    _editMenu->setEnabled( false );
+    _studies->setEnabled( false );
+    _markers->setEnabled( false );
 }
 
 
@@ -543,6 +550,18 @@ void MainWindow::showOptions()
 }
 
 
+void MainWindow::editChartProp()
+{
+    QTAChart* chart = qobject_cast<QTAChart*>(_tabWidget->currentWidget());
+    if( ! chart )
+        return;
+
+    CREATE_DIALOG(_chartProp, ChartPropertiesDialog);
+    _chartProp->setChart( chart );
+    _chartProp->show();
+}
+
+
 void MainWindow::showChart( const TableDataVector& tv )
 {
     QStringList symkeys = getTabKeys("Chart");
@@ -624,6 +643,7 @@ void MainWindow::closeTab(int index)
 {
     if(_tabWidget->count() == 1 )
     {
+        _editMenu->setEnabled(false);
         _studies->setEnabled(false);
         _markers->setEnabled(false);
     }
@@ -650,9 +670,6 @@ void MainWindow::tickerSpeed(int speed)
 #include "debugdialog.h"
 
 
-AppOptions _options;
-AppOptions *Application_Options = &_options;
-
 QProgressBar *GlobalProgressBar = nullptr;
 QString Year, Month, Day;
 
@@ -672,7 +689,7 @@ int main( int argc, char **argv )
 
     if( ! app.openDatabase() )
         return 1;
-    loadAppOptions(Application_Options);
+    app.loadOptions();
 
     MainWindow* win = new MainWindow;
     if( win )

@@ -307,12 +307,6 @@ bool OptionsDialog::Grid (void)
   return false;
 }
 
-// get line color
-QColor OptionsDialog::lineColor (void)
-{
-  return linecolor;
-}
-
 // set line color
 void
 OptionsDialog::setLineColor (QColor color)
@@ -322,12 +316,6 @@ OptionsDialog::setLineColor (QColor color)
   linepixmap->fill (color);
   lineicon->addPixmap (*linepixmap, QIcon::Normal, QIcon::On);
   lineColorButton->setIcon (*lineicon);
-}
-
-// get bar color
-QColor OptionsDialog::barColor (void)
-{
-  return barcolor;
 }
 
 // set bar color
@@ -341,12 +329,6 @@ OptionsDialog::setBarColor (QColor color)
   barColorButton->setIcon (*baricon);
 }
 
-// get foreground color
-QColor OptionsDialog::foreColor (void)
-{
-  return forecolor;
-}
-
 // set foreground color
 void
 OptionsDialog::setForeColor (QColor color)
@@ -356,12 +338,6 @@ OptionsDialog::setForeColor (QColor color)
   forepixmap->fill (color);
   foreicon->addPixmap (*forepixmap, QIcon::Normal, QIcon::On);
   foreColorButton->setIcon (*foreicon);
-}
-
-// get background color
-QColor OptionsDialog::backColor (void)
-{
-  return backcolor;
 }
 
 // set background color
@@ -477,6 +453,7 @@ OptionsDialog::loadOptions (void)
   int row, nrows, col, ncols;
   CG_ERR_RESULT result;
 
+#if 0
   result = loadAppOptions (Application_Options);
   if (result != CG_ERR_OK)
   {
@@ -484,6 +461,7 @@ OptionsDialog::loadOptions (void)
     this->hide ();
     return;
   }
+#endif
 
   result = gDatabase->loadTickerSymbols (symbol, feed);
   if (result != CG_ERR_OK)
@@ -649,15 +627,15 @@ OptionsDialog::loadOptions (void)
 
   NetService::applyProxyOptions(Application_Options);
 
-  setChartStyle (Application_Options->chartstyle);
-  setLineColor (Application_Options->linecolor);
-  setForeColor (Application_Options->forecolor);
-  setBarColor (Application_Options->barcolor);
-  setBackColor (Application_Options->backcolor);
-  setGrid (Application_Options->showgrid);
-  setVolumes (Application_Options->showvolume);
-  setOnlinePrice (Application_Options->showonlineprice);
-  setLinearScale (Application_Options->linear);
+  setChartStyle (Application_Options->chart.style);
+  setLineColor (QRgb (Application_Options->chart.lineColor));
+  setForeColor (QRgb (Application_Options->chart.foreColor));
+  setBarColor (QRgb (Application_Options->chart.barColor));
+  setBackColor (QRgb (Application_Options->chart.backColor));
+  setGrid (Application_Options->chart.showGrid);
+  setVolumes (Application_Options->chart.showVolume);
+  setOnlinePrice (Application_Options->chart.showOnlinePrice);
+  setLinearScale (Application_Options->chart.linearScale);
 
   int idx = ui->platformComboBox->findText (ui->platformEdit->text ());
   ui->platformComboBox->setCurrentIndex (idx);
@@ -772,15 +750,15 @@ OptionsDialog::saveOptions ()
     }
   }
 
-  Application_Options->linecolor = lineColor ();
-  Application_Options->barcolor = barColor ();
-  Application_Options->forecolor = foreColor ();
-  Application_Options->backcolor = backColor ();
-  Application_Options->chartstyle = ChartStyle ();
-  Application_Options->showgrid = Grid ();
-  Application_Options->showvolume = Volumes ();
-  Application_Options->linear = LinearScale ();
-  Application_Options->showonlineprice = OnlinePrice ();
+  Application_Options->chart.lineColor = linecolor.rgb();
+  Application_Options->chart.barColor = barcolor.rgb();
+  Application_Options->chart.foreColor = forecolor.rgb();
+  Application_Options->chart.backColor = backcolor.rgb();
+  Application_Options->chart.style = ChartStyle ();
+  Application_Options->chart.showGrid = Grid ();
+  Application_Options->chart.showVolume = Volumes ();
+  Application_Options->chart.linearScale = LinearScale ();
+  Application_Options->chart.showOnlinePrice = OnlinePrice ();
 
   result = saveAppOptions (Application_Options);
   if (result != CG_ERR_OK)

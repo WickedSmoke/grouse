@@ -40,6 +40,7 @@ public:
 class DataManager;
 class PortfolioManager;
 class OptionsDialog;
+class ChartPropertiesDialog;
 class StockTicker;
 class QTabWidget;
 class QDockWidget;
@@ -72,6 +73,7 @@ private slots:
     void showDataManager();
     void showPortfolioManager();
     void showOptions();
+    void editChartProp();
     void showChart( const TableDataVector& );
     void toggleTicker(bool);
     void closeTab(int);
@@ -84,6 +86,7 @@ private:
     void createMenus();
     void addStudyItems();
 
+    QMenu* _editMenu;
     QMenu* _studies;
     QMenu* _markers;
 
@@ -91,6 +94,7 @@ private:
     DataManager* _dataManager;
     PortfolioManager* _portfolioManager;
     OptionsDialog* _optionsDialog;
+    ChartPropertiesDialog* _chartProp;
     QTabWidget*  _tabWidget;
     QDockWidget* _bdock;
     QDockWidget* _tdock;

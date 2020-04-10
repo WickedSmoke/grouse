@@ -16,7 +16,6 @@
  *
  */
 
-#include <QApplication>
 #include <QByteArray>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>

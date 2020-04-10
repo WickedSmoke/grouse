@@ -23,6 +23,7 @@
 #include <QMetaType>
 #include <QMutex>
 #include <QStringList>
+#include "QTAChartData.h"
 #include "errors.h"
 #include "sqlite3.h"
 
@@ -140,25 +141,6 @@ typedef struct
 
 Q_DECLARE_TYPEINFO (TableDataClass, Q_MOVABLE_TYPE);
 typedef QVector<TableDataClass> TableDataVector;
-
-
-// fundamenta data as loaded from sqlite table
-typedef struct
-{
-    QString bv;
-    QString mc;
-    QString ebitda;
-    QString pe;
-    QString peg;
-    QString dy;
-    QString epscurrent;
-    QString epsnext;
-    QString es;
-    QString ps;
-    QString pbv;
-} QTAChartData;
-
-Q_DECLARE_TYPEINFO (QTAChartData, Q_MOVABLE_TYPE);
 
 
 enum FeedSource

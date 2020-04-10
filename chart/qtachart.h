@@ -20,46 +20,12 @@
 #define QTACHART_H
 
 #include <cstddef>
-
 #include <QWidget>
-#include "defs.h"
+#include "QTAChartData.h"
 
 #ifndef Q_OS_WIN
 using std::max_align_t;
 #endif
-
-
-enum
-{
-  QTACHART_TFDAY = 0,       // timeframe: day
-  QTACHART_TFWEEK,      // timeframe: week
-  QTACHART_TFMONTH,     // timeframe: month
-  QTACHART_LINEAR = 100,      // chart: linear price scale
-  QTACHART_LOGARITHMIC, // chart: logarithmic price scale
-  QTACHART_CANDLE = 200,        // chart: candle chart
-  QTACHART_HEIKINASHI,  // chart: heikin-ashi candle chart
-  QTACHART_BAR,         // chart: bar chart
-  QTACHART_LINE         // chart: line chart
-};
-
-typedef struct alignas (max_align_t) // frame data as loaded from sqlite table
-{
-  QString Text;
-  qreal High;
-  qreal Low;
-  qreal Open;
-  qreal Close;
-  qreal AdjClose;
-  qreal Volume;
-  quint16 year;
-  quint16 month;
-  quint16 day;
-  char Date[16];
-  char Time[16];
-} QTAChartFrame;
-
-Q_DECLARE_TYPEINFO (QTAChartFrame, Q_MOVABLE_TYPE);
-typedef QVector < QTAChartFrame > FrameVector;
 
 namespace Ui
 {
@@ -70,28 +36,30 @@ class QGraphicsView;
 class QTAChartCore;
 class QTACObject;
 
-class QTAChart:public QWidget
+class QTAChart : public QWidget
 {
   Q_OBJECT
 
 public:
   explicit QTAChart (QWidget * parent = 0);
   ~QTAChart (void);
-  // valiables
+
+  void properties( QTAChartProperties& );
+  void setProperties( const QTAChartProperties& );
 
   // functions
   QString getSymbolKey (); // get symbol's database key
   void goBack (void);   // backBtn_clicked (void) implementation
-  inline int  getClassError () const NOEXCEPT
+  inline int  getClassError () const noexcept
   {
     return classError;
   }; // get class error
-  inline QString getTabText () const NOEXCEPT
+  inline QString getTabText () const noexcept
   {
     return tabText;
   }; // get parent tab's label
   void loadFrames (QString tablename);  // populate chart's frame vector
-  void loadData (QTAChartData data);    // load chart's data
+  void loadData (const QTAChartData& data);    // load chart's data
   void restoreBottomText (void); // restores bottom text
   void setAlwaysRedraw (bool);  // always redraw the chart on/off
   void setTitle (QString title, QString subtitle);  // set the chart's title
@@ -168,7 +136,7 @@ private slots:
   void functionBtn_clicked (void);
   void objectsBtn_clicked (void);
 
-  friend QTAChartCore *getData (QTAChart *) NOEXCEPT;   // internal use
+  friend QTAChartCore *getData (QTAChart *) noexcept;   // internal use
 protected:
   // functions
   virtual void resizeEvent (QResizeEvent * event);
