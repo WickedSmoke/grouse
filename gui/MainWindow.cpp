@@ -6,6 +6,7 @@
 
 
 #include <QApplication>
+#include <QCheckBox>
 #include <QDockWidget>
 #include <QFileDialog>
 #include <QKeyEvent>
@@ -38,43 +39,86 @@
   }
 
 
-class SymbolBrowser : public QTreeWidget
+struct Preferences
 {
-public:
-    SymbolBrowser(QWidget* parent = 0) : QTreeWidget(parent)
-    {
-        setColumnCount( 1 );
-        setMaximumWidth( 100 );
-        setHeaderHidden(true);
-        setRootIsDecorated(false);
-    }
+    QSize mainWindowSize;
+    bool browserAdjusted;
+};
 
-    void reload( /*bool adjusted*/ )
-    {
-        QString filter;
-        SymbolSummary summary;
-        int i, n;
+Preferences gPref;
 
-        if( gDatabase->loadSymbolSummary( &summary, filter ) == CG_ERR_OK )
+
+SymbolBrowser::SymbolBrowser(QWidget* parent) : QWidget(parent)
+{
+    QBoxLayout* lo = new QVBoxLayout( this );
+
+    tree = new QTreeWidget;
+    tree->setColumnCount( 1 );
+    tree->setColumnWidth( 0, 90 );
+    tree->setMaximumWidth( 100 );
+    tree->setHeaderHidden(true);
+    tree->setRootIsDecorated(false);
+    lo->addWidget( tree );
+
+    adjusted = new QCheckBox("Adjusted");
+    adjusted->setChecked( gPref.browserAdjusted );
+    adjusted->setToolTip( "Show Adjusted (rather than Raw) data of symbols" );
+    lo->addWidget( adjusted );
+
+    connect( adjusted, SIGNAL(stateChanged(int)), SLOT(reload()) );
+
+#if 0
+    // Setup tree popup menu.
+    QAction* act;
+    tree->setContextMenuPolicy( Qt::ActionsContextMenu );
+    tree->insertAction(nullptr, act = new QAction("Update Data", tree));
+    //connect( act, SIGNAL(triggered(bool)), SIGNAL() );
+#endif
+}
+
+/*
+bool SymbolBrowser::isAdjusted() const
+{
+    return adjusted->isChecked();
+}
+*/
+
+QString SymbolBrowser::adjustedText() const
+{
+    if( adjusted->isChecked() )
+        return QStringLiteral("YES");
+    return QStringLiteral("NO");
+}
+
+
+void SymbolBrowser::reload()
+{
+    QString filter;
+    SymbolSummary summary;
+    int i, n;
+
+    gPref.browserAdjusted = adjusted->isChecked();
+
+    if( gDatabase->loadSymbolSummary( &summary, filter ) == CG_ERR_OK )
+    {
+        QString adj = adjustedText();
+
+        tree->clear();
+
+        n = summary.symbolList.size();
+        for( i = 0; i < n; ++i )
         {
-            clear();
-
-            n = summary.symbolList.size();
-            for( i = 0; i < n; ++i )
+            //printf("KR %s\n",summary.adjustedList[i].toUtf8().constData());
+            if( summary.adjustedList[i] == adj )
             {
-                if( summary.adjustedList[i] == QStringLiteral("YES") )
-                {
-                    QTreeWidgetItem* item = new QTreeWidgetItem(this);
-                    item->setText(0, summary.symbolList[i] );
-                    item->setText(1, summary.baseList[i] );
-                    addTopLevelItem( item );
-                }
+                QTreeWidgetItem* item = new QTreeWidgetItem(tree);
+                item->setText(COL_Symbol, summary.symbolList[i] );
+                item->setText(COL_Base, summary.baseList[i] );
+                tree->addTopLevelItem( item );
             }
-
-            setColumnWidth( 0, 90 );
         }
     }
-};
+}
 
 
 MainWindow::MainWindow() :
@@ -83,6 +127,7 @@ MainWindow::MainWindow() :
 {
     setWindowTitle("Chart Grouse");
 
+    syncPref( true );
     createMenus();
 
 
@@ -94,7 +139,7 @@ MainWindow::MainWindow() :
 
 
     _symBrowser = new SymbolBrowser(this);
-    connect( _symBrowser, SIGNAL(itemActivated(QTreeWidgetItem*, int)),
+    connect( _symBrowser->tree, SIGNAL(itemActivated(QTreeWidgetItem*, int)),
              SLOT(browserSelect(QTreeWidgetItem*, int)) );
 
     _bdock = new QDockWidget("Browser", this);
@@ -109,27 +154,27 @@ MainWindow::MainWindow() :
 
     setMinimumSize(700, 440);
 
-    QSettings pref(APPDIR, APPNAME);
-    QSize size = pref.value("main-window-size", QSize()).toSize();
-    if (size.isValid())
+    _symBrowser->reload();
+
+    if (gPref.mainWindowSize.isValid())
     {
-        resize(size);
+        resize( gPref.mainWindowSize );
         show();
     }
     else
     {
         showMaximized();
     }
-
-    _symBrowser->reload();
 }
 
 
 void MainWindow::browserSelect( QTreeWidgetItem* item, int )
 {
     TableDataVector td;
-    int rc = gDatabase->loadTableData( item->text( 1 ), QStringLiteral("YES"),
-                                       &td );
+    QString adj = _symBrowser->adjustedText();
+
+    int rc = gDatabase->loadTableData( item->text( SymbolBrowser::COL_Base ),
+                                       adj, &td );
     if (rc != CG_ERR_OK)
     {
         showMessage(errorMessage(rc), this);
@@ -266,14 +311,30 @@ void MainWindow::showAbout()
 }
 
 
+void MainWindow::syncPref( bool load ) const
+{
+    QSettings qs(APPDIR, APPNAME);
+    if( load )
+    {
+        gPref.mainWindowSize  = qs.value("main-window-size", QSize()).toSize();
+        gPref.browserAdjusted = qs.value("browse-adjusted", true).toBool();
+    }
+    else
+    {
+        qs.setValue("main-window-size", gPref.mainWindowSize);
+        qs.setValue("browse-adjusted",  gPref.browserAdjusted);
+    }
+}
+
+
 void MainWindow::closeEvent( QCloseEvent* event )
 {
-    QSettings pref(APPDIR, APPNAME);
     QSize saveSize;
-
     if( ! isMaximized() )
         saveSize = size();
-    pref.setValue("main-window-size", saveSize);
+    gPref.mainWindowSize = saveSize;
+
+    syncPref( false );
     event->accept();
 }
 

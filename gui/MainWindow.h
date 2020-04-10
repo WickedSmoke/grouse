@@ -11,7 +11,32 @@
 #include "defs.h"
 
 
-class SymbolBrowser;
+class QTreeWidget;
+class QCheckBox;
+
+class SymbolBrowser : public QWidget
+{
+    Q_OBJECT
+
+public:
+    enum Columns
+    {
+        COL_Symbol,
+        COL_Base
+    };
+
+    SymbolBrowser(QWidget* parent = nullptr);
+    QString adjustedText() const;
+
+public slots:
+    void reload();
+
+public:
+    QTreeWidget* tree;
+    QCheckBox* adjusted;
+};
+
+
 class DataManager;
 class PortfolioManager;
 class OptionsDialog;
@@ -53,6 +78,7 @@ private slots:
     void tickerSpeed(int);
 
 private:
+    void syncPref( bool load ) const;
     CG_ERR_RESULT addChart( const TableDataVector& );
     QStringList getTabKeys( const QString& type );
     void createMenus();
