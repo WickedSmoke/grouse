@@ -11,12 +11,14 @@
 #include "defs.h"
 
 
+class SymbolBrowser;
 class DataManager;
 class PortfolioManager;
 class OptionsDialog;
 class StockTicker;
 class QTabWidget;
 class QDockWidget;
+class QTreeWidgetItem;
 
 class MainWindow : public QMainWindow
 {
@@ -39,6 +41,7 @@ protected:
 
 private slots:
 
+    void browserSelect( QTreeWidgetItem* , int );
     void addStudy();
     void addMarker( QAction* );
     void showDataManager();
@@ -58,10 +61,12 @@ private:
     QMenu* _studies;
     QMenu* _markers;
 
+    SymbolBrowser* _symBrowser;
     DataManager* _dataManager;
     PortfolioManager* _portfolioManager;
     OptionsDialog* _optionsDialog;
     QTabWidget*  _tabWidget;
+    QDockWidget* _bdock;
     QDockWidget* _tdock;
     StockTicker* _ticker;
 

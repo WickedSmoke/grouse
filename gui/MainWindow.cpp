@@ -15,6 +15,7 @@
 #include <QProgressBar>
 #include <QSettings>
 #include <QTabWidget>
+#include <QTreeWidget>
 #include "MainWindow.h"
 #include "chartapp.h"
 #include "common.h"
@@ -37,6 +38,45 @@
   }
 
 
+class SymbolBrowser : public QTreeWidget
+{
+public:
+    SymbolBrowser(QWidget* parent = 0) : QTreeWidget(parent)
+    {
+        setColumnCount( 1 );
+        setMaximumWidth( 100 );
+        setHeaderHidden(true);
+        setRootIsDecorated(false);
+    }
+
+    void reload( /*bool adjusted*/ )
+    {
+        QString filter;
+        SymbolSummary summary;
+        int i, n;
+
+        if( gDatabase->loadSymbolSummary( &summary, filter ) == CG_ERR_OK )
+        {
+            clear();
+
+            n = summary.symbolList.size();
+            for( i = 0; i < n; ++i )
+            {
+                if( summary.adjustedList[i] == QStringLiteral("YES") )
+                {
+                    QTreeWidgetItem* item = new QTreeWidgetItem(this);
+                    item->setText(0, summary.symbolList[i] );
+                    item->setText(1, summary.baseList[i] );
+                    addTopLevelItem( item );
+                }
+            }
+
+            setColumnWidth( 0, 90 );
+        }
+    }
+};
+
+
 MainWindow::MainWindow() :
     _dataManager(nullptr), _portfolioManager(nullptr), _optionsDialog(nullptr),
     _tdock(nullptr), _ticker(nullptr)
@@ -45,11 +85,27 @@ MainWindow::MainWindow() :
 
     createMenus();
 
+
     _tabWidget = new QTabWidget;
     _tabWidget->setTabsClosable(true);
     setCentralWidget( _tabWidget );
     connect( _tabWidget, SIGNAL(tabCloseRequested(int)),
              this, SLOT(closeTab(int)));
+
+
+    _symBrowser = new SymbolBrowser(this);
+    connect( _symBrowser, SIGNAL(itemActivated(QTreeWidgetItem*, int)),
+             SLOT(browserSelect(QTreeWidgetItem*, int)) );
+
+    _bdock = new QDockWidget("Browser", this);
+    _bdock->setFeatures( QDockWidget::NoDockWidgetFeatures );
+    _bdock->setAllowedAreas( Qt::LeftDockWidgetArea );
+    // Using an empty widget to hide the titlebar.
+    _bdock->setTitleBarWidget( new QWidget(_bdock) );
+    _bdock->setWidget( _symBrowser );
+
+    addDockWidget( Qt::LeftDockWidgetArea, _bdock );
+
 
     setMinimumSize(700, 440);
 
@@ -64,6 +120,22 @@ MainWindow::MainWindow() :
     {
         showMaximized();
     }
+
+    _symBrowser->reload();
+}
+
+
+void MainWindow::browserSelect( QTreeWidgetItem* item, int )
+{
+    TableDataVector td;
+    int rc = gDatabase->loadTableData( item->text( 1 ), QStringLiteral("YES"),
+                                       &td );
+    if (rc != CG_ERR_OK)
+    {
+        showMessage(errorMessage(rc), this);
+        return;
+    }
+    showChart( td );
 }
 
 
@@ -533,7 +605,7 @@ size_t CGScriptFunctionRegistrySize;
 int main( int argc, char **argv )
 {
     ChartApp app( argc, argv );
-    MainWindow w;
+    int rc = 1;
 
     CGScriptFunctionRegistrySize = cgscript_init();
 
@@ -541,16 +613,21 @@ int main( int argc, char **argv )
         return 1;
     loadAppOptions(Application_Options);
 
-    progressdialog  = new ProgressDialog(&w);
-    templatemanager = new TemplateManagerDialog(&w);
-    debugdialog     = new DebugDialog(&w);
+    MainWindow* win = new MainWindow;
+    if( win )
+    {
+        progressdialog  = new ProgressDialog(win);
+        templatemanager = new TemplateManagerDialog(win);
+        debugdialog     = new DebugDialog(win);
 
-    w.show();
+        //win->show();
+        //if( argc > 1 )
+        //    win->open( argv[1] );
 
-    //if( argc > 1 )
-    //    w.open( argv[1] );
-
-    return app.exec();
+        rc = app.exec();
+        delete win;
+    }
+    return rc;
 }
 
 
