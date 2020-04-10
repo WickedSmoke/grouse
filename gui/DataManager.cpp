@@ -131,6 +131,8 @@ DataManager::DataManager(QWidget* parent) :
     tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
     tableWidget->setColumnCount(NCOLUMNS);
     tableWidget->setHorizontalHeaderLabels(colHeaders);
+    tableWidget->horizontalHeader()->setHighlightSections(false);
+    tableWidget->verticalHeader()->setHighlightSections(false);
     tableWidget->sortByColumn(0, Qt::AscendingOrder);
     tableWidget->setColumnHidden(4, true);
     tableWidget->setColumnHidden(8, true);
