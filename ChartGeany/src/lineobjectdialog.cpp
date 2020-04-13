@@ -65,7 +65,7 @@ LineObjectDialog::~LineObjectDialog ()
   delete ui;
 }
 
-// modify
+// modify or remove existing. returns true on modify, false on delete
 bool
 LineObjectDialog::modify (QTACObject *obj)
 {
@@ -79,61 +79,33 @@ LineObjectDialog::modify (QTACObject *obj)
     return true;
 
   if (ui->removeCheckBox->isChecked ())
-  {
-    if (obj->type == QTACHART_OBJ_HLINE ||
-        obj->type == QTACHART_OBJ_VLINE)
-    {
-      obj->hvline->setVisible (false);
-      obj->title->setVisible (false);
-    }
-
-    if (obj->type == QTACHART_OBJ_LINE ||
-        obj->type == QTACHART_OBJ_FIBO)
-    {
-      obj->hvline->setVisible (false);
-      obj->Edge[0]->pricetxt->setVisible (false);
-      obj->Edge[1]->pricetxt->setVisible (false);
-    }
-
-    if (obj->type == QTACHART_OBJ_FIBO)
-    {
-      for (qint32 counter = 0; counter < obj->FiboLevelPrc.size (); counter ++)
-      {
-        obj->FiboLevel[counter]->setVisible (false);
-        obj->FiboLevelLbl[counter].setVisible (false);
-        obj->FiboLevelPrcLbl[counter].setVisible (false);
-      }
-    }
-
     return false;
-  }
 
-  if (obj->type == QTACHART_OBJ_HLINE ||
-      obj->type == QTACHART_OBJ_VLINE)
+  switch( obj->type )
   {
-    obj->hvline->setPen (QPen (color));
-    obj->title->setDefaultTextColor (obj->hvline->pen().color ());
+    case QTACHART_OBJ_HLINE:
+    case QTACHART_OBJ_VLINE:
+      obj->forecolor = color;
+      obj->hvline->setPen (QPen (color));
+      obj->title->setDefaultTextColor (color);
+      break;
+
+    case QTACHART_OBJ_FIBO:
+      for (qint32 i = 0; i < obj->FiboLevelPrc.size (); i ++)
+      {
+        ((QGraphicsLineItem *)obj->FiboLevel[i])->setPen (QPen (color));
+        obj->FiboLevelLbl[i].setDefaultTextColor (color);
+        obj->FiboLevelPrcLbl[i].setDefaultTextColor (color);
+      }
+      // Fall through...
+
+    case QTACHART_OBJ_LINE:
+      obj->forecolor = color;
+      obj->hvline->setPen (QPen (color));
+      obj->Edge[0]->pricetxt->setDefaultTextColor (color);
+      obj->Edge[1]->pricetxt->setDefaultTextColor (color);
+      break;
   }
-
-  if (obj->type == QTACHART_OBJ_LINE ||
-      obj->type == QTACHART_OBJ_FIBO)
-  {
-    obj->hvline->setPen (QPen (color));
-    obj->Edge[0]->pricetxt->setDefaultTextColor (obj->hvline->pen().color ());
-    obj->Edge[1]->pricetxt->setDefaultTextColor (obj->hvline->pen().color ());
-  }
-
-
-  if (obj->type == QTACHART_OBJ_FIBO)
-  {
-    for (qint32 counter = 0; counter < obj->FiboLevelPrc.size (); counter ++)
-    {
-      ((QGraphicsLineItem *)obj->FiboLevel[counter])->setPen (QPen (color));
-      obj->FiboLevelLbl[counter].setDefaultTextColor (obj->hvline->pen().color ());
-      obj->FiboLevelPrcLbl[counter].setDefaultTextColor (obj->hvline->pen().color ());
-    }
-  }
-
   return true;
 }
 

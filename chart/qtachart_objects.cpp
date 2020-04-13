@@ -152,50 +152,29 @@ QTACObjects::editButton_clicked (void)
     return;
 
   object = Object.at (nobj);
-
-  if (object->type == QTACHART_OBJ_CURVE ||
-      object->type == QTACHART_OBJ_DOT ||
-      object->type == QTACHART_OBJ_CONTAINER)
+  switch( object->type )
   {
-    bool modrslt;
-    modrslt = object->modifyIndicator ();
-    if (modrslt == false)
-      object->setForDelete ();
-  }
+    case QTACHART_OBJ_CURVE:
+    case QTACHART_OBJ_DOT:
+    case QTACHART_OBJ_CONTAINER:
+    case QTACHART_OBJ_SUBCHART:
+      if (! object->modifyIndicator ())
+        object->setForDelete ();
+      break;
 
-  if (object->type == QTACHART_OBJ_HLINE ||
-      object->type == QTACHART_OBJ_VLINE)
-  {
-    bool modrslt;
-    modrslt  = core->lineobjectdialog->modify (object);
-    if (modrslt == false)
-      object->setForDelete ();
-  }
+    case QTACHART_OBJ_HLINE:
+    case QTACHART_OBJ_VLINE:
+    case QTACHART_OBJ_LINE:
+    case QTACHART_OBJ_FIBO:
+      if (! core->lineobjectdialog->modify (object) )
+        object->setForDelete ();
+      break;
 
-  if (object->type == QTACHART_OBJ_LABEL ||
-      object->type == QTACHART_OBJ_TEXT)
-  {
-    bool modrslt;
-    modrslt  = core->textobjectdialog->modify (object->text);
-    if (modrslt == false)
-      object->setForDelete ();
-  }
-
-  if (object->type == QTACHART_OBJ_LINE ||
-      object->type == QTACHART_OBJ_FIBO)
-  {
-    bool modrslt;
-    modrslt  = core->lineobjectdialog->modify (object);
-    if (modrslt == false)
-      object->setForDelete ();
-  }
-
-  if (object->type == QTACHART_OBJ_SUBCHART)
-  {
-    bool modrslt;
-    modrslt = object->modifyIndicator ();
-    if (modrslt == false)
-      object->setForDelete ();
+    case QTACHART_OBJ_LABEL:
+    case QTACHART_OBJ_TEXT:
+      if (! core->textobjectdialog->modify (object->text) )
+        object->setForDelete ();
+      break;
   }
 
   loadObjectVector ();

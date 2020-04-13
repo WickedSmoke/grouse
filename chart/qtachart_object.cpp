@@ -944,13 +944,40 @@ QTACObject::setForDelete (void)
 
   deleteit = true;
 
-  if (type == QTACHART_OBJ_LABEL || type == QTACHART_OBJ_TEXT)
+  switch( type )
   {
-    if (text != nullptr)
-    {
-      text->setPlainText ("");
-      text->setVisible (false);
-    }
+    case QTACHART_OBJ_HLINE:
+    case QTACHART_OBJ_VLINE:
+      if (hvline)
+        hvline->setVisible (false);
+      if (title)
+        title->setVisible (false);
+      break;
+
+    case QTACHART_OBJ_FIBO:
+      for (qint32 counter = 0; counter < FiboLevelPrc.size (); counter ++)
+      {
+        FiboLevel[counter]->setVisible (false);
+        FiboLevelLbl[counter].setVisible (false);
+        FiboLevelPrcLbl[counter].setVisible (false);
+      }
+      // Fall through...
+
+    case QTACHART_OBJ_LINE:
+      if (hvline)
+        hvline->setVisible (false);
+      Edge[0]->pricetxt->setVisible (false);
+      Edge[1]->pricetxt->setVisible (false);
+      break;
+
+    case QTACHART_OBJ_LABEL:
+    case QTACHART_OBJ_TEXT:
+      if (text)
+      {
+        text->setPlainText ("");
+        text->setVisible (false);
+      }
+      break;
   }
 
   // set for delete all children
