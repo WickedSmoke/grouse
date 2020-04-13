@@ -42,8 +42,11 @@ public:
     void setSelectedSymbol(QString symbol, QString name, QString market,
                            QString url1, QString url2);
 
+protected:
+    void closeEvent(QCloseEvent*);
+
 private slots:
-    void accept();
+    void download();
     void checkButton_clicked();
     void datafeed_changed(const QString & text);
 

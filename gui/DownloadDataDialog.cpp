@@ -16,6 +16,7 @@
  *
  */
 
+#include <QCloseEvent>
 #include <QDateTime>
 #include <QBoxLayout>
 #include <QGridLayout>
@@ -90,9 +91,10 @@ DownloadDataDialog::DownloadDataDialog(QWidget* parent) :
     lo->addSpacing( 8 );
 
     buttonBox = new QDialogButtonBox;
-    buttonBox->setStandardButtons( QDialogButtonBox::Close |
-                                   QDialogButtonBox::Ok );
-    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    buttonBox->setStandardButtons( QDialogButtonBox::Close );
+    QPushButton* btn =
+        buttonBox->addButton( "&Download", QDialogButtonBox::ActionRole );
+    connect(btn, SIGNAL(clicked(bool)), this, SLOT(download()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
     lo->addWidget( buttonBox );
 
@@ -144,6 +146,14 @@ DownloadDataDialog::DownloadDataDialog(QWidget* parent) :
         currencyCombo->setEnabled(true);
 
     setDataFeed(datafeedsCombo->currentText());
+}
+
+
+void DownloadDataDialog::closeEvent(QCloseEvent * event)
+{
+    // QDialog::close deletes all child widgets so use reject instead.
+    reject();
+    event->ignore();
 }
 
 
@@ -211,7 +221,7 @@ void DownloadDataDialog::checkYahoosymbolExistence()
 }
 
 
-// download data from yahoo
+// Download data from yahoo
 void DownloadDataDialog::downloadYahooControl ()
 {
   YahooFeed YF;
@@ -264,7 +274,7 @@ void DownloadDataDialog::checkIEXsymbolExistence ()
 }
 
 
-// download data from iex
+// Download data from iex
 void DownloadDataDialog::downloadIEXControl ()
 {
   IEXFeed EF;
@@ -319,7 +329,7 @@ void DownloadDataDialog::checkAlphaVantagesymbolExistence ()
 }
 
 
-// download data from alpha vantage
+// Download data from alpha vantage
 void DownloadDataDialog::downloadAlphaVantageControl ()
 {
   AlphaVantageFeed AF;
@@ -407,7 +417,7 @@ void DownloadDataDialog::checkButton_clicked ()
 }
 
 
-void DownloadDataDialog::accept ()
+void DownloadDataDialog::download()
 {
   // check if there is at least one data feed
   if (ComboItems->datafeedsList.size () == 0)
