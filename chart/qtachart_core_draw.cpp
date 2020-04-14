@@ -352,7 +352,9 @@ QTAChartCore::draw (void)
   topedge->setLine (chartleftmost, charttopmost, chartrightmost + 3, charttopmost);
   bottomedge->setLine (chartleftmost, chartbottomost + 5, width, chartbottomost + 5);
   rightedge->setLine (chartrightmost + 3, 0, chartrightmost + 3, height);
+#ifdef CHART_SCREENS
   leftedge->setLine (chartleftmost, 0, chartleftmost, height);
+#endif
 
   // grid
   if (show_grid && gridstep > 1)
@@ -379,8 +381,10 @@ QTAChartCore::draw (void)
 
   DrawMutex->unlock ();
 
+#ifdef CHART_SCREENS
   if (gridstep == 1)
   {
     showHelp ();
   }
+#endif
 }

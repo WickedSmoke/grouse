@@ -433,6 +433,7 @@ sqlcb_getobjectserials  (void *seriallist, int argc, char **argv, char **column)
   return 0;
 }
 
+#ifdef CHART_SCREENS
 // load template callback
 static int
 sqlcb_loadtemplateindicators (void *dummy, int argc, char **argv, char **column)
@@ -478,6 +479,7 @@ sqlcb_loadtemplateindicators (void *dummy, int argc, char **argv, char **column)
 
   return 0;
 }
+#endif
 
 // load template objects
 static int
@@ -558,6 +560,7 @@ TemplateManagerDialog::attachtemplate (QString tablename)
     if (object->getParamDialog () != NULL)
       object->setForDelete ();
 
+#ifdef CHART_SCREENS
   foreach (const int counter, indserial)
   {
     QString query;
@@ -581,6 +584,7 @@ TemplateManagerDialog::attachtemplate (QString tablename)
     delete lind;
     delete pdialog;
   }
+#endif
 
   // attach drawing objects
 attachtemplate_drawing_objects:

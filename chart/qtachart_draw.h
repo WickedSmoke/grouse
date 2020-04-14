@@ -22,7 +22,6 @@
 #include <QList>
 #include <QPushButton>
 #include <QLabel>
-#include "appColorDialog.h"
 #include "qtachart_object.h"
 
 namespace Ui
@@ -39,16 +38,12 @@ Q_OBJECT public:
   ~QTACDraw (void);
 
   void setReferenceChart (void *chart);		// sets the reference chart
-  void createTextObject (QTAChartObjectType type); // create a label/text object
-  void createTHVLineObject (QTAChartObjectType type);
 
 private:
   Ui::QTACDraw * ui;
 
   // variables
   QList < QPushButton *> Button;			// the list of buttons
-  QLabel *textLbl;							// QLabel that holds label/text
-  appColorDialog *colorDialog;				// color dialog
   QTAChart *referencechart;					// reference chart
   int button_width;							// width of button
   int button_height;						// height of button

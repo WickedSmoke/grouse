@@ -22,8 +22,10 @@
 #include <QShortcut>
 #include "defs.h"
 #include "qtachart_core.h"
+#ifdef CHART_SCREENS
 #include "qtachart_properties.h"
 #include "qtachart_help.h"
+#endif
 #include "qtachart_objects.h"
 #include "qtachart_eventfilters.h"
 #include "mainwindow.h"
@@ -86,7 +88,11 @@ QTAChart::QTAChart (QWidget * parent):
   core->linethickness = 3;
   core->barwidth = 1;
   core->points = 0.1;
+#ifdef CHART_SCREENS
   core->chartleftmost = 45;
+#else
+  core->chartleftmost = 2;
+#endif
   core->right_border_width = 70;
   core->title_height = 30;
   core->bottomline_height = 25;
@@ -211,6 +217,7 @@ QTAChart::QTAChart (QWidget * parent):
   core->scene->setObjectName ("graphicsScene");
   core->scene->installEventFilter (core->sceneEventFilter);
 
+#ifdef CHART_SCREENS
   // expand/shrink button
   core->expandicon =
     QIcon (QStringLiteral (":/png/images/icons/PNG/fullscreen.png"));
@@ -368,6 +375,7 @@ QTAChart::QTAChart (QWidget * parent):
 
   connect (core->objectsBtn, SIGNAL (clicked ()), this,
            SLOT (objectsBtn_clicked ()));
+#endif
 }
 
 // destructor
@@ -429,13 +437,17 @@ QTAChart::goBack (void)
   if (core->gridstep <= 1)
     return;
 
+#ifdef CHART_SCREENS
   core->expandicon =
     QIcon (QStringLiteral (":/png/images/icons/PNG/fullscreen.png"));
   core->expandBtn->setIcon (core->expandicon);
   core->expandBtn->setToolTip (TOOLTIP % QStringLiteral ("Expand/Restore (Alt+E)</span>"));
+#endif
+
   core->events_enabled = true;
   core->showAllItems ();
 
+#ifdef CHART_SCREENS
   core->prxfunctionScr->setVisible (false);
   if( core->prxpropScr )
       core->prxpropScr->setVisible (false);
@@ -443,6 +455,7 @@ QTAChart::goBack (void)
   core->prxdataScr->setVisible (false);
   core->prxdrawScr->setVisible (false);
   core->prxobjectsScr->setVisible (false);
+#endif
 
   core->setChartStyle (core->chart_style);
   core->setLinearScale (core->linear);
@@ -451,6 +464,7 @@ QTAChart::goBack (void)
   core->ruller_cursor->setDefaultTextColor (core->backcolor);
   core->ruller_cursor->setDefaultBackgroundColor (core->forecolor);
 
+#ifdef CHART_SCREENS
   QString btnStyleSheet =
     QString ("background: transparent; color: %1; \
             border: 1px solid transparent;  border-color: %1;").arg (core->backcolor.name ());
@@ -466,6 +480,7 @@ QTAChart::goBack (void)
   core->helpBtn->setStyleSheet
   (QString ("background: transparent; color: %1;font: 11px;\
         font-weight: bold;border: none;").arg (core->forecolor.name ()));
+#endif
 
   if (core->show_volumes)
     core->drawVolumes ();
@@ -496,8 +511,10 @@ QTAChart::resizeEvent (QResizeEvent * event)
   core->subtitle->setPos (core->chartleftmost, 18);
   core->scaletitle->setPos (core->chartrightmost - 100, 1);
   core->typetitle->setPos (core->chartrightmost - 100, 18);
+#ifdef CHART_SCREENS
   core->prxhelpBtn->setPos (core->chartrightmost + 5,
                             core->height - (core->bottomline_height + 2));
+#endif
   graphicsView->resize (core->width, core->height);
   core->scene->setSceneRect (0, 0, core->width - 5, core->height - 5);
   if (core->events_enabled == true)
@@ -506,6 +523,7 @@ QTAChart::resizeEvent (QResizeEvent * event)
     return;
   }
 
+#ifdef CHART_SCREENS
   if( core->prxpropScr )
       core->prxpropScr->resize (core->width, core->height - 40);
   core->prxhelpScr->resize (core->width, core->height - 40);
@@ -513,6 +531,7 @@ QTAChart::resizeEvent (QResizeEvent * event)
   core->prxdrawScr->resize (core->width, core->height - 40);
   core->prxobjectsScr->resize (core->width, core->height - 40);
   core->prxfunctionScr->resize (core->width, core->height - 40);
+#endif
 }
 
 // show event
@@ -546,6 +565,7 @@ QTAChart::keyPressEvent (QKeyEvent * event)
   // Alt
   if (event->modifiers () & Qt::AltModifier)
   {
+#ifdef CHART_SCREENS
     // expand (Alt + E)
     if (event->key () == Qt::Key_E && core->events_enabled == true)
     {
@@ -601,7 +621,9 @@ QTAChart::keyPressEvent (QKeyEvent * event)
       backBtn_clicked ();
       return;
     }
-    else if (!core->events_enabled)
+    else
+#endif
+    if (!core->events_enabled)
     {
       return;
     }
@@ -699,6 +721,7 @@ EventEndLbl:
   core->draw ();
 }
 
+#ifdef CHART_SCREENS
 void
 QTAChart::backBtn_clicked (void)
 {
@@ -836,6 +859,7 @@ QTAChart::objectsBtn_clicked (void)
 
   core->manageObjects ();
 }
+#endif
 
 // get chart's symbol database key
 QString
@@ -1135,6 +1159,7 @@ loadFrames_end:
   return;
 }
 
+#ifdef CHART_SCREENS
 // load data
 void
 QTAChart::loadData (const QTAChartData& data)
@@ -1154,6 +1179,7 @@ QTAChart::loadData (const QTAChartData& data)
       QStringLiteral("Price/Book:  ") % data.pbv % QStringLiteral("\n\n");
   ccore->dataScr->setData (textdata);
 }
+#endif
 
 // restore bottom text
 void
@@ -1729,32 +1755,88 @@ QTACObject* QTAChart::addStudyATR( int period, QRgb color )
     return obj;
 }
 
+// create a label/text object
+static void createTextObject(QTAChart* chart, QTAChartCore* core,
+                             QTAChartObjectType type)
+{
+    QLabel* label;
+
+    core->textobjectdialog->create();
+    label = core->textobjectdialog->getLabel();
+
+    if( ! label->text().isEmpty() )
+    {
+        chart->goBack();
+
+        core->object_drag = true;
+        core->dragged_obj_type = type;
+        core->textitem = new QGraphicsTextItem();
+        core->textitem->setVisible(true);
+        core->textitem->setFont(label->font());
+        core->textitem->setPlainText(label->text());
+        core->textitem->setDefaultTextColor
+                           (label->palette().color(QPalette::WindowText));
+        core->scene->qtcAddItem(core->textitem);
+
+        appSetOverrideCursor(chart, QCursor(Qt::PointingHandCursor));
+    }
+}
+
+// create horizontal or vertical line object
+static void createTHVLineObject(QTAChart* chart, QTAChartCore* core,
+                                QTAChartObjectType type)
+{
+  QColor color;
+  appColorDialog* dlg;
+  bool ok;
+
+  dlg = new appColorDialog(chart);
+  dlg->setModal(true);
+  dlg->exec();
+  color = dlg->appSelectedColor(&ok);
+  delete dlg;
+  if (!ok)
+    return;
+
+  chart->goBack();
+
+  core->object_drag = true;
+  core->dragged_obj_type = type;
+  core->hvline = new QGraphicsLineItem();
+  core->hvline->setVisible(true);
+  core->hvline->setLine(0, 0, 0, 0);
+  core->hvline->setPen(QPen(color));
+  core->scene->qtcAddItem(core->hvline);
+
+  appSetOverrideCursor(chart, QCursor(Qt::PointingHandCursor));
+}
+
 void QTAChart::addMarkerLabel()
 {
-    ccore->drawScr->createTextObject(QTACHART_OBJ_LABEL);
+    createTextObject(this, ccore, QTACHART_OBJ_LABEL);
 }
 
 void QTAChart::addMarkerTrailingText()
 {
-    ccore->drawScr->createTextObject(QTACHART_OBJ_TEXT);
+    createTextObject(this, ccore, QTACHART_OBJ_TEXT);
 }
 
 void QTAChart::addMarkerHLine()
 {
-    ccore->drawScr->createTHVLineObject(QTACHART_OBJ_HLINE);
+    createTHVLineObject(this, ccore, QTACHART_OBJ_HLINE);
 }
 
 void QTAChart::addMarkerVLine()
 {
-    ccore->drawScr->createTHVLineObject(QTACHART_OBJ_VLINE);
+    createTHVLineObject(this, ccore, QTACHART_OBJ_VLINE);
 }
 
 void QTAChart::addMarkerTrendLine()
 {
-    ccore->drawScr->createTHVLineObject(QTACHART_OBJ_LINE);
+    createTHVLineObject(this, ccore, QTACHART_OBJ_LINE);
 }
 
 void QTAChart::addMarkerFibonacci()
 {
-    ccore->drawScr->createTHVLineObject(QTACHART_OBJ_FIBO);
+    createTHVLineObject(this, ccore, QTACHART_OBJ_FIBO);
 }

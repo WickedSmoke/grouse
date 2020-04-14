@@ -4,6 +4,7 @@ MOC_DIR = moc
 RESOURCES += icons.qrc
 
 CONFIG += qt debug
+#CONFIG += chart_screens
 
 QT += widgets network webenginewidgets
 
@@ -47,13 +48,8 @@ HEADERS += MainWindow.h \
 	../chart/qtachart.h \
 	../chart/qtachart_core.h \
 	../chart/qtachart_eventfilters.h \
-	../chart/qtachart_data.h \
-	../chart/qtachart_draw.h \
-	../chart/qtachart_functions.h \
-	../chart/qtachart_help.h \
 	../chart/qtachart_object.h \
 	../chart/qtachart_objects.h \
-	../chart/qtachart_properties.h \
 	../chart/qtcgraphicsitem.h \
 	../chart/qtcgraphicsscene.h \
 	../database/feedav.h \
@@ -61,7 +57,6 @@ HEADERS += MainWindow.h \
 	../database/feedyahoo.h \
 	../database/netservice.h \
 	../database/priceupdater.h
-
 
 SOURCES += MainWindow.cpp \
 	DataManager.cpp \
@@ -106,17 +101,12 @@ SOURCES += MainWindow.cpp \
 	../chart/qtachart_core_draw.cpp \
 	../chart/qtachart_core_drawpriceline.cpp \
 	../chart/qtachart.cpp \
-	../chart/qtachart_data.cpp \
-	../chart/qtachart_draw.cpp \
 	../chart/qtachart_eventfilters.cpp \
-	../chart/qtachart_functions.cpp \
-	../chart/qtachart_help.cpp \
 	../chart/qtachart_object.cpp \
 	../chart/qtachart_object_draw.cpp \
 	../chart/qtachart_object_modules.cpp \
 	../chart/qtachart_object_sanitizer.cpp \
 	../chart/qtachart_objects.cpp \
-	../chart/qtachart_properties.cpp \
 	../chart/qtcgraphicsitem.cpp \
 	../database/idb.cpp \
 	../database/csv.cpp \
@@ -129,6 +119,22 @@ SOURCES += MainWindow.cpp \
 	../database/priceupdater.cpp \
 	../database/sqlcb_symbol_table.cpp \
 	../database/sqlcb_toolchain.cpp \
+
+chart_screens {
+DEFINES += CHART_SCREENS
+
+HEADERS += ../chart/qtachart_data.h \
+	../chart/qtachart_draw.h \
+	../chart/qtachart_functions.h \
+	../chart/qtachart_help.h \
+	../chart/qtachart_properties.h
+
+SOURCES += ../chart/qtachart_data.cpp \
+	../chart/qtachart_draw.cpp \
+	../chart/qtachart_functions.cpp \
+	../chart/qtachart_help.cpp \
+	../chart/qtachart_properties.cpp
+}
 
 # Third party modules.
 

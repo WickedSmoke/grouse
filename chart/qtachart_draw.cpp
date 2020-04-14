@@ -30,11 +30,6 @@ QTACDraw::QTACDraw (QWidget * parent):
 
   ui->setupUi (this);
 
-  colorDialog = new appColorDialog;
-  // colorDialog->setStyleSheet ("background-color: lightgray; color: black");
-  colorDialog->setModal (true);
-  colorDialog->hide ();
-
   button_width = 200;
   button_height = 40;
 
@@ -68,7 +63,6 @@ QTACDraw::QTACDraw (QWidget * parent):
 // destructor
 QTACDraw::~QTACDraw ()
 {
-  delete colorDialog;
   delete ui;
 }
 
@@ -93,55 +87,6 @@ QTACDraw::addButton (QString text)
   btn->setFocusPolicy (Qt::NoFocus);
   Button += btn;
   return btn;
-}
-
-// create horizontal or vertical line object
-void
-QTACDraw::createTHVLineObject (QTAChartObjectType type)
-{
-  QTAChartCore *core = getData (referencechart);
-  QColor color;
-  bool ok;
-
-  colorDialog->exec ();
-  color = colorDialog->appSelectedColor (&ok);
-  if (!ok)
-    return;
-
-  referencechart->goBack ();
-  core->object_drag = true;
-  core->dragged_obj_type = type;
-  core->hvline = new QGraphicsLineItem ();
-  core->hvline->setVisible (true);
-  core->hvline->setLine (0, 0, 0, 0);
-  core->hvline->setPen (QPen (color));
-  core->scene->qtcAddItem (core->hvline);
-  appSetOverrideCursor (this, QCursor (Qt::PointingHandCursor));
-}
-
-// create a label/text object
-void
-QTACDraw::createTextObject (QTAChartObjectType type)
-{
-  QTAChartCore *core = getData (referencechart);
-
-  core->textobjectdialog->create ();
-  textLbl = core->textobjectdialog->getLabel ();
-
-  if (textLbl->text().size () != 0)
-  {
-    referencechart->goBack ();
-    core->object_drag = true;
-    core->dragged_obj_type = type;
-    core->textitem = new QGraphicsTextItem ();
-    core->textitem->setVisible (true);
-    core->textitem->setFont (textLbl->font ());
-    core->textitem->setPlainText (textLbl->text ());
-    core->textitem->setDefaultTextColor
-    (textLbl->palette ().color (QPalette::WindowText));
-    core->scene->qtcAddItem (core->textitem);
-    appSetOverrideCursor (this, QCursor (Qt::PointingHandCursor));
-  }
 }
 
 // set the reference chart
@@ -178,31 +123,31 @@ QTACDraw::resizeEvent (QResizeEvent * event)
 void
 QTACDraw::labelButton_clicked (void)
 {
-  createTextObject (QTACHART_OBJ_LABEL);
+  referencechart->addMarkerLabel();
 }
 
 void
 QTACDraw::textButton_clicked (void)
 {
-  createTextObject (QTACHART_OBJ_TEXT);
+  referencechart->addMarkerTrailingText();
 }
 
 void
 QTACDraw::hlineButton_clicked (void)
 {
-  createTHVLineObject (QTACHART_OBJ_HLINE);
+  referencechart->addMarkerHLine();
 }
 
 void
 QTACDraw::vlineButton_clicked (void)
 {
-  createTHVLineObject (QTACHART_OBJ_VLINE);
+  referencechart->addMarkerVLine();
 }
 
 void
 QTACDraw::slineButton_clicked (void)
 {
-  createTHVLineObject (QTACHART_OBJ_LINE);
+  referencechart->addMarkerTrendLine();
 }
 
 /*
@@ -215,5 +160,5 @@ QTACDraw::channelButton_clicked (void)
 void
 QTACDraw::fiboButton_clicked (void)
 {
-  createTHVLineObject (QTACHART_OBJ_FIBO);
+  referencechart->addMarkerFibonacci();
 }

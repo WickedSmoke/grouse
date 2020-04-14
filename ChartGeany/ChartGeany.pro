@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT         += core gui network
-CONFIG     += qt release
+CONFIG     += qt release chart_screens
 DEFINES    *= QT_USE_QSTRINGBUILDER
 TEMPLATE    = app
 TARGET      = ChartGeany
@@ -237,17 +237,12 @@ SOURCES += \
         ../chart/qtachart_core_draw.cpp \
         ../chart/qtachart_core_drawpriceline.cpp \
         ../chart/qtachart.cpp \
-        ../chart/qtachart_data.cpp \
-        ../chart/qtachart_draw.cpp \
         ../chart/qtachart_eventfilters.cpp \
-        ../chart/qtachart_functions.cpp \
-        ../chart/qtachart_help.cpp \
         ../chart/qtachart_object.cpp \
         ../chart/qtachart_object_sanitizer.cpp \
         ../chart/qtachart_object_draw.cpp \
         ../chart/qtachart_object_modules.cpp \
         ../chart/qtachart_objects.cpp \
-        ../chart/qtachart_properties.cpp \
         ../chart/qtcgraphicsitem.cpp \
         ../database/csv.cpp \
         ../database/dbman.cpp \
@@ -300,15 +295,10 @@ HEADERS  += \
         ../gui/StockTicker.h \
         ../chart/chartapp.h \
         ../chart/qtachart_core.h \
-        ../chart/qtachart_data.h \
-        ../chart/qtachart_draw.h \
         ../chart/qtachart_eventfilters.h \
-        ../chart/qtachart_functions.h \
         ../chart/qtachart.h \
-        ../chart/qtachart_help.h \
         ../chart/qtachart_object.h \
         ../chart/qtachart_objects.h \
-        ../chart/qtachart_properties.h \
         ../chart/qtcgraphicsitem.h \
         ../chart/qtcgraphicsscene.h \
         ../database/feedav.h \
@@ -317,6 +307,21 @@ HEADERS  += \
         ../database/netservice.h \
         ../database/priceupdater.h
 
+chart_screens {
+DEFINES += CHART_SCREENS
+
+HEADERS += ../chart/qtachart_data.h \
+	../chart/qtachart_draw.h \
+	../chart/qtachart_functions.h \
+	../chart/qtachart_help.h \
+	../chart/qtachart_properties.h
+
+SOURCES += ../chart/qtachart_data.cpp \
+	../chart/qtachart_draw.cpp \
+	../chart/qtachart_functions.cpp \
+	../chart/qtachart_help.cpp \
+	../chart/qtachart_properties.cpp
+}
 
 # Qt5 specific sources and headers
 equals(QT_MAJOR_VERSION, 5) {

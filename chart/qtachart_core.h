@@ -190,10 +190,14 @@ public:
   void saveSettings (void) const; // save chart settings
   void setBottomText (int x);   // set the bottom text
   void setCustomBottomText (QString string); // set the bottom text to custom string
-  void setChartProperties (void);   // set the chart's properties
   void setChartStyle (int chartstyle);  // set the chart's style
+#ifdef CHART_SCREENS
+  void setChartProperties (void);   // set the chart's properties
   void selectDrawObject (void); // select object to draw
   void selectFunction (void); // select function to apply
+  void showHelp (void); // show help
+  void showData (void); // show statistics
+#endif
   void setLinearScale (bool scale); // set the chart's price scale
   bool setPdlgOpened (); // sets param dialog to open, returns true on success
   void setPdlgClosed (); //sets param dialog to closed
@@ -204,8 +208,6 @@ public:
     size_changed = true;
   }; // set size_changed
   void showAllItems (void); // show all the objects on the chart
-  void showHelp (void); // show help
-  void showData (void); // show statistics
   inline bool visibleLastBar () const NOEXCEPT // report true if last bar is visible
   {
     return (bool) ((int) *excess_drag_width);
@@ -262,6 +264,10 @@ public:
   QGraphicsLineItem *leftedge;  // line indicating chart's left edge
   QGraphicsLineItem *rightedge; // line indicating chart's right edge
   QGraphicsLineItem *hvline;    // line item to be used in hline or vline
+  QToolButton **tfBtn;      // chart's time frame buttons
+  QGraphicsProxyWidget **prxtfBtn; // time frame button proxy
+
+#ifdef CHART_SCREENS
   QToolButton *propertiesBtn;   // chart's properties button
   QToolButton *helpBtn; // chart's help button
   QToolButton *dataBtn; // chart's help button
@@ -271,7 +277,6 @@ public:
   QToolButton *functionBtn; // chart's function button
   QToolButton *drawBtn;     // chart's draw button
   QToolButton *objectsBtn;      // chart's objects button
-  QToolButton **tfBtn;      // chart's time frame buttons
   QTACProperties *propScr;  // chart's properties screen
   QTACDraw *drawScr;    // chart's draw screen
   QTACFunctions *functionScr;   // chart's function screen
@@ -293,7 +298,8 @@ public:
   QGraphicsProxyWidget *prxobjectsScr;  // objects screen proxy
   QGraphicsProxyWidget *prxhelpScr; // help screen proxy
   QGraphicsProxyWidget *prxdataScr; // data screen proxy
-  QGraphicsProxyWidget **prxtfBtn; // time frame button proxy
+#endif
+
   QTACObject *volumes;  // volumes' subchart object
   QTACObject *onlineprice; // online price
   TextObjectDialog *textobjectdialog;       // label/text object's dialog

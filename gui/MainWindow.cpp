@@ -227,7 +227,9 @@ CG_ERR_RESULT MainWindow::addChart( const TableDataVector& datavector )
         return result;
     }
 
+#ifdef CHART_SCREENS
     tachart->loadData(Data);
+#endif
     tachart->setSymbol(datavector[0].symbol);
     tachart->setFeed(datavector[0].source);
     title = datavector[0].symbol;

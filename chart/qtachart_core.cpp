@@ -32,8 +32,10 @@
 #endif // Q_CC_MSVC
 
 // constructor
-QTAChartCore::QTAChartCore (QWidget * parent) :
-    prxpropScr(nullptr)
+QTAChartCore::QTAChartCore (QWidget * parent)
+#ifdef CHART_SCREENS
+  : prxpropScr(nullptr)
+#endif
 {
   // initialize
   DrawMutex = new QMutex (QMutex::NonRecursive);
@@ -61,6 +63,8 @@ QTAChartCore::QTAChartCore (QWidget * parent) :
   typetitle = NULL;
   bottom_text = NULL;
   ruller_cursor = NULL;
+
+#ifdef CHART_SCREENS
   expandBtn = NULL;
   propertiesBtn = NULL;
   functionBtn = NULL;
@@ -70,16 +74,18 @@ QTAChartCore::QTAChartCore (QWidget * parent) :
   dataBtn = NULL;
   zoomInBtn = NULL;
   zoomOutBtn = NULL;
-  rightedge = NULL;
-  leftedge = NULL;
-  topedge = NULL;
-  bottomedge = NULL;
   propScr = NULL;
   drawScr = NULL;
   functionScr = NULL;
   objectsScr = NULL;
   helpScr = NULL;
   dataScr = NULL;
+#endif
+
+  rightedge = NULL;
+  leftedge = NULL;
+  topedge = NULL;
+  bottomedge = NULL;
   textobjectdialog = NULL;
   lineobjectdialog = NULL;
   chartEventFilter = NULL;
@@ -113,6 +119,7 @@ QTAChartCore::QTAChartCore (QWidget * parent) :
   ruller_cursor = new (std::nothrow) QTACGraphicsTextItem;
   if (!ruller_cursor) goto constructor_failed;
 
+#ifdef CHART_SCREENS
   expandBtn = new (std::nothrow) QToolButton;
   if (!expandBtn) goto constructor_failed;
 
@@ -139,6 +146,7 @@ QTAChartCore::QTAChartCore (QWidget * parent) :
 
   zoomOutBtn = new (std::nothrow) QToolButton;
   if (!zoomOutBtn) goto constructor_failed;
+#endif
 
   rightedge = new (std::nothrow) QGraphicsLineItem;
   if (!rightedge) goto constructor_failed;
@@ -152,6 +160,7 @@ QTAChartCore::QTAChartCore (QWidget * parent) :
   bottomedge = new (std::nothrow) QGraphicsLineItem;
   if (!bottomedge) goto constructor_failed;
 
+#ifdef CHART_SCREENS
   drawScr = new (std::nothrow) QTACDraw;
   if (!drawScr) goto constructor_failed;
 
@@ -166,6 +175,7 @@ QTAChartCore::QTAChartCore (QWidget * parent) :
 
   dataScr = new (std::nothrow) QTACData;
   if (!dataScr) goto constructor_failed;
+#endif
 
   textobjectdialog = new (std::nothrow) TextObjectDialog;
   if (!textobjectdialog) goto constructor_failed;
@@ -181,6 +191,8 @@ QTAChartCore::QTAChartCore (QWidget * parent) :
 
   lineobjectdialog->setModal (true);
   textobjectdialog->setModal (true);
+
+#ifdef CHART_SCREENS
   expandBtn->setAutoRaise (true);
   propertiesBtn->setAutoRaise (true);
   functionBtn->setAutoRaise (true);
@@ -190,6 +202,7 @@ QTAChartCore::QTAChartCore (QWidget * parent) :
   dataBtn->setAutoRaise (true);
   zoomInBtn->setAutoRaise (true);
   zoomOutBtn->setAutoRaise (true);
+#endif
 
   monthlit << QStringLiteral ("JAN") << QStringLiteral ("FEB") <<
               QStringLiteral ("MAR") << QStringLiteral ("APR") <<
@@ -200,9 +213,11 @@ QTAChartCore::QTAChartCore (QWidget * parent) :
 
   setSizeChanged ();
 
+#ifdef CHART_SCREENS
   drawScr->setReferenceChart (parent);
   functionScr->setReferenceChart (parent);
   objectsScr->setReferenceChart (parent);
+#endif
   return;
 
 constructor_failed:
@@ -212,6 +227,8 @@ constructor_failed:
   if (leftedge) delete leftedge;
   if (topedge) delete topedge;
   if (bottomedge) delete bottomedge;
+
+#ifdef CHART_SCREENS
   if (zoomOutBtn) delete zoomOutBtn;
   if (zoomInBtn) delete zoomInBtn;
   if (helpBtn) delete helpBtn;
@@ -220,17 +237,19 @@ constructor_failed:
   if (drawBtn) delete drawBtn;
   if (functionBtn) delete functionBtn;
   if (expandBtn) delete expandBtn;
+  if (drawScr) delete drawScr;
+  if (helpScr) delete helpScr;
+  if (dataScr) delete dataScr;
+  if (functionScr) delete functionScr;
+  if (objectsScr) delete objectsScr;
+#endif
+
   if (ruller_cursor) delete ruller_cursor;
   if (bottom_text) delete bottom_text;
   if (scaletitle) delete scaletitle;
   if (typetitle) delete typetitle;
   if (title) delete title;
   if (subtitle) delete subtitle;
-  if (drawScr) delete drawScr;
-  if (helpScr) delete helpScr;
-  if (dataScr) delete dataScr;
-  if (functionScr) delete functionScr;
-  if (objectsScr) delete objectsScr;
   if (chartEventFilter) delete chartEventFilter;
   if (sceneEventFilter) delete sceneEventFilter;
   if (ITEMS) delete[] ITEMS;
@@ -269,6 +288,8 @@ QTAChartCore::~QTAChartCore (void)
   delete leftedge;
   delete topedge;
   delete bottomedge;
+
+#ifdef CHART_SCREENS
   delete zoomOutBtn;
   delete zoomInBtn;
   delete helpBtn;
@@ -277,18 +298,20 @@ QTAChartCore::~QTAChartCore (void)
   delete drawBtn;
   delete functionBtn;
   delete expandBtn;
-  delete ruller_cursor;
-  delete bottom_text;
-  delete scaletitle;
-  delete typetitle;
-  delete title;
-  delete subtitle;
   delete propScr;
   delete drawScr;
   delete helpScr;
   delete dataScr;
   delete functionScr;
   delete objectsScr;
+#endif
+
+  delete ruller_cursor;
+  delete bottom_text;
+  delete scaletitle;
+  delete typetitle;
+  delete title;
+  delete subtitle;
   delete chartEventFilter;
   delete sceneEventFilter;
 
@@ -601,9 +624,11 @@ QTAChartCore::changeForeColor (QColor color)
   leftedge->setPen (pen);
   rightedge->setPen (pen);
 
+#ifdef CHART_SCREENS
   helpBtn->setStyleSheet(
     QString("background: transparent;color: %1;font: 11px;\
             font-weight: bold;").arg(textcolor.name()));
+#endif
 
   foreach (QTACObject *object, Object)
     object->changeSubChartForeColor (forecolor);
@@ -1358,6 +1383,8 @@ QTAChartCore::manageObjects (void)
 {
   events_enabled = false;
   hideAllItems ();
+
+#ifdef CHART_SCREENS
   expandicon =  QIcon (QString (":/png/images/icons/PNG/Button_Back.png"));
   expandBtn->setIcon (expandicon);
   expandBtn->setStyleSheet
@@ -1366,6 +1393,7 @@ QTAChartCore::manageObjects (void)
   prxobjectsScr->resize (width, height - 40);
   expandBtn->setVisible (true);
   prxobjectsScr->setVisible (true);
+#endif
 }
 
 /// Nn
@@ -1638,6 +1666,7 @@ QTAChartCore::setCustomBottomText (QString string)
   }
 }
 
+#ifdef CHART_SCREENS
 // set the charts properties
 void
 QTAChartCore::setChartProperties (void)
@@ -1707,6 +1736,7 @@ QTAChartCore::selectFunction (void)
   expandBtn->setVisible (true);
   prxfunctionScr->setVisible (true);
 }
+#endif
 
 // set the price cursor
 void
@@ -1745,6 +1775,7 @@ QTAChartCore::showAllItems (void)
     item->setVisible (true);
 }
 
+#ifdef CHART_SCREENS
 // show help
 void
 QTAChartCore::showHelp (void)
@@ -1776,6 +1807,7 @@ QTAChartCore::showData (void)
   expandBtn->setVisible (true);
   prxdataScr->setVisible (true);
 }
+#endif
 
 // sets param dialog to open, returns true on success
 bool

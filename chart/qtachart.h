@@ -59,7 +59,9 @@ public:
     return tabText;
   }; // get parent tab's label
   void loadFrames (QString tablename);  // populate chart's frame vector
+#ifdef CHART_SCREENS
   void loadData (const QTAChartData& data);    // load chart's data
+#endif
   void restoreBottomText (void); // restores bottom text
   void setAlwaysRedraw (bool);  // always redraw the chart on/off
   void setTitle (QString title, QString subtitle);  // set the chart's title
@@ -117,13 +119,13 @@ signals:
 
 private:
   QGraphicsView *graphicsView;
-
-  // variables
   QString tabText;              // parent tab's label
   QTAChartCore *ccore;          // chart's data area
   int classError;               // class error
 
-  // functions
+  friend QTAChartCore *getData (QTAChart *) noexcept;   // internal use
+
+#ifdef CHART_SCREENS
 private slots:
   void backBtn_clicked (void);
   void propertiesBtn_clicked (void);
@@ -135,10 +137,9 @@ private slots:
   void drawBtn_clicked (void);
   void functionBtn_clicked (void);
   void objectsBtn_clicked (void);
+#endif
 
-  friend QTAChartCore *getData (QTAChart *) noexcept;   // internal use
 protected:
-  // functions
   virtual void resizeEvent (QResizeEvent * event);
   virtual void keyPressEvent (QKeyEvent * event);
   virtual void showEvent (QShowEvent * event);
