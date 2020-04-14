@@ -305,18 +305,6 @@ QTAChart::QTAChart (QWidget * parent):
   core->prxobjectsBtn = core->scene->addWidget (core->objectsBtn, Qt::Widget);
   core->prxobjectsBtn->setGeometry (QRectF(0, 315, 32, 32));
 
-  // properties screen
-  core->propScr->setStyleSheet (QStringLiteral ("background:transparent;color:white;"));
-  core->propScr->setVisible (false);
-  core->prxpropScr = core->scene->addWidget (core->propScr, Qt::Widget);
-  core->prxpropScr->setPos (0, 40);
-  core->prxpropScr->resize (core->width, core->height - 40);
-  core->propScr->setVolumes (core->show_volumes);
-  core->propScr->setGrid (core->show_grid);
-  core->setChartStyle (core->chart_style);
-  core->setLinearScale (core->linear);
-  core->propScr->setOnlinePrice (core->show_onlineprice);
-
   // draw screen
   core->drawScr->setStyleSheet (QStringLiteral ("background:transparent;color:white;"));
   core->drawScr->setVisible (false);
@@ -399,20 +387,6 @@ QTAChart::~QTAChart ()
 
 void QTAChart::properties( QTAChartProperties& prop )
 {
-#if 1
-    const QTACProperties* propScr = ccore->propScr;
-
-    prop.style       = propScr->ChartStyle();
-    prop.linearScale = propScr->LinearScale();
-    prop.showVolume  = propScr->Volumes();
-    prop.showGrid    = propScr->Grid();
-    prop.showOnlinePrice = propScr->OnlinePrice();
-
-    prop.foreColor = propScr->foreColor().rgb();
-    prop.backColor = propScr->backColor().rgb();
-    prop.barColor  = propScr->barColor().rgb();
-    prop.lineColor = propScr->lineColor().rgb();
-#else
     prop.style       = ccore->chart_style;
     prop.linearScale = ccore->linear;
     prop.showVolume  = ccore->show_volumes;
@@ -423,26 +397,10 @@ void QTAChart::properties( QTAChartProperties& prop )
     prop.backColor = ccore->backcolor.rgb();
     prop.barColor  = ccore->barcolor.rgb();
     prop.lineColor = ccore->linecolor.rgb();
-#endif
 }
 
 void QTAChart::setProperties( const QTAChartProperties& prop )
 {
-#if 1
-    QTACProperties* propScr = ccore->propScr;
-
-    propScr->setChartStyle( prop.style );
-    propScr->setLinearScale( prop.linearScale );
-    propScr->setVolumes( prop.showVolume );
-    propScr->setGrid( prop.showGrid );
-    propScr->setOnlinePrice ( prop.showOnlinePrice );
-    propScr->setForeColor( QRgb(prop.foreColor) );
-    propScr->setBackColor( QRgb(prop.backColor) );
-    propScr->setBarColor ( QRgb(prop.barColor) );
-    propScr->setLineColor( QRgb(prop.lineColor) );
-
-    goBack();
-#else
     ccore->setChartStyle( prop.style );
     ccore->setLinearScale( prop.linearScale );
     ccore->show_volumes     = prop.showVolume;
@@ -454,6 +412,9 @@ void QTAChart::setProperties( const QTAChartProperties& prop )
     ccore->barcolor  = QRgb(prop.barColor);
     ccore->linecolor = QRgb(prop.lineColor);
 
+#if 1
+    goBack();
+#else
     ccore->deleteITEMS();
     ccore->draw();
 #endif
@@ -476,21 +437,15 @@ QTAChart::goBack (void)
   core->showAllItems ();
 
   core->prxfunctionScr->setVisible (false);
-  core->prxpropScr->setVisible (false);
+  if( core->prxpropScr )
+      core->prxpropScr->setVisible (false);
   core->prxhelpScr->setVisible (false);
   core->prxdataScr->setVisible (false);
   core->prxdrawScr->setVisible (false);
   core->prxobjectsScr->setVisible (false);
 
-  core->show_volumes = core->propScr->Volumes ();
-  core->show_grid = core->propScr->Grid ();
-  core->setChartStyle (core->propScr->ChartStyle ());
-  core->linecolor = core->propScr->lineColor ();
-  core->barcolor = core->propScr->barColor ();
-  core->setLinearScale (core->propScr->LinearScale ());
-  core->forecolor = core->propScr->foreColor ();
-  core->backcolor = core->propScr->backColor ();
-  core->show_onlineprice = core->propScr->OnlinePrice ();
+  core->setChartStyle (core->chart_style);
+  core->setLinearScale (core->linear);
   core->changeForeColor (core->forecolor);
   core->scene->setBackgroundBrush (core->backcolor);
   core->ruller_cursor->setDefaultTextColor (core->backcolor);
@@ -512,7 +467,7 @@ QTAChart::goBack (void)
   (QString ("background: transparent; color: %1;font: 11px;\
         font-weight: bold;border: none;").arg (core->forecolor.name ()));
 
-  if (core->propScr->Volumes ())
+  if (core->show_volumes)
     core->drawVolumes ();
   else
     core->deleteVolumes ();
@@ -551,7 +506,8 @@ QTAChart::resizeEvent (QResizeEvent * event)
     return;
   }
 
-  core->prxpropScr->resize (core->width, core->height - 40);
+  if( core->prxpropScr )
+      core->prxpropScr->resize (core->width, core->height - 40);
   core->prxhelpScr->resize (core->width, core->height - 40);
   core->prxdataScr->resize (core->width, core->height - 40);
   core->prxdrawScr->resize (core->width, core->height - 40);
@@ -685,7 +641,7 @@ QTAChart::keyPressEvent (QKeyEvent * event)
     // volumes on/off (Alt + V)
     if (event->key () == Qt::Key_V)
     {
-      if (core->propScr->Volumes ())
+      if (core->show_volumes)
         core->deleteVolumes ();
       else
         core->drawVolumes ();
@@ -695,34 +651,21 @@ QTAChart::keyPressEvent (QKeyEvent * event)
     // grid on/off (Alt + G)
     if (event->key () == Qt::Key_G)
     {
-      if (core->propScr->Grid ())
-        core->propScr->setGrid (false);
-      else
-        core->propScr->setGrid (true);
-      core->show_grid = core->propScr->Grid ();
+      core->show_grid = ! core->show_grid;
       goto EventEndLbl;
     }
     else
     // online price on/off (Alt + P)
     if (event->key () == Qt::Key_P)
     {
-      if (core->propScr->OnlinePrice ())
-        core->propScr->setOnlinePrice (false);
-      else
-        core->propScr->setOnlinePrice (true);
-
-      core->show_onlineprice = core->propScr->OnlinePrice ();
+      core->show_onlineprice = ! core->show_onlineprice;
       goto EventEndLbl;
     }
     else
     // linear price scale on/off (Alt + X)
     if (event->key () == Qt::Key_X)
     {
-      if (core->propScr->LinearScale ())
-        core->setLinearScale (false);
-      else
-        core->setLinearScale (true);
-
+      core->setLinearScale (! core->linear);
       goto EventEndLbl;
     }
     else
@@ -759,6 +702,13 @@ EventEndLbl:
 void
 QTAChart::backBtn_clicked (void)
 {
+  if( ccore->prxpropScr && ccore->prxpropScr->isVisible() )
+  {
+    // Closing QTACProperties so apply them.
+    QTAChartProperties pr;
+    ccore->propScr->properties( pr );
+    setProperties( pr );
+  }
   goBack ();
 }
 

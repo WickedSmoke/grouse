@@ -150,6 +150,20 @@ QTACProperties::~QTACProperties ()
   delete ui;
 }
 
+void QTACProperties::properties( QTAChartProperties& prop ) const
+{
+  prop.style       = ChartStyle();
+  prop.linearScale = LinearScale();
+  prop.showVolume  = Volumes();
+  prop.showGrid    = Grid();
+  prop.showOnlinePrice = OnlinePrice();
+
+  prop.foreColor = forecolor.rgb();
+  prop.backColor = backcolor.rgb();
+  prop.barColor  = barcolor.rgb();
+  prop.lineColor = linecolor.rgb();
+}
+
 // set chart's style
 void
 QTACProperties::setChartStyle (int style)

@@ -32,7 +32,8 @@
 #endif // Q_CC_MSVC
 
 // constructor
-QTAChartCore::QTAChartCore (QWidget * parent)
+QTAChartCore::QTAChartCore (QWidget * parent) :
+    prxpropScr(nullptr)
 {
   // initialize
   DrawMutex = new QMutex (QMutex::NonRecursive);
@@ -151,9 +152,6 @@ QTAChartCore::QTAChartCore (QWidget * parent)
   bottomedge = new (std::nothrow) QGraphicsLineItem;
   if (!bottomedge) goto constructor_failed;
 
-  propScr = new (std::nothrow) QTACProperties;
-  if (!propScr) goto constructor_failed;
-
   drawScr = new (std::nothrow) QTACDraw;
   if (!drawScr) goto constructor_failed;
 
@@ -228,7 +226,6 @@ constructor_failed:
   if (typetitle) delete typetitle;
   if (title) delete title;
   if (subtitle) delete subtitle;
-  if (propScr) delete propScr;
   if (drawScr) delete drawScr;
   if (helpScr) delete helpScr;
   if (dataScr) delete dataScr;
@@ -1000,8 +997,7 @@ QTAChartCore::drawVolumes (void)
   volumes->setAttributes (QTACHART_VOLUME, 0, "", DUMMY, 0, QREAL_MAX, forecolor, "");
   vbars = new QTACObject (volumes, QTACHART_OBJ_VBARS);
   vbars->setAttributes (QTACHART_VOLUME, 0, "", DUMMY, 0, QREAL_MAX, forecolor, "");
-  propScr->setVolumes (true);
-  show_volumes = propScr->Volumes ();
+  show_volumes = true;
 }
 
 // delete grid
@@ -1037,15 +1033,13 @@ QTAChartCore::deleteObject (QTACObject *obj)
 
     if (obj == volumes)
     {
-      propScr->setVolumes (false);
-      show_volumes = propScr->Volumes ();
+      show_volumes = false;
       volumes = NULL;
     }
 
     if (obj == onlineprice)
     {
-      propScr->setOnlinePrice (false);
-      show_onlineprice = propScr->OnlinePrice ();
+      show_onlineprice = false;
       onlineprice = NULL;
     }
 
@@ -1213,15 +1207,8 @@ QTAChartCore::loadSettings ()
   {
     if (isetting == -1)
     {
-      propScr->setVolumes (show_volumes);
       setLinearScale (linear);
-      propScr->setOnlinePrice (show_onlineprice);
-      propScr->setGrid (show_grid);
       setChartStyle (chart_style);
-      propScr->setLineColor (linecolor);
-      propScr->setBarColor (barcolor);
-      propScr->setForeColor (forecolor);
-      propScr->setBackColor (backcolor);
       scene->setBackgroundBrush (backcolor);
       ruller_cursor->setDefaultTextColor (backcolor);
       ruller_cursor->setDefaultBackgroundColor (forecolor);
@@ -1233,7 +1220,6 @@ QTAChartCore::loadSettings ()
       show_volumes = true;
     else
       show_volumes = false;
-    propScr->setVolumes (show_volumes);
   }
 
   // linear
@@ -1260,7 +1246,6 @@ QTAChartCore::loadSettings ()
       show_onlineprice = true;
     else
       show_onlineprice = false;
-    propScr->setOnlinePrice (show_onlineprice);
   }
 
   // grid
@@ -1274,7 +1259,6 @@ QTAChartCore::loadSettings ()
       show_grid = true;
     else
       show_grid = false;
-    propScr->setGrid (show_grid);
   }
 
   // chart style
@@ -1303,7 +1287,6 @@ QTAChartCore::loadSettings ()
   if (rc == SQLITE_OK)
   {
     linecolor = QColor ((QRgb) isetting);
-    propScr->setLineColor (linecolor);
   }
 
   // barcolor
@@ -1314,7 +1297,6 @@ QTAChartCore::loadSettings ()
   if (rc == SQLITE_OK)
   {
     barcolor = QColor ((QRgb) isetting);
-    propScr->setBarColor (barcolor);
   }
 
   // forecolor
@@ -1326,7 +1308,6 @@ QTAChartCore::loadSettings ()
   {
     forecolor = QColor ((QRgb) isetting);
     textcolor = gridcolor = framecolor = forecolor;
-    propScr->setForeColor (forecolor);
     bottom_text->setDefaultTextColor (textcolor);
   }
 
@@ -1338,7 +1319,6 @@ QTAChartCore::loadSettings ()
   if (rc == SQLITE_OK)
   {
     backcolor = QColor ((QRgb) isetting);
-    propScr->setBackColor (backcolor);
   }
 
   // startbar
@@ -1594,8 +1574,7 @@ QTAChartCore::setTitle (QString Title, QString Subtitle)
 void
 QTAChartCore::setChartStyle (int style)
 {
-  propScr->setChartStyle (style);
-  chart_style = propScr->ChartStyle ();
+  chart_style = style;
 
   if (style == QTACHART_CANDLE)
     typetitle->setPlainText ("Candle");
@@ -1611,8 +1590,7 @@ QTAChartCore::setChartStyle (int style)
 void
 QTAChartCore::setLinearScale (bool scale)
 {
-  propScr->setLinearScale (scale);
-  linear = propScr->LinearScale ();
+  linear = scale;
 
   if (linear)
     scaletitle->setPlainText ("Linear");
@@ -1666,19 +1644,36 @@ QTAChartCore::setChartProperties (void)
 {
   events_enabled = false;
   hideAllItems ();
-  expandicon = QIcon (QStringLiteral (":/png/images/icons/PNG/Button_Back.png"));
+  expandicon = QIcon(QStringLiteral(":/png/images/icons/PNG/Button_Back.png"));
   expandBtn->setIcon (expandicon);
   expandBtn->setStyleSheet
   (QStringLiteral ("background: transparent;color: white;font: 11px;"));
   expandBtn->setToolTip (TOOLTIP % QStringLiteral ("Back (Alt+Z)</span>"));
-  prxpropScr->resize (width, height - 40);
-  prxpropScr->setVisible (true);
   expandBtn->setVisible (true);
+
+  if (! propScr)
+  {
+    propScr = new QTACProperties;
+    if (!propScr)
+      return;
+
+    propScr->setStyleSheet (QStringLiteral ("background:transparent;color:white;"));
+    prxpropScr = scene->addWidget (propScr, Qt::Widget);
+    prxpropScr->setPos (0, 40);
+  }
+
+  propScr->setChartStyle (chart_style);
   propScr->setVolumes (show_volumes);
   propScr->setGrid (show_grid);
-  setChartStyle (chart_style);
-  setLinearScale (linear);
+  propScr->setLinearScale (linear);
   propScr->setOnlinePrice (show_onlineprice);
+  propScr->setForeColor( forecolor );
+  propScr->setBackColor( backcolor );
+  propScr->setBarColor ( barcolor );
+  propScr->setLineColor( linecolor );
+
+  prxpropScr->resize (width, height - 40);
+  prxpropScr->setVisible (true);
 }
 
 // select object to draw

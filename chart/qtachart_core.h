@@ -267,7 +267,7 @@ public:
   QToolButton *dataBtn; // chart's help button
   QToolButton *zoomInBtn;   // chart's propetries' button
   QToolButton *zoomOutBtn;  // chart's propetries' button
-  QToolButton *expandBtn;   // chart's expansion/shrink button
+  QToolButton *expandBtn;   // chart's expansion/shrink (and back) button
   QToolButton *functionBtn; // chart's function button
   QToolButton *drawBtn;     // chart's draw button
   QToolButton *objectsBtn;      // chart's objects button

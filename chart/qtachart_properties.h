@@ -23,7 +23,6 @@
 #include <QFrame>
 #include <QPixmap>
 #include <QIcon>
-#include <QToolButton>
 #include <QCheckBox>
 #include "appColorDialog.h"
 
@@ -37,6 +36,8 @@ class QTACProperties:public QWidget
 Q_OBJECT public:
   explicit QTACProperties (QWidget * parent = 0);
   ~QTACProperties ();
+
+  void properties( QTAChartProperties& ) const;
 
   void setChartStyle (int); // set chart's style
   int ChartStyle (void) const;  // return's chart style
