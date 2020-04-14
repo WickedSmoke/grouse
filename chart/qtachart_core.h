@@ -92,13 +92,13 @@ typedef struct
 } QTAChartBarData;      // Bar's/Candle's geometry data;
 Q_DECLARE_TYPEINFO (QTAChartBarData, Q_MOVABLE_TYPE);
 
-// QTACGraphicsTextItem
-class QTACGraphicsTextItem : public QGraphicsTextItem
+
+class ChartLevelItem : public QGraphicsTextItem
 {
   Q_OBJECT
 
 public:
-  QTACGraphicsTextItem () : QGraphicsTextItem()
+  ChartLevelItem ()
   {
     background = Qt::black;
   }
@@ -110,12 +110,7 @@ public:
     background = color;
   }
 
-  void paint( QPainter *painter, const QStyleOptionGraphicsItem *o, QWidget *w)
-  {
-    painter->setBrush(background);
-    painter->drawRect(boundingRect());
-    QGraphicsTextItem::paint(painter, o, w);
-  }
+  void paint( QPainter*, const QStyleOptionGraphicsItem*, QWidget* );
 };
 
 
@@ -252,7 +247,7 @@ public:
   QTCGraphicsScene *scene;  // ptr on Scene
   QTCGraphicsItem **GRID;       // grid lines
   QTCGraphicsItem **ITEMS;      // graphics items on screen
-  QTACGraphicsTextItem *ruller_cursor;  // chart's price cursor
+  ChartLevelItem *ruller_cursor;  // chart's price cursor
   QGraphicsTextItem *textitem;  // item to be used in label or text object (defined by dragged_obj_type)
   QGraphicsTextItem *title; // chart's title
   QGraphicsTextItem *subtitle;  // chart's subtitle

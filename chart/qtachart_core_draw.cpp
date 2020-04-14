@@ -388,3 +388,29 @@ QTAChartCore::draw (void)
   }
 #endif
 }
+
+
+void ChartLevelItem::paint( QPainter *painter,
+                            const QStyleOptionGraphicsItem *o, QWidget *w )
+{
+    QRectF r( boundingRect() );
+    qreal dimf = r.height() / 2.0f;
+    int x, y, h;
+
+    // Draw background rectangle.
+    painter->setBrush(background);
+    r.setLeft( r.left() + dimf );
+    painter->drawRect( r );
+
+    // Draw left-facing point.
+    x = int(r.left());
+    y = int(r.bottom() - 1.0f);
+    h = int(r.height() - 2.0f);
+
+    painter->setPen(background);
+    for( ; h > 1; h -= 2, --x, --y )
+        painter->drawLine( x, y - h, x, y );
+
+    // Draw text.
+    QGraphicsTextItem::paint(painter, o, w);
+}

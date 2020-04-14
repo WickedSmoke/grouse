@@ -116,7 +116,7 @@ QTAChartCore::QTAChartCore (QWidget * parent)
   bottom_text = new (std::nothrow) QGraphicsTextItem;
   if (!bottom_text) goto constructor_failed;
 
-  ruller_cursor = new (std::nothrow) QTACGraphicsTextItem;
+  ruller_cursor = new (std::nothrow) ChartLevelItem;
   if (!ruller_cursor) goto constructor_failed;
 
 #ifdef CHART_SCREENS
