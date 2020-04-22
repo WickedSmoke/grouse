@@ -4,3 +4,6 @@
 [submodule "3rdparty/ta-lib"]
 	path = 3rdparty/ta-lib
 	url = https://github.com/TA-Lib/ta-lib.git
+[submodule "3rdparty/qcodeeditor"]
+	path = 3rdparty/qcodeeditor
+	url = https://github.com/Megaxela/QCodeEditor.git
