@@ -426,7 +426,6 @@ FORMS += \
         forms/editorwidget.ui \
         forms/infodialog.ui \
         forms/licensedialog.ui \
-        forms/lineobjectdialog.ui \
         forms/loadcsvdialog.ui \
         forms/mainwindow.ui \
         forms/manualdialog.ui \

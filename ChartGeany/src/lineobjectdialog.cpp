@@ -16,69 +16,93 @@
  * 
  */
  
-#include <QtGlobal>
-#include <QApplication>
-#include <QDesktopWidget>
+#include <QBoxLayout>
+#include <QFormLayout>
+#include <QLabel>
 #include <QPen>
-#include <QStyle>
-#include "ui_lineobjectdialog.h"
+#include <QPushButton>
 #include "lineobjectdialog.h"
+#include "appColorDialog.h"
 
-// constructor
+
 LineObjectDialog::LineObjectDialog (QWidget * parent):
-  QDialog (parent), ui (new Ui::LineObjectDialog)
+  QDialog (parent), removed(false)
 {
-  QAbstractButton *button;
-  ui->setupUi (this);
-  this->setWindowFlags(Qt::CustomizeWindowHint);
+#ifdef GUI_DESKTOP
+  setWindowFlags(Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint);
+#else
+  setWindowFlags(Qt::CustomizeWindowHint);
+#endif
+  setModal(true);
 
-  color = Qt::white;
-  pixmap = new QPixmap (16, 16);
-  icon = new QIcon;
-  pixmap->fill (color);
-  icon->addPixmap (*pixmap, QIcon::Normal, QIcon::On);
-  ui->colorButton->setIcon (*icon);
+  QBoxLayout* lo = new QVBoxLayout( this );
+  QFormLayout* form = new QFormLayout;
+  lo->addLayout( form );
 
-  colorDialog = new appColorDialog;
+      color = Qt::white;
+      pixmap = new QPixmap (24, 24);
+      icon = new QIcon;
+      pixmap->fill (color);
+      icon->addPixmap (*pixmap, QIcon::Normal, QIcon::On);
+      colorButton = new QPushButton;
+      colorButton->setIcon (*icon);
+      connect(colorButton, SIGNAL(clicked(bool)), SLOT(color_clicked()));
+      form->addRow( QStringLiteral("Color:"), colorButton );
+
+  lo->addSpacing( 8 );
+
+  QDialogButtonBox* bbox = new QDialogButtonBox;
+  bbox->setStandardButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+  QPushButton* remove =
+              bbox->addButton("&Remove", QDialogButtonBox::DestructiveRole);
+  connect(remove, SIGNAL(clicked(bool)), SLOT(removeClicked()));
+  connect(bbox, SIGNAL(accepted()), SLOT(accept()));
+  connect(bbox, SIGNAL(rejected()), SLOT(reject()));
+  lo->addWidget( bbox );
+
+  colorDialog = new appColorDialog(this);
   colorDialog->setModal (true);
+  connect(colorDialog, SIGNAL(accepted()), SLOT(colorAccepted()));
+  connect(colorDialog, SIGNAL(rejected()), SLOT(colorRejected()));
 
-  foreach (button, ui->buttonBox->buttons ())
-    button->setFocusPolicy (Qt::NoFocus);
+#ifndef GUI_DESKTOP
+  colorButton->setFixedSize(30, 30);
 
-  connect(ui->colorButton, SIGNAL(clicked (bool)), this, SLOT(color_clicked(void)));
-  connect (colorDialog, SIGNAL (accepted ()), this, SLOT (colorDialog_accepted ()));
-  connect (colorDialog, SIGNAL (rejected ()), this, SLOT (colorDialog_rejected ()));
-  connect(ui->buttonBox, SIGNAL(accepted ()), this, SLOT(ok_clicked ()));
-  connect(ui->buttonBox, SIGNAL(rejected ()), this, SLOT(cancel_clicked ()));
+  QAbstractButton* btn;
+  foreach (btn, bbox->buttons ())
+    btn->setFocusPolicy (Qt::NoFocus);
 
   correctWidgetFonts (this);
-  if (parent != NULL)
-    setParent (parent);
+#endif
 }
 
-// destructor
+
 LineObjectDialog::~LineObjectDialog ()
 {
   delete colorDialog;
   delete icon;
   delete pixmap;
-  delete ui;
 }
 
+
 // modify or remove existing. returns true on modify, false on delete
-bool
-LineObjectDialog::modify (QTACObject *obj)
+bool LineObjectDialog::modify (QTACObject *obj)
 {
   colorDialog->setCurrentColor (obj->hvline->pen().color ());
   pixmap->fill (obj->hvline->pen().color ());
   icon->addPixmap (*pixmap, QIcon::Normal, QIcon::On);
-  ui->colorButton->setIcon (*icon);
+  colorButton->setIcon (*icon);
 
-  this->exec ();
-  if (!ok)
+  if( obj->type == QTACHART_OBJ_FIBO )
+      setWindowTitle("Fibonacci");
+  else
+      setWindowTitle("Line");
+
+  removed = false;
+  if( exec() == QDialog::Rejected )
     return true;
 
-  if (ui->removeCheckBox->isChecked ())
+  if (removed)
     return false;
 
   switch( obj->type )
@@ -109,64 +133,35 @@ LineObjectDialog::modify (QTACObject *obj)
   return true;
 }
 
-// events
-void
-LineObjectDialog::showEvent (QShowEvent * event)
-{
-  if (event->spontaneous ())
-    return;
 
-  ui->removeCheckBox->setChecked (false);
-  this->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
-                                        this->size(), qApp->desktop()->availableGeometry()));
-}
-
-// slots
-void
-LineObjectDialog::color_clicked (void)
+void LineObjectDialog::color_clicked (void)
 {
   colorDialog->setCurrentColor (color);
   colorDialog->show ();
-#ifndef Q_OS_MAC
-  int x1, y1;
-  x1 = x() + ((width () - colorDialog->width ()) / 2);
-  if (x1 < 0)
-    x1 = 0;
-  y1 = y () - (colorDialog->height () / 2);
-  if (y1 < 0)
-    y1 = 0;
-  colorDialog->move (x1, y1);
-#endif
   colorDialog->open ();
   color = colorDialog->selectedColor ();
   pixmap->fill (color);
 }
 
-void
-LineObjectDialog::colorDialog_accepted ()
+
+void LineObjectDialog::colorAccepted ()
 {
   color = colorDialog->currentColor ();
   pixmap->fill (color);
   icon->addPixmap (*pixmap, QIcon::Normal, QIcon::On);
-  ui->colorButton->setIcon (*icon);
+  colorButton->setIcon (*icon);
   raise ();
 }
 
-void
-LineObjectDialog::colorDialog_rejected ()
+
+void LineObjectDialog::colorRejected ()
 {
   raise ();
 }
 
-void
-LineObjectDialog::ok_clicked ()
-{
-  ok = true;
-}
 
-void
-LineObjectDialog::cancel_clicked ()
+void LineObjectDialog::removeClicked()
 {
-  ok = false;
+    removed = true;
+    accept();
 }
-

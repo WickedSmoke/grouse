@@ -166,7 +166,7 @@ QTACObjects::editButton_clicked (void)
     case QTACHART_OBJ_VLINE:
     case QTACHART_OBJ_LINE:
     case QTACHART_OBJ_FIBO:
-      if (! core->lineobjectdialog->modify (object) )
+      if (! object->modifyLine () )
         object->setForDelete ();
       break;
 

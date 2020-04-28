@@ -766,11 +766,11 @@ QTACObjectEventFilter::eventFilter (QObject * watched, QEvent * event)
       core->events_enabled = true;
     }
     else if (object->type == QTACHART_OBJ_HLINE ||
-             object->type == QTACHART_OBJ_VLINE)
+             object->type == QTACHART_OBJ_VLINE ||
+             object->type == QTACHART_OBJ_LINE ||
+             object->type == QTACHART_OBJ_FIBO)
     {
-      bool modrslt;
-      modrslt  = core->lineobjectdialog->modify (object);
-      if (modrslt == false)
+      if (object->modifyLine() == false)
       {
         object->setForDelete ();
         core->events_enabled = true;
@@ -781,17 +781,6 @@ QTACObjectEventFilter::eventFilter (QObject * watched, QEvent * event)
     {
       bool modrslt;
       modrslt  = core->textobjectdialog->modify (object->text);
-      if (modrslt == false)
-      {
-        object->setForDelete ();
-        core->events_enabled = true;
-      }
-    }
-    else if (object->type == QTACHART_OBJ_LINE ||
-             object->type == QTACHART_OBJ_FIBO)
-    {
-      bool modrslt;
-      modrslt  = core->lineobjectdialog->modify (object);
       if (modrslt == false)
       {
         object->setForDelete ();

@@ -19,13 +19,11 @@
 #ifndef LINEOBJECTDIALOG_H
 #define LINEOBJECTDIALOG_H
 
-#include "appColorDialog.h"
 #include "qtachart_object.h"
 
-namespace Ui
-{
-  class LineObjectDialog;
-}
+
+class QPushButton;
+class appColorDialog;
 
 class LineObjectDialog : public QDialog
 {
@@ -38,22 +36,18 @@ public:
   bool modify (QTACObject *); // modify or remove existing. returns true on modify, false on delete
 
 private:
-  Ui::LineObjectDialog *ui;
   QColor color;			// text's color
   QPixmap *pixmap;		// color button's pixmap
   QIcon *icon;			// color button's icon
+  QPushButton* colorButton;
   appColorDialog *colorDialog; // text's color dialog
-  bool ok;	// true if ok clicked, false otherwise
+  bool removed;
 
 private slots:
-  void color_clicked (void);
-  void colorDialog_accepted (void);
-  void colorDialog_rejected (void);
-  void ok_clicked (void);
-  void cancel_clicked (void);
-
-protected:
-  virtual void showEvent (QShowEvent * event);
+  void color_clicked();
+  void colorAccepted();
+  void colorRejected();
+  void removeClicked();
 };
 
 

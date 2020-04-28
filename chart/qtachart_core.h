@@ -37,7 +37,6 @@
 #include "qtachart_objects.h"
 #include "qtachart_object.h"
 #include "textobjectdialog.h"
-#include "lineobjectdialog.h"
 #include "priceupdater.h"
 
 #define STRMAXLEN      256
@@ -298,7 +297,6 @@ public:
   QTACObject *volumes;  // volumes' subchart object
   QTACObject *onlineprice; // online price
   TextObjectDialog *textobjectdialog;       // label/text object's dialog
-  LineObjectDialog *lineobjectdialog;       // hline, vline etc line based object's dialog
   gcQWidgetVector garbageQWidget; // garbage collector for QWidgets
   CloseSCBVector CloseSCB;  // subchart buttons vector
   PriceVector *lineprice; // price applied to line

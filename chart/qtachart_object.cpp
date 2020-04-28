@@ -32,6 +32,7 @@
 #else
 #include "dynparamsdialog.h"
 #endif
+#include "lineobjectdialog.h"
 
 // constructor of line edge class
 LineEdge::LineEdge () NOEXCEPT
@@ -1074,6 +1075,20 @@ QTACObject::modifyIndicator ()
   if (xperiod != period)
     valueSet ();
 
+  return true;
+}
+
+bool
+QTACObject::modifyLine ()
+{
+  QWidget* wparent = static_cast<QWidget*>(chartdata->parent());
+  LineObjectDialog *dlg = new LineObjectDialog(wparent);
+  if (dlg )
+  {
+    bool keep = dlg->modify(this);
+    delete dlg;
+    return keep;
+  }
   return true;
 }
 
