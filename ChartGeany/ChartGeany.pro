@@ -209,7 +209,6 @@ SOURCES += \
         src/highlighter.cpp \
         src/infodialog.cpp \
         src/licensedialog.cpp \
-        src/lineobjectdialog.cpp \
         src/loadcsvdialog.cpp \
         src/main.cpp \
         src/mainwindow.cpp \
@@ -228,6 +227,7 @@ SOURCES += \
         ../gui/StockTicker.cpp \
         ../chart/chartapp.cpp \
         ../chart/function_dataset.cpp \
+        ../chart/lineobjectdialog.cpp \
         ../chart/qtachart_core_barchart.cpp \
         ../chart/qtachart_core_candlechart.cpp \
         ../chart/qtachart_core.cpp \
@@ -276,7 +276,6 @@ HEADERS  += \
         include/highlighter.h \
         include/infodialog.h \
         include/licensedialog.h \
-        include/lineobjectdialog.h \
         include/loadcsvdialog.h \
         include/mainwindow.h \
         include/manualdialog.h \
@@ -292,6 +291,7 @@ HEADERS  += \
         include/waitdialog.h \
         ../gui/StockTicker.h \
         ../chart/chartapp.h \
+        ../chart/lineobjectdialog.h \
         ../chart/qtachart_core.h \
         ../chart/qtachart_eventfilters.h \
         ../chart/qtachart.h \
