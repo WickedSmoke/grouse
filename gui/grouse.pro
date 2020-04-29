@@ -38,7 +38,6 @@ HEADERS += MainWindow.h \
 	../ChartGeany/include/databrowserdialog.h \
 	../ChartGeany/include/loadcsvdialog.h \
 	../ChartGeany/include/symbollistdialog.h \
-	../ChartGeany/include/textobjectdialog.h \
 	../ChartGeany/include/templatemanagerdialog.h \
 	../ChartGeany/include/lineobjectdialog.h \
 	../ChartGeany/include/progressdialog.h \
@@ -74,7 +73,6 @@ SOURCES += MainWindow.cpp \
 	../ChartGeany/src/databrowserdialog.cpp \
 	../ChartGeany/src/loadcsvdialog.cpp \
 	../ChartGeany/src/symbollistdialog.cpp \
-	../ChartGeany/src/textobjectdialog.cpp \
 	../ChartGeany/src/templatemanagerdialog.cpp \
 	../ChartGeany/src/lineobjectdialog.cpp \
 	../ChartGeany/src/progressdialog.cpp \

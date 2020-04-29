@@ -779,9 +779,7 @@ QTACObjectEventFilter::eventFilter (QObject * watched, QEvent * event)
     else if (object->type == QTACHART_OBJ_LABEL ||
              object->type == QTACHART_OBJ_TEXT)
     {
-      bool modrslt;
-      modrslt  = core->textobjectdialog->modify (object->text);
-      if (modrslt == false)
+      if (object->modifyText() == false)
       {
         object->setForDelete ();
         core->events_enabled = true;

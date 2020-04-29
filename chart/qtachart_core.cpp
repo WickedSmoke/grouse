@@ -86,7 +86,6 @@ QTAChartCore::QTAChartCore (QWidget * parent)
   leftedge = NULL;
   topedge = NULL;
   bottomedge = NULL;
-  textobjectdialog = NULL;
   chartEventFilter = NULL;
   sceneEventFilter = NULL;
 
@@ -176,16 +175,11 @@ QTAChartCore::QTAChartCore (QWidget * parent)
   if (!dataScr) goto constructor_failed;
 #endif
 
-  textobjectdialog = new (std::nothrow) TextObjectDialog;
-  if (!textobjectdialog) goto constructor_failed;
-
   chartEventFilter = new (std::nothrow) QTAChartEventFilter (this);
   if (!chartEventFilter) goto constructor_failed;
 
   sceneEventFilter = new (std::nothrow) QTAChartSceneEventFilter (this);
   if (!sceneEventFilter) goto constructor_failed;
-
-  textobjectdialog->setModal (true);
 
 #ifdef CHART_SCREENS
   expandBtn->setAutoRaise (true);
@@ -216,7 +210,6 @@ QTAChartCore::QTAChartCore (QWidget * parent)
   return;
 
 constructor_failed:
-  if (textobjectdialog) delete textobjectdialog;
   if (rightedge) delete rightedge;
   if (leftedge) delete leftedge;
   if (topedge) delete topedge;
@@ -276,7 +269,6 @@ QTAChartCore::~QTAChartCore (void)
     delete[] tfBtn;
   }
 
-  delete textobjectdialog;
   delete rightedge;
   delete leftedge;
   delete topedge;

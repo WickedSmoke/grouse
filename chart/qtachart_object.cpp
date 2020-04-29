@@ -1092,6 +1092,20 @@ QTACObject::modifyLine ()
   return true;
 }
 
+bool
+QTACObject::modifyText ()
+{
+  QWidget* wparent = static_cast<QWidget*>(chartdata->parent());
+  TextObjectDialog *dlg = new TextObjectDialog(wparent);
+  if (dlg )
+  {
+    bool keep = dlg->modify(text);
+    delete dlg;
+    return keep;
+  }
+  return true;
+}
+
 // set the price level for a horizontal line
 void
 QTACObject::setHLine (QGraphicsLineItem *line, qreal value)

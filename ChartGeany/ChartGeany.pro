@@ -223,7 +223,6 @@ SOURCES += \
         src/splashdialog.cpp \
         src/symbollistdialog.cpp \
         src/templatemanagerdialog.cpp \
-        src/textobjectdialog.cpp \
         src/unix_signals.cpp \
         src/waitdialog.cpp \
         ../gui/StockTicker.cpp \
@@ -289,7 +288,6 @@ HEADERS  += \
         include/splashdialog.h \
         include/symbollistdialog.h \
         include/templatemanagerdialog.h \
-        include/textobjectdialog.h \
         include/unix_signals.h \
         include/waitdialog.h \
         ../gui/StockTicker.h \
@@ -443,5 +441,4 @@ FORMS += \
         forms/splashdialog.ui \
         forms/symbollistdialog.ui \
         forms/templatemanagerdialog.ui \
-        forms/textobjectdialog.ui \
         forms/waitdialog.ui

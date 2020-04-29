@@ -28,6 +28,7 @@
 #endif
 #include "qtachart_objects.h"
 #include "qtachart_eventfilters.h"
+#include "lineobjectdialog.h"
 #include "mainwindow.h"
 #include "cgscript.h"
 
@@ -1785,13 +1786,14 @@ QTACObject* QTAChart::addStudyATR( int period, QRgb color )
 static void createTextObject(QTAChart* chart, QTAChartCore* core,
                              QTAChartObjectType type)
 {
-    QLabel* label;
-
-    core->textobjectdialog->create();
-    label = core->textobjectdialog->getLabel();
-
-    if( ! label->text().isEmpty() )
+    TextObjectDialog* dlg = new TextObjectDialog(chart);
+    if( ! dlg )
+        return;
+    dlg->enableRemove( false );
+    if( dlg->exec() == QDialog::Accepted )
     {
+        const QLabel* label = dlg->getLabel();
+
         chart->goBack();
 
         core->object_drag = true;
@@ -1806,6 +1808,7 @@ static void createTextObject(QTAChart* chart, QTAChartCore* core,
 
         appSetOverrideCursor(chart, QCursor(Qt::PointingHandCursor));
     }
+    delete dlg;
 }
 
 // create horizontal or vertical line object

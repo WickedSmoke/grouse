@@ -203,6 +203,7 @@ public:
 
   bool modifyIndicator (void); // modify technical indicator
   bool modifyLine ();
+  bool modifyText ();
   bool moduleInit (void *data, int *objtype);   // call module's Init() function
   bool moduleLoop (void);       // call module's Loop() function
   bool moduleEvent (int event);     // call module's Event() function

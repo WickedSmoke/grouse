@@ -22,6 +22,8 @@
 #include "qtachart_object.h"
 
 
+class QBoxLayout;
+class QFormLayout;
 class QPushButton;
 class appColorDialog;
 
@@ -33,21 +35,70 @@ public:
   explicit LineObjectDialog (QWidget *parent = 0);
   ~LineObjectDialog (void);
 
+  void enableRemove( bool on );
+  void setColor( const QColor& );
+
   bool modify (QTACObject *); // modify or remove existing. returns true on modify, false on delete
 
+protected:
+  void createColorButton();
+
+protected slots:
+  virtual void colorAccepted();
+
 private:
-  QColor color;			// text's color
   QPixmap *pixmap;		// color button's pixmap
   QIcon *icon;			// color button's icon
   QPushButton* colorButton;
   appColorDialog *colorDialog; // text's color dialog
+  QPushButton* removeButton;
+
+protected:
+  QFormLayout* form;
+  QDialogButtonBox* bbox;
+  QColor color;
   bool removed;
 
 private slots:
   void color_clicked();
-  void colorAccepted();
   void colorRejected();
   void removeClicked();
+};
+
+
+class QCheckBox;
+class QComboBox;
+class QFontComboBox;
+class QLabel;
+class QLineEdit;
+
+class TextObjectDialog : public LineObjectDialog
+{
+  Q_OBJECT
+
+public:
+  TextObjectDialog(QWidget *parent = 0);
+
+  QLabel* getLabel() NOEXCEPT;	    // get the text's QLabel
+  bool modify(QGraphicsTextItem *); // modify or remove existing
+
+protected slots:
+  virtual void colorAccepted();
+
+private slots:
+  void textChanged(const QString&);
+  void sizeChanged(int);
+  void familyChanged(int);
+  void weightChanged(bool);
+
+private:
+  void updatePreviewColor();
+
+  QFontComboBox *familyCombo;
+  QComboBox *sizeCombo;
+  QCheckBox *boldCheck;
+  QLineEdit* textEdit;
+  QLabel* preview;
 };
 
 

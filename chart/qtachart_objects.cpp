@@ -140,7 +140,6 @@ QTACObjects::upButton_clicked (void)
 void
 QTACObjects::editButton_clicked (void)
 {
-  QTAChartCore *core = getData (referencechart);
   QTACObject *object;
   int nobj;
 
@@ -172,7 +171,7 @@ QTACObjects::editButton_clicked (void)
 
     case QTACHART_OBJ_LABEL:
     case QTACHART_OBJ_TEXT:
-      if (! core->textobjectdialog->modify (object->text) )
+      if (! object->modifyText () )
         object->setForDelete ();
       break;
   }
