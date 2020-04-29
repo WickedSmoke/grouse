@@ -1,4 +1,4 @@
-Chart Grouse 0.1
+Chart Grouse 0.3
 ================
 
 Chart Grouse is a program for technical market analysis.  It is a fork of
@@ -12,8 +12,13 @@ code from the touch-based GUI.
 Building
 ========
 
-Most of the third party code is not part of this repository so a copy of the
+Some of the third party code is not part of this repository so a copy of the
 ChartGeany/3rdparty directory from [chartgeany-6.1.5.tar.gz](https://sourceforge.net/projects/chart-geany/files/6.0/chartgeany-6.1.5.tar.gz/download)
-must be be obtained.
+must be be obtained.  The following three directories must be copied into
+3rdparty:
+
+    segvcatch
+    sqlite3
+    x86dis
 
 After that use *qmake; make*.
