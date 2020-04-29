@@ -21,6 +21,7 @@
 
 #include <cstddef>
 #include <QWidget>
+#include "DynParam.h"
 #include "QTAChartData.h"
 
 #ifndef Q_OS_WIN
@@ -77,6 +78,7 @@ public:
   void showVolumes (bool);  // turn volumes show on/off
   void showOnlinePrice (bool);  // turn online price show on/off
   void showGrid (bool);     // turn grid on off
+  QTACObject* addIndicator(const QString& fname, const ParamVector& param);
 
   QTACObject* addStudyMACD( int period, QRgb colorMACD, QRgb colorSignal );
   QTACObject* addStudySMA( int period, QRgb color );

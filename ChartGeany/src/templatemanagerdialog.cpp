@@ -433,7 +433,6 @@ sqlcb_getobjectserials  (void *seriallist, int argc, char **argv, char **column)
   return 0;
 }
 
-#ifdef CHART_SCREENS
 // load template callback
 static int
 sqlcb_loadtemplateindicators (void *dummy, int argc, char **argv, char **column)
@@ -479,7 +478,6 @@ sqlcb_loadtemplateindicators (void *dummy, int argc, char **argv, char **column)
 
   return 0;
 }
-#endif
 
 // load template objects
 static int
@@ -557,15 +555,13 @@ TemplateManagerDialog::attachtemplate (QString tablename)
     goto attachtemplate_drawing_objects;
 
   foreach (object, core->Object)
-    if (object->getParamDialog () != NULL)
+    if (object->category == QTACHART_CAT_INDICATOR || object->getParamDialog())
       object->setForDelete ();
 
-#ifdef CHART_SCREENS
   foreach (const int counter, indserial)
   {
     QString query;
     Lindicator *lind;
-    DynParamsDialog *pdialog;
 
     lind = new Lindicator;
     query  = QStringLiteral ("SELECT TITLE, PARAMNAME, PARAMLABEL, PARAMTYPE, ") %
@@ -579,12 +575,9 @@ TemplateManagerDialog::attachtemplate (QString tablename)
       return CG_ERR_DBACCESS;
     }
 
-    pdialog = new DynParamsDialog (lind->Plist, lind->Title);
-    core->functionScr->addIndicator (pdialog);
+    chart->addIndicator (lind->Title, lind->Plist);
     delete lind;
-    delete pdialog;
   }
-#endif
 
   // attach drawing objects
 attachtemplate_drawing_objects:
@@ -596,7 +589,7 @@ attachtemplate_drawing_objects:
     goto attachtemplate_end;
 
   foreach (object, core->Object)
-    if (object->getParamDialog () == NULL && object->onlineprice == false)
+    if (object->category == QTACHART_CAT_MARKER && object->onlineprice == false)
       object->setForDelete ();
 
   foreach (const int counter, objectserial)

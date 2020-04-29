@@ -198,27 +198,6 @@ QTACFunctions::getReferenceChart (void)
   return referencechart;
 }
 
-// add indicator
-void
-QTACFunctions::addIndicator (DynParamsDialog *paramDialog)
-{
-  QTAChartCore *core = getData (referencechart);
-  QTACObject *obj = nullptr;
-  QString fname;
-
-  if (core->CLOSE.size () == 0)
-    return;
-
-  fname = paramDialog->getTitle ();
-
-#define PARAM(name)  paramDialog->getParam(QStringLiteral(name))
-
-#include "gen_funcAddStudy.cpp"
-
-  if (obj != nullptr)
-    obj->setParamDialog (paramDialog->parameters (), fname);
-}
-
 // resize
 void
 QTACFunctions::resizeEvent (QResizeEvent * event)
@@ -262,7 +241,7 @@ QTACFunctions::function_accepted (void)
   DynParamsDialog *paramDialog;
 
   paramDialog = qobject_cast <DynParamsDialog *> (QObject::sender());
-  addIndicator (paramDialog);
+  chart->addIndicator(paramDialog->getTitle(), paramDialog->parameters());
 
   chart->goBack ();
 }

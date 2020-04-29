@@ -1292,6 +1292,32 @@ const DynParam* ParamVector::constParameter( const QString& name ) const
 }
 
 
+static qreal _paramValue(const ParamVector& param, const QString& pname)
+{
+    const DynParam* par = param.constParameter(pname);
+    if( par )
+        return par->value;
+    return 0.0;
+}
+
+
+QTACObject* QTAChart::addIndicator(const QString& fname,
+                                   const ParamVector& param)
+{
+  QTACObject *obj = nullptr;
+
+  if (ccore->CLOSE.empty())
+    return nullptr;
+
+#define PARAM(name)     _paramValue(param,QStringLiteral(name))
+#define referencechart  this
+
+#include "gen_funcAddStudy.cpp"
+
+  return obj;
+}
+
+
 // Use after setAttributes as setTitle requires obj->period to be set.
 #define SET_IND_TITLE(name) \
     obj->category = QTACHART_CAT_INDICATOR; \

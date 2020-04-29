@@ -41,7 +41,6 @@ public:
 
   void setReferenceChart (void *chart);     // sets the reference chart
   void *getReferenceChart (void);           // get the reference chart
-  void addIndicator (DynParamsDialog *paramDialog); // add indicator on chart
 
 private:
   Ui::QTACFunctions * ui;
