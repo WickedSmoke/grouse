@@ -24,14 +24,23 @@
 class QTAChartCore;
 
 // custom event filter for scene
-class QTAChartSceneEventFilter:public QObject
+class QTAChartSceneEventFilter : public QObject
 {
-Q_OBJECT public:
-  explicit QTAChartSceneEventFilter (QObject * parent); // constructor
-  ~QTAChartSceneEventFilter (void);  // destructor
+  Q_OBJECT
+
+public:
+  explicit QTAChartSceneEventFilter (QObject * parent);
+
+  void setDragOffset(qreal dx, qreal dy)
+  {
+      dragOffsetX = dx;
+      dragOffsetY = dy;
+  }
 
 private:
   QTAChartCore *core;
+  qreal dragOffsetX;
+  qreal dragOffsetY;
   qreal padx;		// pad over x
   qreal pady;		// pad over y
   qint32 phase;     // 0, 1, 2, 3....
@@ -47,26 +56,27 @@ private:
 
 protected:
   bool eventFilter (QObject * object, QEvent * event);
-
 };
 
 // custom event filter for chart
-class QTAChartEventFilter:public QObject
+class QTAChartEventFilter : public QObject
 {
-Q_OBJECT public:
-  explicit QTAChartEventFilter (QObject * parent); // constructor
-  ~QTAChartEventFilter (void); // destructor
+  Q_OBJECT
+
+public:
+  explicit QTAChartEventFilter (QObject * parent);
 
 protected:
   bool eventFilter (QObject * watched, QEvent * event);
 };
 
 // custom event filter for object
-class QTACObjectEventFilter:public QObject
+class QTACObjectEventFilter : public QObject
 {
-Q_OBJECT public:
-  explicit QTACObjectEventFilter (QObject * parent); // constructor
-  ~QTACObjectEventFilter (void); // destructor
+  Q_OBJECT
+
+public:
+  explicit QTACObjectEventFilter (QObject * parent);
 
 private:
   QTAChartCore *core;

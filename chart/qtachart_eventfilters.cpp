@@ -23,12 +23,13 @@
 #include <QGraphicsSceneWheelEvent>
 #include "qtachart_core.h"
 
-static qreal xpad, ypad;
 
-///
+//----------------------------------------------------------------------------
 // QTAChartSceneEventFilter
+
 QTAChartSceneEventFilter::QTAChartSceneEventFilter (QObject * parent)
 {
+  dragOffsetX = dragOffsetY = 0.0;
   padx = -1;
   pady = -1;
   phase = 0;
@@ -37,11 +38,6 @@ QTAChartSceneEventFilter::QTAChartSceneEventFilter (QObject * parent)
     setParent (parent);
 
   core = qobject_cast <QTAChartCore *> (parent);
-}
-
-QTAChartSceneEventFilter::~QTAChartSceneEventFilter ()
-{
-
 }
 
 // control drag and add an object on the chart
@@ -93,7 +89,8 @@ QTAChartSceneEventFilter::dragHVLine (QObject *coreptr, QEvent *event)
     {
       if (y < core->charttopmost || y > core->chartbottomost)
         return;
-      core->hvline->setLine (core->chartleftmost /*+ xpad*/, y + ypad, core->chartrightmost /*+ xpad*/, y + ypad);
+      core->hvline->setLine(core->chartleftmost, y + dragOffsetY,
+                            core->chartrightmost, y + dragOffsetY);
       core->setRullerCursor (y);
       core->setBottomText (x);
       if (evtype == QEvent::GraphicsSceneMouseRelease)
@@ -108,7 +105,8 @@ QTAChartSceneEventFilter::dragHVLine (QObject *coreptr, QEvent *event)
     {
       if (x < core->chartleftmost || x > core->chartrightmost)
         return;
-      core->hvline->setLine (x + xpad, core->charttopmost /*+ ypad*/, x + xpad, core->chartbottomost /*+ ypad*/);
+      core->hvline->setLine(x + dragOffsetX, core->charttopmost,
+                            x + dragOffsetX, core->chartbottomost);
       core->setRullerCursor (y);
       core->setBottomText (x);
       if (event->type () == QEvent::GraphicsSceneMouseRelease)
@@ -144,7 +142,7 @@ QTAChartSceneEventFilter::dragHVLine (QObject *coreptr, QEvent *event)
         x1 = core->hvline->line().x1 ();
         y1 = core->hvline->line().y1 ();
 
-        core->hvline->setLine (x1, y1, x + xpad, y + ypad);
+        core->hvline->setLine(x1, y1, x + dragOffsetX, y + dragOffsetY);
       }
 
       if (evtype == QEvent::GraphicsSceneMousePress)
@@ -191,7 +189,8 @@ QTAChartSceneEventFilter::dragHVLine (QObject *coreptr, QEvent *event)
         qreal y1;
 
         y1 = core->hvline->line().y1 ();
-        core->hvline->setLine (x + xpad, y1,  x + xpad, y + ypad);
+        core->hvline->setLine(x + dragOffsetX, y1,
+                              x + dragOffsetX, y + dragOffsetY);
       }
 
       if (evtype == QEvent::GraphicsSceneMousePress)
@@ -426,17 +425,13 @@ QTAChartSceneEventFilter::eventFilter (QObject * object, QEvent * event)
   return QObject::eventFilter (object, event);
 }
 
-///
+//----------------------------------------------------------------------------
 // QTAChartEventFilter
+
 QTAChartEventFilter::QTAChartEventFilter (QObject * parent)
 {
   if (parent != NULL)
     setParent (parent);
-}
-
-QTAChartEventFilter::~QTAChartEventFilter ()
-{
-
 }
 
 bool
@@ -567,8 +562,9 @@ QTAChartEventFilter::eventFilter (QObject * watched, QEvent * event)
   return QObject::eventFilter (watched, event);
 }
 
-///
+//----------------------------------------------------------------------------
 // QTACObjectEventFilter
+
 QTACObjectEventFilter::QTACObjectEventFilter (QObject * parent)
 {
   if (parent == NULL)
@@ -576,11 +572,6 @@ QTACObjectEventFilter::QTACObjectEventFilter (QObject * parent)
 
   setParent (parent);
   core = qobject_cast <QTACObject *> (parent->parent())->chartdata;
-}
-
-QTACObjectEventFilter::~QTACObjectEventFilter ()
-{
-
 }
 
 bool
@@ -811,8 +802,11 @@ QTACObjectEventFilter::eventFilter (QObject * watched, QEvent * event)
           core->object_drag = true;
           core->drag = false;
           core->hvline = object->hvline;
-          xpad = core->hvline->line().x2() - point.x ();
-          ypad = core->hvline->line().y2() - point.y ();
+
+          QLineF line( core->hvline->line() );
+          core->sceneEventFilter->setDragOffset(line.x2() - point.x(),
+                                                line.y2() - point.y());
+
           appSetOverrideCursor (core->chart, QCursor (Qt::PointingHandCursor));
         }
 
