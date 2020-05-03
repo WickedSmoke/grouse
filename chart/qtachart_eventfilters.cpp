@@ -434,6 +434,13 @@ QTAChartEventFilter::QTAChartEventFilter (QObject * parent)
     setParent (parent);
 }
 
+static void _chartKeyFocus( QTAChartCore* core )
+{
+  appRestoreOverrideCursor (core->chart);
+  core->setRullerCursor (core->ruller_cursor_y);
+  core->setBottomText (core->last_x);
+}
+
 bool
 QTAChartEventFilter::eventFilter (QObject * watched, QEvent * event)
 {
@@ -452,18 +459,19 @@ QTAChartEventFilter::eventFilter (QObject * watched, QEvent * event)
 
     evtype = event->type ();
     if (evtype == QEvent::Show)
+    {
       core->Scene.setFocus (Qt::OtherFocusReason);
-
-    // keyboard
-    if (Q_UNLIKELY (evtype == QEvent::KeyPress ||
-                    evtype == QEvent::FocusIn))
+    }
+    else if(evtype == QEvent::FocusIn)
+    {
+      _chartKeyFocus(core);
+    }
+    else if (evtype == QEvent::KeyPress)
     {
       QKeyEvent *keyEvent = static_cast < QKeyEvent * > (event);
       Qt::Key keyPressed = static_cast <Qt::Key> (keyEvent->key ());
 
-      appRestoreOverrideCursor (core->chart);
-      core->setRullerCursor (core->ruller_cursor_y);
-      core->setBottomText (core->last_x);
+      _chartKeyFocus(core);
 
       // tab
       if (keyPressed == Qt::Key_Tab)
