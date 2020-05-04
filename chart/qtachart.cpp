@@ -1836,6 +1836,7 @@ static void createTHVLineObject(QTAChart* chart, QTAChartCore* core,
   core->hvline->setLine(0, 0, 0, 0);
   core->hvline->setPen(QPen(color));
   core->scene->qtcAddItem(core->hvline);
+  core->sceneEventFilter->setDragOffset(0.0, 0.0);
 
   appSetOverrideCursor(chart, QCursor(Qt::PointingHandCursor));
 }

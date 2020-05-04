@@ -91,17 +91,20 @@ QTAChartSceneEventFilter::dragHVLine (QObject *coreptr, QEvent *event)
         return;
       core->hvline->setLine(core->chartleftmost, y + dragOffsetY,
                             core->chartrightmost, y + dragOffsetY);
-      core->setRullerCursor (y);
       core->setBottomText (x);
       if (evtype == QEvent::GraphicsSceneMouseRelease)
       {
-        core->addHLine (core->hvline, core->priceOnY (y));
+        core->addHLine(core->hvline, core->priceOnY(y + dragOffsetY));
         core->object_drag = false;
         appRestoreOverrideCursor (core->chart);
       }
+      else
+      {
+        y += dragOffsetY;   // For Press & Move snap cursor to line.
+      }
+      core->setRullerCursor (y);
     }
-
-    if (core->dragged_obj_type == QTACHART_OBJ_VLINE)
+    else if (core->dragged_obj_type == QTACHART_OBJ_VLINE)
     {
       if (x < core->chartleftmost || x > core->chartrightmost)
         return;
@@ -116,8 +119,7 @@ QTAChartSceneEventFilter::dragHVLine (QObject *coreptr, QEvent *event)
         appRestoreOverrideCursor (core->chart);
       }
     }
-
-    if (core->dragged_obj_type == QTACHART_OBJ_LINE)
+    else if (core->dragged_obj_type == QTACHART_OBJ_LINE)
     {
       if (x < core->chartleftmost || x > core->chartrightmost)
         return;
@@ -165,8 +167,7 @@ QTAChartSceneEventFilter::dragHVLine (QObject *coreptr, QEvent *event)
         }
       }
     }
-
-    if (core->dragged_obj_type == QTACHART_OBJ_FIBO)
+    else if (core->dragged_obj_type == QTACHART_OBJ_FIBO)
     {
       if (x < core->chartleftmost || x > core->chartrightmost)
         return;
