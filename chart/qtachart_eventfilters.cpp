@@ -585,14 +585,10 @@ QTACObjectEventFilter::QTACObjectEventFilter (QObject * parent)
 bool
 QTACObjectEventFilter::eventFilter (QObject * watched, QEvent * event)
 {
-  QTACObject *object;
+  QTACObject *object = qobject_cast<QTACObject *>(watched->parent());
   int evtype;
 
-  object = qobject_cast <QTACObject *> (watched->parent ());
-  if (object->deleteit)
-    return QObject::eventFilter (object, event);
-
-  if (core->object_drag)
+  if (object->deleteit || core->object_drag)
     return QObject::eventFilter (object, event);
 
   evtype = event->type ();
@@ -751,7 +747,8 @@ QTACObjectEventFilter::eventFilter (QObject * watched, QEvent * event)
     }
     appRestoreOverrideCursor (core->chart);
   }
-  else if (evtype == QEvent::GraphicsSceneMouseDoubleClick)
+  else if (evtype == QEvent::GraphicsSceneMouseDoubleClick ||
+           evtype == QEvent::GraphicsSceneContextMenu)
   {
     appRestoreOverrideCursor (core->chart);
     if (object->type == QTACHART_OBJ_CURVE ||
@@ -790,6 +787,7 @@ QTACObjectEventFilter::eventFilter (QObject * watched, QEvent * event)
 
     core->object_drag = false;
     core->drag = false;
+    return true;
   }
   else if (evtype == QEvent::GraphicsSceneMousePress)
   {
@@ -829,7 +827,5 @@ QTACObjectEventFilter::eventFilter (QObject * watched, QEvent * event)
     }
   }
 
-  if (evtype != QEvent::GraphicsSceneMouseDoubleClick)
-    return QObject::eventFilter (object, event);
-  return true;
+  return QObject::eventFilter(object, event);
 }
