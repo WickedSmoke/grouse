@@ -1147,6 +1147,7 @@ QTACObject::setHLine (QGraphicsLineItem *line, qreal value)
       filter = new QTACObjectEventFilter (title);
       title->installEventFilter (filter);
       title->setAcceptHoverEvents (true);
+      title->setFlag(QGraphicsItem::ItemIsFocusable, true); // Get key events
     }
 
     qreal y = core->yOnPrice (price);

@@ -803,6 +803,7 @@ QTACObjectEventFilter::eventFilter (QObject * watched, QEvent * event)
           object->type == QTACHART_OBJ_VLINE ||
           object->type == QTACHART_OBJ_LINE ||
           object->type == QTACHART_OBJ_FIBO)
+      {
         if (object->title->opacity () < 1)
         {
           core->object_drag = true;
@@ -815,15 +816,34 @@ QTACObjectEventFilter::eventFilter (QObject * watched, QEvent * event)
 
           appSetOverrideCursor (core->chart, QCursor (Qt::PointingHandCursor));
         }
-
-      if (object->type == QTACHART_OBJ_LABEL ||
-          object->type == QTACHART_OBJ_TEXT)
+      }
+      else if (object->type == QTACHART_OBJ_LABEL ||
+               object->type == QTACHART_OBJ_TEXT)
+      {
         if (object->text->opacity () < 1)
         {
           core->object_drag = true;
           core->drag = false;
           appSetOverrideCursor (core->chart, QCursor (Qt::PointingHandCursor));
         }
+      }
+    }
+  }
+  else if (evtype == QEvent::KeyPress)
+  {
+    if (object->type == QTACHART_OBJ_HLINE)
+    {
+      QKeyEvent* keyEvent = static_cast<QKeyEvent *>(event);
+      qreal dy = 0.0;
+      if( keyEvent->key() == Qt::Key_Up )
+        dy = 0.1;
+      else if( keyEvent->key() == Qt::Key_Down )
+        dy = -0.1;
+      if( dy != 0.0 )
+      {
+        object->setHLine(object->hvline, object->price + dy);
+        return true;
+      }
     }
   }
 
