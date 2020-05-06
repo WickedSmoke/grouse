@@ -127,6 +127,7 @@ STDDEV:         Period 10  Color 0,255,255
 Momentum:       Period 12  Level 0  Color 0,255,255
 DMI:            Period 13  Weak 25  Strong 50  Very-strong 75  Color 0,255,255
 ATR:            Period 14  Color 0,255,255
+Range:          Color 0,255,255
 */
 
 // This file is generated from the above data.

@@ -292,3 +292,14 @@ _paramDialogATR(const ButtonInitData& bd)
   return dlg;
 }
 
+static DynParamsDialog*
+_paramDialogRange(const ButtonInitData& bd)
+{
+  DynParamsDialog* dlg = new DynParamsDialog(QStringLiteral("Range"), bd.wparent);
+  _addButton(bd, QStringLiteral("Range"), dlg);
+  dlg->addParam(QStringLiteral("Color"), QStringLiteral("Color"),
+                DPT_COLOR, qRgb(0,255,255));
+  _connectPDialog(dlg, bd.parent);
+  return dlg;
+}
+

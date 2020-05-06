@@ -107,6 +107,7 @@ public:
   QTACObject* addStudyDMI( int period, int Weak, int Strong, int veryStrong,
                            QRgb color );
   QTACObject* addStudyATR( int period, QRgb color );
+  QTACObject* addStudyRange( QRgb color );
 
 
   void addMarkerLabel();

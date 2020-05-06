@@ -1783,6 +1783,28 @@ QTACObject* QTAChart::addStudyATR( int period, QRgb color )
     return obj;
 }
 
+QTACObject* QTAChart::addStudyRange( QRgb color )
+{
+    QTACObject *obj, *childobj;
+
+    obj = new QTACObject(ccore, QTACHART_OBJ_SUBCHART);
+    obj->setAttributes(QTACHART_CLOSE, 0, QStringLiteral(""),
+                       DUMMY, 0, QREAL_MAX, color, QStringLiteral(""));
+    SET_IND_TITLE("Range");
+
+    childobj = new QTACObject(obj, QTACHART_OBJ_CURVE);
+    childobj->setAttributes(QTACHART_CLOSE, 0, QStringLiteral(""),
+                            Range, 0, QREAL_MAX,
+                            color, QStringLiteral("Color"));
+/*
+    childobj = new QTACObject(obj, QTACHART_OBJ_HLINE);
+    childobj->setHLine(nullptr, Ave);
+    childobj->setAttributes(QTACHART_CLOSE, 0, QStringLiteral("Ave"),
+                            DUMMY, 0, 100, color, QStringLiteral(""));
+*/
+    return obj;
+}
+
 // create a label/text object
 static void createTextObject(QTAChart* chart, QTAChartCore* core,
                              QTAChartObjectType type)

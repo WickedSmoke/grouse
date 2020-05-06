@@ -73,3 +73,7 @@
   {
     obj = referencechart->addStudyATR( (qint32) PARAM("Period"), PARAM("Color") );
   }
+  else if (fname == QLatin1String ("Range"))
+  {
+    obj = referencechart->addStudyRange( PARAM("Color") );
+  }

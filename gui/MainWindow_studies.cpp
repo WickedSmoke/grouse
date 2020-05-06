@@ -39,4 +39,6 @@ void MainWindow::addStudyItems()
     act->setData( 16 );
     act = _studies->addAction( "ATR", this, SLOT(addStudy()) );
     act->setData( 17 );
+    act = _studies->addAction( "Range", this, SLOT(addStudy()) );
+    act->setData( 18 );
 }

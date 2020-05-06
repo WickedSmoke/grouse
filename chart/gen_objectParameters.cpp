@@ -205,4 +205,10 @@ void _objectParameters(QTACObject* obj, ParamVector& pvec)
                  DPT_COLOR, obj->paramValue(QStringLiteral("Color")) );
     return;
   }
+  if( name == QStringLiteral("Range") )
+  {
+    pvec.addParameter(QStringLiteral("Color"),
+                 DPT_COLOR, obj->paramValue(QStringLiteral("Color")) );
+    return;
+  }
 }

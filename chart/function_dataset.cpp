@@ -1292,3 +1292,21 @@ ATR (const FrameVector *HLOC, int period)
 
   return result;
 }
+
+
+// range
+GNUMALLOC DataSet Range(const FrameVector *HLOC, int)
+{
+  PriceVector *result = new(nothrow) PriceVector;
+  if(result)
+  {
+    int setsize = HLOC->size();
+    result->reserve(setsize);
+    for(int i = 0; i < setsize; ++i)
+    {
+      const QTAChartFrame& fr = HLOC->at(i);
+      result->append( fr.High - fr.Low );
+    }
+  }
+  return result;
+}

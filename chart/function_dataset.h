@@ -103,4 +103,7 @@ DataSet DMX (const FrameVector *HLOC, int period) GNUMALLOC;
 // average true range
 DataSet ATR (const FrameVector *HLOC, int period) GNUMALLOC;
 
+// range
+DataSet Range (const FrameVector *HLOC, int) GNUMALLOC;
+
 #endif // FUNCTION_DATASET_H
