@@ -61,6 +61,7 @@ QTAChart::QTAChart (QWidget * parent):
   tabText = QStringLiteral ("Default");
 
   setMinimumSize(200, 200);
+  setCursor(Qt::CrossCursor);
 
   graphicsView = new QGraphicsView(this);
   graphicsView->setFrameShadow(QFrame::Plain);
