@@ -27,6 +27,7 @@ drawObject (QTACObject *object)
   QTACObject *child;
   QString timeframe = QStringLiteral ("");
   qint32 max;
+  qint32 counter, i;
 
   if (object->enabled == false)
   {
@@ -99,38 +100,42 @@ drawObject (QTACObject *object)
 
     qint32 vsetsize = object->valueset->size ();
     max = core->nbars_on_chart + *core->startbar;
+    if (max > vsetsize)
+        max = vsetsize;
     object->X.reserve (core->nbars_on_chart);
-    for (qint32 counter = *core->startbar, i = 0;
-         counter < max && counter < vsetsize;
-         counter ++, i ++)
+    for (counter = *core->startbar, i = 0; counter < max; counter++, i++)
     {
       qreal x;
       x = object->width - (core->framewidth * 1.5 * (i + 1)) + 1;
       x += (core->framewidth * 0.8) / 2;
       x += object->basex;
-      object->X += x;
+      object->X.push_back(x);
     }
 
     object->Y.clear ();
     object->Y.reserve (object->X.size ());
 
-    for (qint32 counter = *core->startbar;
-         counter < max && counter < vsetsize;
-         counter ++)
+    counter = *core->startbar;
+    if (object->parentObject == NULL ||
+        object->parentObject->type == QTACHART_OBJ_CURVE)
     {
-      if (object->valueset->at(counter) == 0 &&
-          object->parentObject == NULL)
-        object->Y += 0;
-      else
-      {
-        qreal y;
-        if (object->parentObject == NULL ||
-            object->parentObject->type == QTACHART_OBJ_CURVE)
-          y = core->yOnPrice (object->valueset->at(counter));
-        else
-          y = object->subYonPrice (object->valueset->at(counter));
-        object->Y += y;
-      }
+        for ( ; counter < max; counter++)
+        {
+          qreal v = object->valueset->at(counter);
+          if (v != 0.0f || object->parentObject)
+            v = core->yOnPrice(v);
+          object->Y.push_back(v);
+        }
+    }
+    else
+    {
+        for ( ; counter < max; counter++)
+        {
+          qreal v = object->valueset->at(counter);
+          if (v != 0.0f || object->parentObject)
+            v = object->subYonPrice(v);
+          object->Y.push_back(v);
+        }
     }
 
     if (object->type == QTACHART_OBJ_VBARS)
