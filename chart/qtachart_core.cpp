@@ -536,15 +536,11 @@ QTAChartCore::addOnlinePrice ()
 
   onlineprice = new QTACObject (this, QTACHART_OBJ_LABEL);
   textitem = new QGraphicsTextItem;
-  if (events_enabled == false)
-    textitem->setVisible (false);
-  else
-    textitem->setVisible (true);
+  textitem->setVisible (events_enabled);
   textitem->setPlainText ("Please wait...");
   textitem->setDefaultTextColor (forecolor);
   font.setFamily (DEFAULT_FONT_FAMILY );
   font.setWeight (QFont::Bold);
-  font.setPixelSize (14);
   font.setPointSize (14);
   textitem->setFont (font);
   onlineprice->setTitle ("Label");

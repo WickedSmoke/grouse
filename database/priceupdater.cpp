@@ -147,8 +147,7 @@ static void _startWorker( QObject* worker, QThread* thread )
 {
   worker->moveToThread(thread);
   worker->connect(thread, SIGNAL(started()), SLOT(process()));
-  thread->start();
-  thread->setPriority (QThread::LowestPriority);
+  thread->start(QThread::LowestPriority);
 }
 
 PriceUpdater::PriceUpdater(QString symbol, QString feed, QTACObject *parent) :
