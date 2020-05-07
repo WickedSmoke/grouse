@@ -364,12 +364,15 @@ OptionsDialog::OptionsDialog(QWidget* parent) :
     }
 
 
-    _network = new QGroupBox;
-    _network->setFlat(true);
-    _network->setCheckable(true);
-    _network->setChecked( gPref->enableproxy );
-    _network->setTitle("&Enable Proxy");
-    form = new QFormLayout( _network );
+    QWidget* network = new QWidget;
+    lo2 = new QVBoxLayout(network);
+
+    _proxy = new QGroupBox("&Enable Proxy");
+    _proxy->setFlat(true);
+    _proxy->setCheckable(true);
+    _proxy->setChecked( gPref->enableproxy );
+    form = new QFormLayout( _proxy );
+    lo2->addWidget( _proxy );
 
         _host    = new QLineEdit( gPref->proxyhost );
         _port    = new QSpinBox;
@@ -377,23 +380,26 @@ OptionsDialog::OptionsDialog(QWidget* parent) :
         _port->setValue( gPref->proxyport );
         _user    = new QLineEdit( gPref->proxyuser );
         _passwd  = new QLineEdit( gPref->proxypass );
-        _timeout = new QSpinBox;
-        _timeout->setRange( 20, 120 );
-        _timeout->setSuffix(" sec.");
-        _timeout->setValue( gPref->nettimeout );
         form->addRow( "Host:", _host );
         form->addRow( "Port:", _port );
         form->addRow( "User:", _user );
         form->addRow( "Password:", _passwd );
-        form->addRow( "Timeout:", _timeout );
 
+    form = new QFormLayout;
+    lo2->addLayout( form );
+
+        _timeout = new QSpinBox;
+        _timeout->setRange( 20, 120 );
+        _timeout->setSuffix(" sec.");
+        _timeout->setValue( gPref->nettimeout );
+        form->addRow( "Timeout:", _timeout );
 
     _charts = new ChartPropertiesWidget;
 
 
     tab->addTab( general, "General" );
     tab->addTab( ticker, "Ticker" );
-    tab->addTab( _network, "Network" );
+    tab->addTab( network, "Network" );
     tab->addTab( _charts, "Chart Defaults" );
     //tab->addTab( "Develop" );
 
@@ -515,7 +521,7 @@ void OptionsDialog::saveOptions()
     gPref->scrollspeed = (qint16) _tspeed->value();
 
     // Network
-    gPref->enableproxy = _network->isChecked();
+    gPref->enableproxy = _proxy->isChecked();
     gPref->proxyhost  = _host->text();
     gPref->proxyport  = _port->value();
     gPref->proxyuser  = _user->text();
@@ -557,7 +563,7 @@ void OptionsDialog::showEvent(QShowEvent *event)
     _tspeed->setValue( gPref->scrollspeed );
 
     // Network
-    _network->setChecked( gPref->enableproxy );
+    _proxy->setChecked( gPref->enableproxy );
     _host->setText( gPref->proxyhost );
     _port->setValue( gPref->proxyport );
     _user->setText( gPref->proxyuser );

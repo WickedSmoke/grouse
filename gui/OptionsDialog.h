@@ -126,7 +126,7 @@ private:
     QComboBox* _tfeed;
     QSpinBox*  _tspeed;
 
-    QGroupBox* _network;
+    QGroupBox* _proxy;
     QLineEdit* _host;
     QSpinBox*  _port;
     QLineEdit* _user;
