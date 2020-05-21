@@ -22,7 +22,6 @@
 
 #include <QtGlobal>
 
-#include "segvcatch.h"
 #include "chartapp.h"
 
 using std::unique_ptr;
@@ -73,6 +72,25 @@ void CGMessageHandler (QtMsgType type, const QMessageLogContext &context,
 
 QString installationPath;
 
+#ifdef Q_OS_WIN32
+// Convert hardware exceptions into software exceptions.
+static LONG CALLBACK win32_exception_handler(LPEXCEPTION_POINTERS e)
+{
+    if (e->ExceptionRecord->ExceptionCode == EXCEPTION_ACCESS_VIOLATION)
+    {
+        throw std::runtime_error("Segmentation fault");
+        return EXCEPTION_CONTINUE_EXECUTION;
+    }
+    else if (e->ExceptionRecord->ExceptionCode == EXCEPTION_INT_DIVIDE_BY_ZERO)
+    {
+        throw std::runtime_error("Floating-point exception");
+        return EXCEPTION_CONTINUE_EXECUTION;
+    }
+    else
+        return EXCEPTION_CONTINUE_SEARCH;
+}
+#endif
+
 int
 main (int argc, char *argv[])
 {
@@ -85,8 +103,7 @@ main (int argc, char *argv[])
 #endif
 
 #ifdef Q_OS_WIN32
-  segvcatch::init_segv ();
-  segvcatch::init_fpe ();
+  SetUnhandledExceptionFilter(win32_exception_handler);
 
   QByteArray path = installationPath.toLatin1 ();
   if (platformString ().contains (QStringLiteral ("gcc")))
