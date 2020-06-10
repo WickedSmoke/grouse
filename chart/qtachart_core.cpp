@@ -42,6 +42,7 @@ QTAChartCore::QTAChartCore (QWidget * parent)
   classError = CG_ERR_OK;
   chart = &View;
   scene = &Scene;
+  Scene.core = this;
   paramdlgopened = 0;
   visibleitems = 0;
   visiblegriditems = 0;
@@ -87,7 +88,6 @@ QTAChartCore::QTAChartCore (QWidget * parent)
   topedge = NULL;
   bottomedge = NULL;
   chartEventFilter = NULL;
-  sceneEventFilter = NULL;
 
   if (parent != NULL)
     setParent (parent);
@@ -178,9 +178,6 @@ QTAChartCore::QTAChartCore (QWidget * parent)
   chartEventFilter = new (std::nothrow) QTAChartEventFilter (this);
   if (!chartEventFilter) goto constructor_failed;
 
-  sceneEventFilter = new (std::nothrow) QTAChartSceneEventFilter (this);
-  if (!sceneEventFilter) goto constructor_failed;
-
 #ifdef CHART_SCREENS
   expandBtn->setAutoRaise (true);
   propertiesBtn->setAutoRaise (true);
@@ -238,7 +235,6 @@ constructor_failed:
   if (title) delete title;
   if (subtitle) delete subtitle;
   if (chartEventFilter) delete chartEventFilter;
-  if (sceneEventFilter) delete sceneEventFilter;
   if (ITEMS) delete[] ITEMS;
   if (GRID) delete[] GRID;
   classError = CG_ERR_NOMEM;
@@ -298,7 +294,6 @@ QTAChartCore::~QTAChartCore (void)
   delete title;
   delete subtitle;
   delete chartEventFilter;
-  delete sceneEventFilter;
 
   deleteITEMS ();
   delete[] ITEMS;

@@ -214,7 +214,6 @@ public:
   QTCGraphicsScene Scene; // static scene
   QGraphicsView View; // static view
   QTAChartEventFilter *chartEventFilter;    // event filter for chart
-  QTAChartSceneEventFilter *sceneEventFilter;   // event filter for chart
   QColor forecolor;     // foreground color
   QColor backcolor;     // background color
   QColor framecolor;        // bar's frame color

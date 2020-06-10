@@ -25,30 +25,25 @@
 
 
 //----------------------------------------------------------------------------
-// QTAChartSceneEventFilter
+// QTCGraphicsScene
 
-QTAChartSceneEventFilter::QTAChartSceneEventFilter (QObject * parent)
+QTCGraphicsScene::QTCGraphicsScene(QObject * parent) : QGraphicsScene(parent)
 {
+  // NOTE: core must be set manually by scene owner.
+
   dragOffsetX = dragOffsetY = 0.0;
   padx = -1;
   pady = -1;
   phase = 0;
-
-  if (parent != NULL)
-    setParent (parent);
-
-  core = qobject_cast <QTAChartCore *> (parent);
 }
 
 // control drag and add an object on the chart
-void
-QTAChartSceneEventFilter::dragObjectCtrl (QObject *coreptr, QEvent *event)
+void QTCGraphicsScene::dragObjectCtrl(QGraphicsSceneMouseEvent *event)
 {
-  Q_UNUSED (coreptr);
   if (core->dragged_obj_type == QTACHART_OBJ_LABEL ||
       core->dragged_obj_type == QTACHART_OBJ_TEXT)
   {
-    dragText (core, event);
+    dragText(event);
     return;
   }
 
@@ -57,31 +52,20 @@ QTAChartSceneEventFilter::dragObjectCtrl (QObject *coreptr, QEvent *event)
       core->dragged_obj_type == QTACHART_OBJ_LINE ||
       core->dragged_obj_type == QTACHART_OBJ_FIBO)
   {
-    dragHVLine (core, event);
+    dragHVLine(event);
     return;
   }
 }
 
 // drag and add a line
-void
-QTAChartSceneEventFilter::dragHVLine (QObject *coreptr, QEvent *event)
+void QTCGraphicsScene::dragHVLine(QGraphicsSceneMouseEvent *event)
 {
-  Q_UNUSED (coreptr);
-  QGraphicsSceneMouseEvent *qMouse;
-  QPointF point;
-  QRectF rect;
-  qreal x, y;
-  int evtype;
+    QPointF point;
+    QRectF rect;
+    qreal x, y;
+    int evtype = event->type ();
 
-  evtype = event->type ();
-  // mouse buttons
-  if (evtype == QEvent::GraphicsSceneMousePress ||
-      evtype == QEvent::GraphicsSceneMouseRelease ||
-      evtype == QEvent::GraphicsSceneMouseMove)
-  {
-
-    qMouse = (QGraphicsSceneMouseEvent *) event;
-    point = qMouse->scenePos ();
+    point = event->scenePos ();
     x = point.x ();
     y = point.y ();
 
@@ -214,26 +198,17 @@ QTAChartSceneEventFilter::dragHVLine (QObject *coreptr, QEvent *event)
         }
       }
     }
-  }
 }
 
 
 // drag and add a Label/Text object
-void
-QTAChartSceneEventFilter::dragText (QObject *coreptr, QEvent *event)
+void QTCGraphicsScene::dragText(QGraphicsSceneMouseEvent *event)
 {
-  Q_UNUSED (coreptr)
-  QGraphicsSceneMouseEvent *qMouse;
-  QPointF point;
-  QRectF rect;
-  qreal x, y;
+    QPointF point;
+    QRectF rect;
+    qreal x, y;
 
-  if (event->type () == QEvent::GraphicsSceneMousePress ||
-      event->type () == QEvent::GraphicsSceneMouseRelease ||
-      event->type () == QEvent::GraphicsSceneMouseMove)
-  {
-    qMouse = static_cast <QGraphicsSceneMouseEvent *> (event);
-    point = qMouse->scenePos ();
+    point = event->scenePos ();
     x = point.x ();
     y = point.y ();
     rect = core->textitem->boundingRect ();
@@ -282,148 +257,132 @@ QTAChartSceneEventFilter::dragText (QObject *coreptr, QEvent *event)
       appRestoreOverrideCursor (core->chart);
       padx = pady = -1;
     }
-  }
 }
 
-bool
-QTAChartSceneEventFilter::eventFilter (QObject * object, QEvent * event)
+void QTCGraphicsScene::updatePos(QGraphicsSceneMouseEvent *event)
 {
-  QGraphicsSceneMouseEvent *qMouse;
-  QPointF point;
-  qreal x, y, diff, adiff;
-  int evtype;
+    QPointF pos = event->scenePos();
+    core->setBottomText(pos.x());
+    core->setRullerCursor(pos.y());
+    core->last_x = pos.x();
+}
 
-  if (Q_UNLIKELY (core->object_drag))
-  {
-    dragObjectCtrl (core, event);
-    return false;
-  }
-
-  if (Q_UNLIKELY (!core->events_enabled))
-    return false;
-
-  event->accept ();
-  evtype = event->type ();
-
-  // mouse buttons
-  if (Q_LIKELY (evtype == QEvent::GraphicsSceneMousePress ||
-                evtype == QEvent::GraphicsSceneMouseRelease ||
-                evtype == QEvent::GraphicsSceneMouseMove))
-  {
-    qMouse = static_cast <QGraphicsSceneMouseEvent *> (event);
-    point = qMouse->scenePos ();
-
-    x = point.x ();
-    y = point.y ();
-
-    core->setBottomText (x);
-    core->setRullerCursor (y);
-
-    if (Q_LIKELY (x >= core->chartleftmost &&
-                  y >= core->charttopmost &&
-                  x <= core->chartrightmost + core->right_border_width &&
-                  y <= core->chartbottomost))
+void QTCGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+    QGraphicsScene::mouseMoveEvent(event);
+    if( event->isAccepted() )
+        return;
+    if( core->object_drag )
     {
-      core->last_x = x;
+        dragObjectCtrl(event);
+        return;
     }
-    else
-    {
-      appRestoreOverrideCursor (core->chart);
-      core->drag = false;
-      return false;
-    }
-  }
-  else
-  {
-    // mouse wheel
-    if (evtype == QEvent::GraphicsSceneWheel)
-    {
-      QGraphicsSceneWheelEvent *qWheel;
-      qWheel = static_cast <QGraphicsSceneWheelEvent *> (event);
+    if (! core->events_enabled)
+        return;
 
-#ifdef GUI_DESKTOP
-      // Zoom
-      if (qWheel->delta () > 0)
-      {
-        if (core->framewidth < 25)
-        {
-            core->framewidth++;
-            core->draw();
-        }
-      }
-      else
-      {
-        if (core->framewidth > 3)
-        {
-            core->framewidth--;
-            core->draw();
-        }
-      }
-#else
-      if (qWheel->delta () > 0)
-        core->chartForward (1);     // right
-      else
-        core->chartBackward (1);    // left
-
-      core->setRullerCursor (core->ruller_cursor_y);
-      core->setBottomText (core->last_x);
-#endif
-    }
-    return false;
-  }
-
-  // mouse button press
-  switch (evtype)
-  {
-  // left button
-  case QEvent::GraphicsSceneMousePress:
-    if (qMouse->button () == Qt::LeftButton && core->drag == false )
-    {
-      if (y > core->title_height && x < core->width)
-      {
-        core->drag = true;
-        core->initial_mouse_x = x;
-        appSetOverrideCursor (core->chart, QCursor (Qt::ClosedHandCursor));
-      }
-    }
-    break;
-
-  // mouse button release
-  case QEvent::GraphicsSceneMouseRelease:
     if (core->drag == true)
     {
-      core->drag = false;
-      appRestoreOverrideCursor (core->chart);
-      return true;
-    }
-    break;
-
-  // drag
-  default:
-    if (core->drag == true)
-    {
-      int sense = 4;
-      diff = core->initial_mouse_x - x;
-      adiff = qAbs (diff);
+      const int sense = 4;
+      QPointF pos = event->scenePos();
+      qreal diff = core->initial_mouse_x - pos.x();
+      qreal adiff = qAbs(diff);
 
       // pointer moved right
       if (adiff >= sense)
       {
-        int bars;
-        bars = (int) (adiff / core->framewidth);
+        int bars = (int) (adiff / core->framewidth);
         if (bars > 0)
         {
           if (diff < 0)
-            core->chartBackward (bars);
+            core->chartBackward(bars);
           else      // pointer moved left
-            core->chartForward (bars);
-          core->initial_mouse_x = point.x ();
-          return true;
+            core->chartForward(bars);
+          core->initial_mouse_x = pos.x();
         }
       }
     }
+    updatePos(event);
+}
+
+void QTCGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    QGraphicsScene::mousePressEvent(event);
+    if( event->isAccepted() )
+        return;
+    if( core->object_drag )
+    {
+        dragObjectCtrl(event);
+        return;
+    }
+    if (! core->events_enabled)
+        return;
+
+    if (event->button() == Qt::LeftButton && core->drag == false )
+    {
+      QPointF pos = event->scenePos();
+      if (pos.y() > core->title_height && pos.x() < core->width)
+      {
+        core->drag = true;
+        core->initial_mouse_x = pos.x();
+        appSetOverrideCursor(core->chart, QCursor(Qt::ClosedHandCursor));
+      }
+    }
+    updatePos(event);
+}
+
+void QTCGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    QGraphicsScene::mouseReleaseEvent(event);
+    if( event->isAccepted() )
+        return;
+    if( core->object_drag )
+    {
+        dragObjectCtrl(event);
+        return;
+    }
+    if (! core->events_enabled)
+        return;
+
+    if (core->drag == true)
+    {
+      core->drag = false;
+      appRestoreOverrideCursor(core->chart);
+    }
+    updatePos(event);
+}
+
+void QTCGraphicsScene::wheelEvent(QGraphicsSceneWheelEvent *event)
+{
+  if (! core->events_enabled)
+    return;
+
+#ifdef GUI_DESKTOP
+  // Zoom
+  if (event->delta() > 0)
+  {
+    if (core->framewidth < 25)
+    {
+      core->framewidth++;
+      core->draw();
+    }
   }
-  return QObject::eventFilter (object, event);
+  else
+  {
+    if (core->framewidth > 3)
+    {
+      core->framewidth--;
+      core->draw();
+    }
+  }
+#else
+  if (event->delta() > 0)
+    core->chartForward(1);      // right
+  else
+    core->chartBackward(1);     // left
+
+  core->setRullerCursor(core->ruller_cursor_y);
+  core->setBottomText(core->last_x);
+#endif
 }
 
 //----------------------------------------------------------------------------
@@ -812,8 +771,8 @@ QTACObjectEventFilter::eventFilter (QObject * watched, QEvent * event)
           core->hvline = object->hvline;
 
           QLineF line( core->hvline->line() );
-          core->sceneEventFilter->setDragOffset(line.x2() - point.x(),
-                                                line.y2() - point.y());
+          core->scene->setDragOffset(line.x2() - point.x(),
+                                     line.y2() - point.y());
 
           appSetOverrideCursor (core->chart, QCursor (Qt::PointingHandCursor));
         }

@@ -23,41 +23,6 @@
 
 class QTAChartCore;
 
-// custom event filter for scene
-class QTAChartSceneEventFilter : public QObject
-{
-  Q_OBJECT
-
-public:
-  explicit QTAChartSceneEventFilter (QObject * parent);
-
-  void setDragOffset(qreal dx, qreal dy)
-  {
-      dragOffsetX = dx;
-      dragOffsetY = dy;
-  }
-
-private:
-  QTAChartCore *core;
-  qreal dragOffsetX;
-  qreal dragOffsetY;
-  qreal padx;		// pad over x
-  qreal pady;		// pad over y
-  qint32 phase;     // 0, 1, 2, 3....
-
-  // control drag and add an object on the chart
-  void dragObjectCtrl (QObject *core, QEvent *event);
-
-  // drag and add a Label/Text object
-  void dragText (QObject *core, QEvent *event);
-
-  // drag and add a horizontal line
-  void dragHVLine (QObject *coreptr, QEvent *event);
-
-protected:
-  bool eventFilter (QObject * object, QEvent * event);
-};
-
 // custom event filter for chart
 class QTAChartEventFilter : public QObject
 {

@@ -22,14 +22,21 @@
 #include <QGraphicsScene>
 #include <QMutex>
 
+class QTAChartCore;
+
 // QTCGraphicsScene
 class QTCGraphicsScene : public QGraphicsScene
 {
   Q_OBJECT
-  	
-public:
-  explicit QTCGraphicsScene (QObject * parent = 0) : QGraphicsScene (parent) { };
 
+public:
+  explicit QTCGraphicsScene (QObject *parent = nullptr);
+
+  void setDragOffset(qreal dx, qreal dy)
+  {
+      dragOffsetX = dx;
+      dragOffsetY = dy;
+  }
 
   void
   qtcAddItem (QGraphicsItem *item)
@@ -59,9 +66,26 @@ public:
     return line;
   }
 
-private:
-  QMutex protectScene;
+  QTAChartCore* core;
 
+protected:
+  void mouseMoveEvent(QGraphicsSceneMouseEvent *);
+  void mousePressEvent(QGraphicsSceneMouseEvent *);
+  void mouseReleaseEvent(QGraphicsSceneMouseEvent *);
+  void wheelEvent(QGraphicsSceneWheelEvent *);
+
+private:
+  void dragObjectCtrl(QGraphicsSceneMouseEvent *);
+  void dragText(QGraphicsSceneMouseEvent *);
+  void dragHVLine(QGraphicsSceneMouseEvent *);
+  void updatePos(QGraphicsSceneMouseEvent *);
+
+  QMutex protectScene;
+  qreal dragOffsetX;
+  qreal dragOffsetY;
+  qreal padx;       // pad over x
+  qreal pady;       // pad over y
+  qint32 phase;     // 0, 1, 2, 3....
 };
 
 #endif // QTCGRAPHICSSCENE_H
