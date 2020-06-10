@@ -1742,6 +1742,39 @@ QTAChartCore::setRullerCursor (int y)
   ruller_cursor->setPlainText (pricestr);
 }
 
+void QTAChartCore::setSize(int w, int h)
+{
+  setSizeChanged();
+  height = h;
+  width = w;
+
+  chartrightmost = (qint64) (width - right_border_width);
+  title->setPos(chartleftmost, 1);
+  subtitle->setPos(chartleftmost, 18);
+  scaletitle->setPos(chartrightmost - 100, 1);
+  typetitle->setPos(chartrightmost - 100, 18);
+#ifdef CHART_SCREENS
+  prxhelpBtn->setPos(chartrightmost + 5, height - (bottomline_height + 2));
+#endif
+  scene->setSceneRect(0, 0, width - 5, height - 5);
+  if (events_enabled == true)
+  {
+    draw ();
+    return;
+  }
+
+#ifdef CHART_SCREENS
+  h -= 40;
+  if( prxpropScr )
+      prxpropScr->resize(w, h);
+  prxhelpScr->resize(w, h);
+  prxdataScr->resize(w, h);
+  prxdrawScr->resize(w, h);
+  prxobjectsScr->resize(w, h);
+  prxfunctionScr->resize(w, h);
+#endif
+}
+
 // show all chart's objects
 void
 QTAChartCore::showAllItems (void)

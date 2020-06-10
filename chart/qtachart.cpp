@@ -37,8 +37,7 @@
 #endif
 
 // constructor
-QTAChart::QTAChart (QWidget * parent):
-  QWidget (parent)
+QTAChart::QTAChart(QWidget *parent) : QGraphicsView(parent)
 {
   QTAChartCore *core;
   QPalette palette;
@@ -63,13 +62,22 @@ QTAChart::QTAChart (QWidget * parent):
   setMinimumSize(200, 200);
   setCursor(Qt::CrossCursor);
 
-  graphicsView = new QGraphicsView(this);
-  graphicsView->setFrameShadow(QFrame::Plain);
-  graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  graphicsView->setResizeAnchor(QGraphicsView::AnchorViewCenter);
+  setFrameShadow(QFrame::Plain);
+  setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  setResizeAnchor(QGraphicsView::AnchorViewCenter);
+
+  setViewportUpdateMode (QGraphicsView::FullViewportUpdate);
+  setCacheMode (QGraphicsView::CacheBackground);
+  setAlignment (Qt::AlignLeft | Qt::AlignTop);
+
+  setScene (core->scene);
+  installEventFilter (core->chartEventFilter);
+  setMouseTracking (true);
+  viewport()->setMouseTracking(true);
 
   // initialize
+  core->chart = this;
   core->firstshow = true;
   core->textitem = NULL;
   core->hvline = NULL;
@@ -192,16 +200,6 @@ QTAChart::QTAChart (QWidget * parent):
   core->rightedge->setPen (QPen (core->gridcolor));
   core->leftedge->setLine (0, 0, 0, 0);
   core->leftedge->setPen (QPen (core->gridcolor));
-
-  core->chart = graphicsView;
-  graphicsView->setViewportUpdateMode (QGraphicsView::FullViewportUpdate);
-  graphicsView->setCacheMode (QGraphicsView::CacheBackground);
-  graphicsView->setAlignment (Qt::AlignLeft | Qt::AlignTop);
-
-  graphicsView->setScene (core->scene);
-  graphicsView->installEventFilter (core->chartEventFilter);
-  graphicsView->setMouseTracking (true);
-  graphicsView->viewport()->setMouseTracking(true);
 
   core->scene->setItemIndexMethod (QTCGraphicsScene::NoIndex);
   core->scene->setBackgroundBrush (core->backcolor);
@@ -386,10 +384,8 @@ QTAChart::~QTAChart ()
   if (classError == CG_ERR_NOMEM)
     return;
 
-  const QTAChartCore *core = ccore;
-
-  if (core->VOLUME.size () > 0)
-    core->saveSettings ();
+  if (ccore->VOLUME.size () > 0)
+    ccore->saveSettings ();
 
   ArrayDestroyAll_imp (this);
   StringDestroyAll_imp (this);
@@ -496,63 +492,30 @@ QTAChart::goBack (void)
 /// Events
 ///
 // resize
-void
-QTAChart::resizeEvent (QResizeEvent * event)
+void QTAChart::resizeEvent (QResizeEvent * event)
 {
-  QTAChartCore *core = ccore;
+  if (event->oldSize () != event->size ())
+    ccore->setSize( width(), height() );
 
-  if (event->oldSize () == event->size ())
-    return;
-
-  core->setSizeChanged ();
-  core->height = height ();
-  core->width = width ();
-
-  core->chartrightmost = (qint64) (core->width - core->right_border_width);
-  core->title->setPos (core->chartleftmost, 1);
-  core->subtitle->setPos (core->chartleftmost, 18);
-  core->scaletitle->setPos (core->chartrightmost - 100, 1);
-  core->typetitle->setPos (core->chartrightmost - 100, 18);
-#ifdef CHART_SCREENS
-  core->prxhelpBtn->setPos (core->chartrightmost + 5,
-                            core->height - (core->bottomline_height + 2));
-#endif
-  graphicsView->resize (core->width, core->height);
-  core->scene->setSceneRect (0, 0, core->width - 5, core->height - 5);
-  if (core->events_enabled == true)
-  {
-    core->draw ();
-    return;
-  }
-
-#ifdef CHART_SCREENS
-  if( core->prxpropScr )
-      core->prxpropScr->resize (core->width, core->height - 40);
-  core->prxhelpScr->resize (core->width, core->height - 40);
-  core->prxdataScr->resize (core->width, core->height - 40);
-  core->prxdrawScr->resize (core->width, core->height - 40);
-  core->prxobjectsScr->resize (core->width, core->height - 40);
-  core->prxfunctionScr->resize (core->width, core->height - 40);
-#endif
+  QGraphicsView::resizeEvent( event );
 }
 
 // show event
-void
-QTAChart::showEvent (QShowEvent * event)
+void QTAChart::showEvent (QShowEvent * event)
 {
-  QTAChartCore *core = ccore;
-
   if (event->spontaneous ())
     return;
 
-  if (core->firstshow == true)
+  if (ccore->firstshow == true)
   {
     TemplateManagerDialog *tmpldlg = new TemplateManagerDialog;
     tmpldlg->setReferenceChart (static_cast <void*> (this));
-    tmpldlg->attachtemplate (QStringLiteral ("template_") % core->SymbolKey);
+    tmpldlg->attachtemplate (QStringLiteral ("template_") % ccore->SymbolKey);
     delete tmpldlg;
-    core->firstshow = false;
+    ccore->firstshow = false;
   }
+
+  QGraphicsView::showEvent( event );
 }
 
 // keypress (+,-, Alt + S)

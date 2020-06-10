@@ -20,7 +20,7 @@
 #define QTACHART_H
 
 #include <cstddef>
-#include <QWidget>
+#include <QGraphicsView>
 #include "DynParam.h"
 #include "QTAChartData.h"
 
@@ -33,11 +33,10 @@ namespace Ui
   class QTAChart;
 }
 
-class QGraphicsView;
 class QTAChartCore;
 class QTACObject;
 
-class QTAChart : public QWidget
+class QTAChart : public QGraphicsView
 {
   Q_OBJECT
 
@@ -121,7 +120,6 @@ signals:
   void expandChartToggle();
 
 private:
-  QGraphicsView *graphicsView;
   QString tabText;              // parent tab's label
   QTAChartCore *ccore;          // chart's data area
   int classError;               // class error

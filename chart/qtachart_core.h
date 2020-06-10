@@ -184,6 +184,7 @@ public:
   void setBottomText (int x);   // set the bottom text
   void setCustomBottomText (QString string); // set the bottom text to custom string
   void setChartStyle (int chartstyle);  // set the chart's style
+  void setSize(int w, int h);
 #ifdef CHART_SCREENS
   void setChartProperties (void);   // set the chart's properties
   void selectDrawObject (void); // select object to draw
