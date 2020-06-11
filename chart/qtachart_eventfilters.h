@@ -23,18 +23,6 @@
 
 class QTAChartCore;
 
-// custom event filter for chart
-class QTAChartEventFilter : public QObject
-{
-  Q_OBJECT
-
-public:
-  explicit QTAChartEventFilter (QObject * parent);
-
-protected:
-  bool eventFilter (QObject * watched, QEvent * event);
-};
-
 // custom event filter for object
 class QTACObjectEventFilter : public QObject
 {

@@ -29,7 +29,6 @@
 #include "qtcgraphicsscene.h"
 #include "qtachart.h"
 #include "qtachart_properties.h"
-#include "qtachart_eventfilters.h"
 #include "qtachart_help.h"
 #include "qtachart_data.h"
 #include "qtachart_draw.h"
@@ -213,7 +212,6 @@ public:
   QMutex *DrawMutex; // mutex to protect chart from concurent updates
   QTCGraphicsScene Scene; // static scene
   QGraphicsView View; // static view
-  QTAChartEventFilter *chartEventFilter;    // event filter for chart
   QColor forecolor;     // foreground color
   QColor backcolor;     // background color
   QColor framecolor;        // bar's frame color

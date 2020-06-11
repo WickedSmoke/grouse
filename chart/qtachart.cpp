@@ -72,7 +72,6 @@ QTAChart::QTAChart(QWidget *parent) : QGraphicsView(parent)
   setAlignment (Qt::AlignLeft | Qt::AlignTop);
 
   setScene (core->scene);
-  installEventFilter (core->chartEventFilter);
   setMouseTracking (true);
   viewport()->setMouseTracking(true);
 
@@ -490,6 +489,38 @@ QTAChart::goBack (void)
 
 /// Events
 ///
+static bool nextTab(const QTAChart* chart, int n)
+{
+    QTabWidget* tab =
+        qobject_cast <QTabWidget *> (chart->parentWidget()->parentWidget());
+                                        // QStackedWidget -> QTabWidget
+    if( tab )
+    {
+        n += tab->currentIndex();
+        if( n >= 0 && n < tab->count() )
+        {
+            tab->setCurrentIndex(n);
+            tab->update();
+            return true;
+        }
+    }
+    return false;
+}
+
+bool QTAChart::event(QEvent* event)
+{
+    // Must override event() to intercept Tab key presses.
+    if( event->type() == QEvent::KeyPress )
+    {
+        QKeyEvent *ke = static_cast<QKeyEvent *>(event);
+        if( ke->key() == Qt::Key_Tab )
+            return nextTab(this, 1);
+        else if( ke->key() == Qt::Key_Backtab )
+            return( nextTab(this, -1) );
+    }
+    return QGraphicsView::event(event);
+}
+
 // resize
 void QTAChart::resizeEvent (QResizeEvent * event)
 {
@@ -514,7 +545,21 @@ void QTAChart::showEvent (QShowEvent * event)
     ccore->firstshow = false;
   }
 
+  //ccore->scene->setFocus(Qt::OtherFocusReason);
   QGraphicsView::showEvent( event );
+}
+
+static void _chartKeyFocus( QTAChartCore* core )
+{
+  appRestoreOverrideCursor (core->chart);
+  core->setRullerCursor (core->ruller_cursor_y);
+  core->setBottomText (core->last_x);
+}
+
+void QTAChart::focusInEvent (QFocusEvent * event )
+{
+  _chartKeyFocus( ccore );
+  QGraphicsView::focusInEvent(event);
 }
 
 // keypress (+,-, Alt + S)
@@ -522,65 +567,68 @@ void
 QTAChart::keyPressEvent (QKeyEvent * event)
 {
   QTAChartCore *core = ccore;
+  int keyCode;
 
   if (core->object_drag)
     return;
+
+  keyCode = event->key();
 
   // Alt
   if (event->modifiers () & Qt::AltModifier)
   {
 #ifdef CHART_SCREENS
     // expand (Alt + E)
-    if (event->key () == Qt::Key_E && core->events_enabled == true)
+    if (keyCode == Qt::Key_E && core->events_enabled == true)
     {
       expandBtn_clicked ();
       return;
     }
     else
     // properties (Alt + S)
-    if (event->key () == Qt::Key_S && core->events_enabled == true)
+    if (keyCode == Qt::Key_S && core->events_enabled == true)
     {
       propertiesBtn_clicked ();
       return;
     }
     else
     // help (Alt + H)
-    if (event->key () == Qt::Key_H && core->events_enabled == true)
+    if (keyCode == Qt::Key_H && core->events_enabled == true)
     {
       helpBtn_clicked ();
       return;
     }
     else
     // data (Alt + Y)
-    if (event->key () == Qt::Key_Y && core->events_enabled == true)
+    if (keyCode == Qt::Key_Y && core->events_enabled == true)
     {
       dataBtn_clicked ();
       return;
     }
     else
     // indicators (Alt + F)
-    if (event->key () == Qt::Key_F && core->events_enabled == true)
+    if (keyCode == Qt::Key_F && core->events_enabled == true)
     {
       functionBtn_clicked ();
       return;
     }
     else
     // draw (Alt + D)
-    if (event->key () == Qt::Key_D && core->events_enabled == true)
+    if (keyCode == Qt::Key_D && core->events_enabled == true)
     {
       drawBtn_clicked ();
       return;
     }
     else
     // objects (Alt + O)
-    if (event->key () == Qt::Key_O && core->events_enabled == true)
+    if (keyCode == Qt::Key_O && core->events_enabled == true)
     {
       objectsBtn_clicked ();
       return;
     }
     else
     // back (Alt + Z)
-    if (event->key () == Qt::Key_Z)
+    if (keyCode == Qt::Key_Z)
     {
       backBtn_clicked ();
       return;
@@ -593,7 +641,7 @@ QTAChart::keyPressEvent (QKeyEvent * event)
     }
     else
     // line chart (Alt + L)
-    if (event->key () == Qt::Key_L)
+    if (keyCode == Qt::Key_L)
     {
       core->deleteITEMS ();
       core->setChartStyle (QTACHART_LINE);
@@ -601,7 +649,7 @@ QTAChart::keyPressEvent (QKeyEvent * event)
     }
     else
     // candle chart (Alt + C)
-    if (event->key () == Qt::Key_C)
+    if (keyCode == Qt::Key_C)
     {
       core->deleteITEMS ();
       core->setChartStyle (QTACHART_CANDLE);
@@ -609,7 +657,7 @@ QTAChart::keyPressEvent (QKeyEvent * event)
     }
     else
     // heikin-ashi chart (Alt + A)
-    if (event->key () == Qt::Key_A)
+    if (keyCode == Qt::Key_A)
     {
       core->deleteITEMS ();
       core->setChartStyle (QTACHART_HEIKINASHI);
@@ -617,7 +665,7 @@ QTAChart::keyPressEvent (QKeyEvent * event)
     }
     else
     // bar chart (Alt + B)
-    if (event->key () == Qt::Key_B)
+    if (keyCode == Qt::Key_B)
     {
       core->deleteITEMS ();
       core->setChartStyle (QTACHART_BAR);
@@ -625,7 +673,7 @@ QTAChart::keyPressEvent (QKeyEvent * event)
     }
     else
     // volumes on/off (Alt + V)
-    if (event->key () == Qt::Key_V)
+    if (keyCode == Qt::Key_V)
     {
       if (core->show_volumes)
         core->deleteVolumes ();
@@ -635,54 +683,91 @@ QTAChart::keyPressEvent (QKeyEvent * event)
     }
     else
     // grid on/off (Alt + G)
-    if (event->key () == Qt::Key_G)
+    if (keyCode == Qt::Key_G)
     {
       core->show_grid = ! core->show_grid;
       goto EventEndLbl;
     }
     else
     // online price on/off (Alt + P)
-    if (event->key () == Qt::Key_P)
+    if (keyCode == Qt::Key_P)
     {
       core->show_onlineprice = ! core->show_onlineprice;
       goto EventEndLbl;
     }
     else
     // linear price scale on/off (Alt + X)
-    if (event->key () == Qt::Key_X)
+    if (keyCode == Qt::Key_X)
     {
       core->setLinearScale (! core->linear);
       goto EventEndLbl;
     }
-    else
-      return;
+    return;
+
+EventEndLbl:
+    core->draw();
+    return;
   }
 
   if (!core->events_enabled)
     return;
 
-  // plus
-  if (event->key () == Qt::Key_Plus || event->key () == Qt::Key_Equal)
+  //_chartKeyFocus(core);
+
+  if (keyCode == Qt::Key_Left)
+  {
+    core->chartBackward(1);
+  }
+  else if (keyCode == Qt::Key_Right)
+  {
+    core->chartForward(1);
+  }
+  else if (keyCode == Qt::Key_Home)
+  {
+    core->chartBegin();
+  }
+  else if (keyCode == Qt::Key_End)
+  {
+    core->chartEnd();
+  }
+  else if (keyCode == Qt::Key_PageUp)
+  {
+    core->chartPagePrevious();
+  }
+  else if (keyCode == Qt::Key_PageDown)
+  {
+    core->chartPageNext();
+  }
+  else if (keyCode == Qt::Key_Escape)
+  {
+    if (core->object_drag == true)
+    {
+      core->object_drag = false;
+      if (core->textitem != NULL)
+      {
+        delete core->textitem;
+        core->textitem = NULL;
+      }
+
+      if (core->hvline != NULL)
+      {
+        delete core->hvline;
+        core->hvline = NULL;
+      }
+
+      appRestoreOverrideCursor(core->chart);
+    }
+  }
+  else if (keyCode == Qt::Key_Plus || keyCode == Qt::Key_Equal)
   {
     if (core->framewidth < 25)
       core->framewidth++;
-    else
-      return;
   }
-  else
-  // minus
-  if (event->key () == Qt::Key_Minus)
+  else if (keyCode == Qt::Key_Minus)
   {
     if (core->framewidth > 3)
       core->framewidth--;
-    else
-      return;
   }
-  else
-    return;
-
-EventEndLbl:
-  core->draw ();
 }
 
 #ifdef CHART_SCREENS

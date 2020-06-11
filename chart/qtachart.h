@@ -141,9 +141,11 @@ private slots:
 #endif
 
 protected:
+  bool event(QEvent*);
   virtual void resizeEvent (QResizeEvent * event);
   virtual void keyPressEvent (QKeyEvent * event);
   virtual void showEvent (QShowEvent * event);
+  virtual void focusInEvent (QFocusEvent *event);
 };
 
 #endif // QTACHART_H
