@@ -170,6 +170,7 @@ QTACFunctions::createButtons (void)
   _paramDialogMomentum(bd);
   _paramDialogDMI(bd);
   _paramDialogATR(bd);
+  _paramDialogRange(bd);
 
   // sort buttons
   qSort(Button.begin(), Button.end(), ButtonCmp);
