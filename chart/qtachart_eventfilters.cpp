@@ -644,6 +644,7 @@ QTACObjectEventFilter::eventFilter (QObject * watched, QEvent * event)
       }
     }
   }
+#if 0
   else if (evtype == QEvent::KeyPress)
   {
     if (object->type == QTACHART_OBJ_HLINE)
@@ -661,6 +662,24 @@ QTACObjectEventFilter::eventFilter (QObject * watched, QEvent * event)
       }
     }
   }
+#else
+  else if (evtype == QEvent::ShortcutOverride)
+  {
+    if (object->type == QTACHART_OBJ_HLINE)
+    {
+      QKeyEvent* ev = static_cast<QKeyEvent *>(event);
+      int keyCode = ev->key();
+      if( (keyCode == Qt::Key_Up || keyCode == Qt::Key_Down) &&
+          (ev->modifiers() == Qt::NoModifier) )
+      {
+        qreal dy = (keyCode == Qt::Key_Up) ? 0.1 : -0.1;
+        object->setHLine(object->hvline, object->price + dy);
+        event->accept();
+        return false;
+      }
+    }
+  }
+#endif
 
   return QObject::eventFilter(object, event);
 }
