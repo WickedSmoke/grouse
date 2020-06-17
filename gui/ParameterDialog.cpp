@@ -122,6 +122,7 @@ void DynParamsDialog::addParam( QString paramName, QString label,
     if (type == DPT_INT)
     {
         QSpinBox* spin = new QSpinBox(this);
+        spin->setRange( 0, 200 );
         connect(spin, SIGNAL(valueChanged(int)),
                 this, SLOT(intChanged(int)));
         field = spin;
