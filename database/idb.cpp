@@ -170,6 +170,47 @@ void updatePrice(RTPrice rtprice)
 }
 
 
+#include "feedav.h"
+#include "feediex.h"
+#include "feedyahoo.h"
+
+
+FeedUpdater::~FeedUpdater()
+{
+    delete yf;
+    delete ef;
+    delete af;
+}
+
+
+CG_ERR_RESULT FeedUpdater::update( FeedSource src, const QString& symbol,
+                            const QString& timeframe, const QString& currency )
+{
+    const QString& update = QStringLiteral("UPDATE");
+    switch( src )
+    {
+        case SourceYahoo:
+            if( ! yf )
+                yf = new YahooFeed;
+            return yf->downloadData(symbol, timeframe, currency, update, true);
+
+        case SourceIEX:
+            if( ! ef )
+                ef = new IEXFeed;
+            return ef->downloadData(symbol, timeframe, currency, update, true);
+
+        case SourceAlphaVantage:
+            if( ! af )
+                af = new AlphaVantageFeed;
+            return af->downloadData(symbol, timeframe, currency, update, true);
+
+        default:
+            break;
+    }
+    return CG_ERR_OK;
+}
+
+
 // TODO: Make this a callback to let user control response.
 static void _dbExit( int exitStatus, const char* msg )
 {

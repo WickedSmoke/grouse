@@ -152,6 +152,26 @@ enum FeedSource
 };
 
 
+class YahooFeed;
+class IEXFeed;
+class AlphaVantageFeed;
+
+class FeedUpdater
+{
+public:
+    FeedUpdater() : yf(nullptr), ef(nullptr), af(nullptr) {}
+    ~FeedUpdater();
+
+    CG_ERR_RESULT update( FeedSource src, const QString& symbol,
+                          const QString& timeframe, const QString& currency );
+
+private:
+    YahooFeed* yf;
+    IEXFeed* ef;
+    AlphaVantageFeed* af;
+};
+
+
 class InstrumentDatabase
 {
 public:

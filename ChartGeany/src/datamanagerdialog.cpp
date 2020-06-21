@@ -391,16 +391,13 @@ DataManagerDialog::trashButton_clicked ()
 void
 DataManagerDialog::updateButton_clicked ()
 {
-  YahooFeed YF;
-  IEXFeed EF;
-  AlphaVantageFeed AF;
+  FeedUpdater feedUp;
 
   QStringList symbol, timeframe, currency, feed,
               base, name, market, path, format;
   QString prevbase = QStringLiteral ("");
   CG_ERR_RESULT result = CG_ERR_OK;
   int row, maxrow, errcounter = 0;
-  bool adjbool = true;
 
   maxrow = ui->tableWidget->rowCount ();
   for (qint32 counter = 0; counter < maxrow; counter ++)
@@ -451,10 +448,11 @@ DataManagerDialog::updateButton_clicked ()
     progressdialog->setMessage (QStringLiteral ("Updating data for symbol: ") % symbol.at (row));
     qApp->processEvents ();
 
-    if (feed.at (row) == QLatin1String ("YAHOO"))
+    FeedSource src = InstrumentDatabase::feedSource( feed.at(row) );
+    if( src != SourceNone )
     {
-      result = YF.downloadData (symbol.at (row), timeframe.at (row), currency.at (row),
-                                QStringLiteral ("UPDATE"), adjbool);
+      result = feedUp.update(src, symbol.at(row), timeframe.at(row),
+                             currency.at(row));
       if (result != CG_ERR_OK)
       {
         errcounter ++;
@@ -466,40 +464,8 @@ DataManagerDialog::updateButton_clicked ()
         }
       }
     }
-
-    if (feed.at (row) == QLatin1String ("IEX"))
-    {
-      result = EF.downloadData (symbol.at (row), timeframe.at (row), currency.at (row),
-                                QStringLiteral ("UPDATE"), adjbool);
-      if (result != CG_ERR_OK)
-      {
-        errcounter ++;
-        if (maxrow == 1)
-        {
-          progressdialog->hide ();
-          showMessage (errorMessage (result), this);
-          return;
-        }
-      }
-    }
-
-    if (feed.at (row) == QLatin1String ("ALPHAVANTAGE"))
-    {
-      result = AF.downloadData (symbol.at (row), timeframe.at (row), currency.at (row),
-                                QStringLiteral ("UPDATE"), adjbool);
-      if (result != CG_ERR_OK)
-      {
-        errcounter ++;
-        if (maxrow == 1)
-        {
-          progressdialog->hide ();
-          showMessage (errorMessage (result), this);
-          return;
-        }
-      }
-    }
-
-    if (feed.at (row) == QLatin1String ("CSV") && path.at (row) != "" && format.at (row) != "")
+    else if (feed.at(row) == QLatin1String("CSV") && path.at(row) != "" &&
+             format.at(row) != "")
     {
       SymbolEntry symboldata;
 
@@ -541,8 +507,7 @@ DataManagerDialog::updateButton_clicked ()
         }
       }
     }
-
-    if (feed.at (row) == QLatin1String ("XLS") && path.at (row) != "")
+    else if (feed.at(row) == QLatin1String("XLS") && path.at(row) != "")
     {
       SymbolEntry symboldata;
 
