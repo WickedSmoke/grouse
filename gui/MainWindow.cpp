@@ -177,9 +177,21 @@ void MainWindow::browserSelect( QTreeWidgetItem* item, int )
                                        adj, &td );
     if (rc != CG_ERR_OK)
     {
+error:
         showMessage(errorMessage(rc), this);
         return;
     }
+
+    if (Application_Options->autoupdate)
+    {
+        FeedUpdater feedUp;
+        const TableDataClass& t = td[0];
+        FeedSource src = InstrumentDatabase::feedSource( t.source );
+        rc = feedUp.update(src, t.symbol, t.timeframe, t.currency);
+        if (rc != CG_ERR_OK)
+            goto error;
+    }
+
     showChart( td );
 }
 
