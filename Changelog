@@ -2,6 +2,7 @@
 
 Version 1.0.0 - 8 Apr 2020
   * Desktop oriented GUI added (work in progress).
+  * Range study added.
   * Eliminated delays in program startup and shutdown.
   * Main window size is now preserved between runs.
   * Dialogs now appear over parent windows.

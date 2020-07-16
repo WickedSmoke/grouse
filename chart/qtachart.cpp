@@ -1830,20 +1830,9 @@ QTACObject* QTAChart::addStudyATR( int period, QRgb color )
     return obj;
 }
 
-static qreal average( DataSet vec )
-{
-    int count = vec->size();
-    const qreal* it = vec->constData();
-    qreal sum = 0.0;
-    for( int i = 0; i < count; ++i )
-        sum += *it++;
-    return sum / qreal(count);
-}
-
-QTACObject* QTAChart::addStudyRange( QRgb color )
+QTACObject* QTAChart::addStudyRange( qreal vol, qreal quiet, QRgb color )
 {
     QTACObject *obj, *childobj;
-    DataSet data;
 
     obj = new QTACObject(ccore, QTACHART_OBJ_SUBCHART);
     obj->setAttributes(QTACHART_CLOSE, 0, QStringLiteral(""),
@@ -1854,17 +1843,16 @@ QTACObject* QTAChart::addStudyRange( QRgb color )
     childobj->setAttributes(QTACHART_CLOSE, 0, QStringLiteral(""),
                             Range, 0, QREAL_MAX,
                             color, QStringLiteral("Color"));
-    data = childobj->valueset;
-/**/
-    childobj = new QTACObject(obj, QTACHART_OBJ_HLINE);
-    childobj->setHLine(nullptr, 0.0);
-    childobj->setAttributes(QTACHART_CLOSE, 0, QStringLiteral(""),
-                            DUMMY, 0, 0, color, QStringLiteral(""));
 
     childobj = new QTACObject(obj, QTACHART_OBJ_HLINE);
-    childobj->setHLine(nullptr, average(data));
-    childobj->setAttributes(QTACHART_CLOSE, 0, QStringLiteral(""),
-                            DUMMY, 0, 0, color, QStringLiteral(""));
+    childobj->setHLine(nullptr, vol);
+    childobj->setAttributes(QTACHART_CLOSE, 0, QStringLiteral("Volatile"),
+                            DUMMY, 0, QREAL_MAX, color, QStringLiteral(""));
+
+    childobj = new QTACObject(obj, QTACHART_OBJ_HLINE);
+    childobj->setHLine(nullptr, quiet);
+    childobj->setAttributes(QTACHART_CLOSE, 0, QStringLiteral("Quiet"),
+                            DUMMY, 0, QREAL_MAX, color, QStringLiteral(""));
     return obj;
 }
 

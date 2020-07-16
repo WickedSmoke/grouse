@@ -75,5 +75,5 @@
   }
   else if (fname == QLatin1String ("Range"))
   {
-    obj = referencechart->addStudyRange( PARAM("Color") );
+    obj = referencechart->addStudyRange( PARAM("Volatile"), PARAM("Quiet"), PARAM("Color") );
   }

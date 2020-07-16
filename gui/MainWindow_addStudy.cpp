@@ -74,6 +74,6 @@
             chart->goBack();
             break;
         case 18:
-            chart->addStudyRange( qRgb(0,255,255) );
+            chart->addStudyRange( 2.0, 0.8, qRgb(0,255,255) );
             chart->goBack();
             break;

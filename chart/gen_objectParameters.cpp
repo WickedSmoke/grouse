@@ -207,6 +207,10 @@ void _objectParameters(QTACObject* obj, ParamVector& pvec)
   }
   if( name == QStringLiteral("Range") )
   {
+    pvec.addParameter(QStringLiteral("Volatile"),
+                 DPT_REAL, obj->paramValue(QStringLiteral("Volatile")) );
+    pvec.addParameter(QStringLiteral("Quiet"),
+                 DPT_REAL, obj->paramValue(QStringLiteral("Quiet")) );
     pvec.addParameter(QStringLiteral("Color"),
                  DPT_COLOR, obj->paramValue(QStringLiteral("Color")) );
     return;

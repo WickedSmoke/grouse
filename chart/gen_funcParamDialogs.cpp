@@ -297,6 +297,10 @@ _paramDialogRange(const ButtonInitData& bd)
 {
   DynParamsDialog* dlg = new DynParamsDialog(QStringLiteral("Range"), bd.wparent);
   _addButton(bd, QStringLiteral("Range"), dlg);
+  dlg->addParam(QStringLiteral("Volatile"), QStringLiteral("Volatile"),
+                DPT_REAL, 2.0);
+  dlg->addParam(QStringLiteral("Quiet"), QStringLiteral("Quiet"),
+                DPT_REAL, 0.8);
   dlg->addParam(QStringLiteral("Color"), QStringLiteral("Color"),
                 DPT_COLOR, qRgb(0,255,255));
   _connectPDialog(dlg, bd.parent);
