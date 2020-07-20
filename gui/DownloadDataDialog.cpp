@@ -380,7 +380,7 @@ void DownloadDataDialog::checkButton_clicked ()
   if (ComboItems->datafeedsList.size () == 0)
     return;
 
-  appSetOverrideCursor (this, QCursor(Qt::WaitCursor));
+  QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
   symbolEdit->setText (symbolEdit->text ().toUpper ().replace ("'", " ").trimmed ());
   marketEdit->setText ("");
   if (datafeedsCombo->currentText () == QLatin1String ("YAHOO"))
@@ -413,7 +413,7 @@ void DownloadDataDialog::checkButton_clicked ()
   }
 
   widgetsSetEnabled (true);
-  appRestoreOverrideCursor (this);
+  QGuiApplication::restoreOverrideCursor();
 }
 
 
@@ -437,7 +437,7 @@ void DownloadDataDialog::download()
   }
 
   widgetsSetEnabled (false);
-  appSetOverrideCursor (this, QCursor(Qt::WaitCursor));
+  QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
   if (datafeedsCombo->currentText () == QLatin1String ("YAHOO"))
   {
@@ -456,7 +456,7 @@ void DownloadDataDialog::download()
   if (datafeedsCombo->currentText () == QLatin1String ("ALPHAVANTAGE"))
     downloadAlphaVantageControl ();
 
-  appRestoreOverrideCursor (this);
+  QGuiApplication::restoreOverrideCursor();
   widgetsSetEnabled (true);
   GlobalProgressBar->setValue (0);
 }

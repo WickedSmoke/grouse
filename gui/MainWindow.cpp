@@ -187,7 +187,9 @@ error:
         FeedUpdater feedUp;
         const TableDataClass& t = td[0];
         FeedSource src = InstrumentDatabase::feedSource( t.source );
+        QGuiApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
         rc = feedUp.update(src, t.symbol, t.timeframe, t.currency);
+        QGuiApplication::restoreOverrideCursor();
         if (rc != CG_ERR_OK)
             goto error;
     }
