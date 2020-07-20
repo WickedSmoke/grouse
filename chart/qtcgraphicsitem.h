@@ -97,7 +97,7 @@ private:
 
   QGraphicsLineItem *lineItem;
   QGraphicsRectItem *rectItem;
-  QTCGraphicsEllipseItem *ellipseItem;
+  QGraphicsEllipseItem *ellipseItem;
   QTCGraphicsScene *Scene;
   int type;
   bool initialized;

@@ -20,14 +20,8 @@
 #define DEFS_H
 
 #include <QtGlobal>
-#if QT_VERSION > QT_VERSION_CHECK(4, 8, 7)
 #if QT_VERSION < QT_VERSION_CHECK(5, 3, 0)
-#error "Unsupported Qt Version. Supported versions are 4.8.0-4.8.7 and 5.3.0 or above"
-#endif
-#endif
-
-#if QT_VERSION < QT_VERSION_CHECK(4, 8, 0)
-#error "Unsupported Qt Version. Supported versions are 4.8.0-4.8.7 and 5.3.0 or above"
+#error "Unsupported Qt Version. Supported versions are 5.3.0 or above"
 #endif
 
 // Is nullptr supported?
@@ -141,10 +135,6 @@
 #endif
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#define alignas(n)
-#endif
-
 #endif
 
 // CGScript sanitizer enabled
@@ -156,20 +146,6 @@
 #ifndef CGSCRIPT_SANITIZER
 #define CGSCRIPT_SANITIZER      false
 #endif
-#endif
-
-// Qt4 to Qt5 compatibility definitions
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-#define setResizeMode setSectionResizeMode
-#else // For Qt4
-// export
-#ifndef Q_DECL_EXPORT
-#ifdef Q_OS_WIN
-#define Q_DECL_EXPORT       __declspec(dllexport)
-#else
-#define Q_DECL_EXPORT
-#endif
-#endif // Q_DECL_EXPORT
 #endif
 
 // base 10 logarithm
@@ -238,18 +214,6 @@ sqlcb_toolchain (void *classptr, int argc, char **argv, char **column);
 extern int
 sqlcb_toolchains (void *classptr, int argc, char **argv, char **column);
 
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#ifndef QStringLiteral
-#define QStringLiteral(str) QString::fromUtf8("" str "", sizeof(str) - 1)
-#endif
-#endif
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)  && defined (Q_OS_MAC)
-#define QTCGraphicsEllipseItem QGraphicsRectItem
-#else
-#define QTCGraphicsEllipseItem QGraphicsEllipseItem
-#endif
 
 // TOOLTIP
 // #define TOOLTIP  QString ("<span style=\"background-color:black; color: white; font: 11px;\">")

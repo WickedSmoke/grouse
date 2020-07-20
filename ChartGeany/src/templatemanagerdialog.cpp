@@ -75,7 +75,7 @@ TemplateManagerDialog::TemplateManagerDialog (QWidget * parent):
   this->setStyleSheet (stylesheet);
   ui->tableWidget->setColumnCount (4);
   ui->tableWidget->setHorizontalHeaderLabels (cheadersList);
-  ui->tableWidget->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
+  ui->tableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
   ui->tableWidget->sortByColumn (1, Qt::AscendingOrder);
   ui->tableWidget->setSortingEnabled(false);
   ui->tableWidget->setStyleSheet (stylesheet);

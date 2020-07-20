@@ -142,13 +142,11 @@ fracdig (qreal r) NOEXCEPT
 extern GNUFASTCALL char * MSVCFASTCALL
 strtoupper (char *str);
 
-// override cursor
-extern void
-appSetOverrideCursor (const QWidget *widget, const QCursor & cursor);
+#define appSetOverrideCursor(wid, cursor) \
+    QGuiApplication::setOverrideCursor(cursor)
 
-// restore overrided cursor
-extern void
-appRestoreOverrideCursor (const QWidget *widget);
+#define appRestoreOverrideCursor(wid) \
+    QGuiApplication::restoreOverrideCursor()
 
 // create portfolio views
 extern QString

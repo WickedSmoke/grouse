@@ -123,7 +123,7 @@ OptionsDialog::OptionsDialog (QWidget * parent):
   ui->tickerTableWidget->setHorizontalHeaderLabels (cheadersList);
   ui->tickerTableWidget->verticalScrollBar ()->setStyleSheet (QStringLiteral ("background: transparent; background-color:lightgray;"));
   ui->tickerTableWidget->horizontalScrollBar ()->setStyleSheet (QStringLiteral ("background: transparent; background-color:lightgray;"));
-  ui->tickerTableWidget->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
+  ui->tickerTableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
   ui->InstallationPathEdit->setText (installationPath);
 
   lineColorDialog = new appColorDialog;

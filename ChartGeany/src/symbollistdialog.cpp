@@ -63,7 +63,7 @@ SymbolListDialog::SymbolListDialog (QWidget * parent):
   ui->tableWidget->verticalScrollBar ()->setStyleSheet ("background: transparent; background-color:lightgray;");
   ui->tableWidget->horizontalScrollBar ()->setStyleSheet ("background: transparent; background-color:lightgray;");
   ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
-  ui->tableWidget->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
+  ui->tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
   ui->upToolButton->setStyleSheet (buttonstylesheet);
   ui->downToolButton->setStyleSheet (buttonstylesheet);
   ui->updateButton->setVisible (false);

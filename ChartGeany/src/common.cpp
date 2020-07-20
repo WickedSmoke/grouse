@@ -38,13 +38,6 @@
 #include "chartapp.h"
 #include "common.h"
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#include "json.hpp"
-
-using json = nlohmann::json;
-using namespace std;
-#endif
-
 #ifdef Q_OS_MAC
 #include <CoreServices/CoreServices.h>
 #endif
@@ -433,15 +426,14 @@ nativeHttpHeader ()
   return header;
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QJsonParseError>
 
-static bool
-json_parse_qt5 (QString jsonstr, QStringList *node, QStringList *value, void *n1)
+bool
+json_parse (QString jsonstr, QStringList *node, QStringList *value, void *n1)
 {
   QJsonObject *n = nullptr;
   bool result = true, allocated = false;
@@ -477,7 +469,7 @@ json_parse_qt5 (QString jsonstr, QStringList *node, QStringList *value, void *n1
       foreach (const QJsonValue it, arr)
       {
         QJsonObject n2 = it.toObject ();
-        json_parse_qt5 (jsonstr, node, value, static_cast <void *> (&n2));
+        json_parse (jsonstr, node, value, static_cast <void *> (&n2));
       }
     }
 
@@ -485,7 +477,7 @@ json_parse_qt5 (QString jsonstr, QStringList *node, QStringList *value, void *n1
     {
       QJsonObject n2 = (*n).value ((*n).keys ().at (counter)).toObject ();
 
-      if (!json_parse_qt5 (jsonstr, node, value, static_cast <void *> (&n2)))
+      if (!json_parse (jsonstr, node, value, static_cast <void *> (&n2)))
       {
         result = false;
         goto json_parse_qt5_end;
@@ -509,50 +501,6 @@ json_parse_qt5 (QString jsonstr, QStringList *node, QStringList *value, void *n1
 json_parse_qt5_end:
   if (allocated) delete n;
   return result;
-}
-#endif // QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-
-bool
-json_parse (QString jsonstr, QStringList *node, QStringList *value, void *n1)
-{
-  Q_UNUSED (n1)
-
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-  return json_parse_qt5 (jsonstr, node, value, nullptr);
-#else // QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-
-  json j;
-  try
-  {
-    j = json::parse(jsonstr.toUtf8());
-  }
-  catch(json::parse_error)
-  {
-    return false;
-  }
-
-  string cpp_string = j.dump(0);
-  QString qjs = QString::fromStdString (cpp_string);
-  qjs.replace ("{", "");
-  qjs.replace ("}", "");
-  qjs.replace ("[", "");
-  qjs.replace ("]", "");
-  qjs.replace (QChar ('"'), "");
-  qjs.replace (",", " ");
-  QStringList Nodes = qjs.split(QRegExp("\\n"));
-  foreach (QString Node, Nodes)
-  {
-    Node = Node.trimmed ();
-    if (Node.contains (":"))
-    {
-      QStringList nvpair = Node.split (":");
-      node->append (nvpair[0].trimmed ());
-      value->append (nvpair[1].trimmed ());
-    }
-  }
-
-  return true;
-#endif // QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 }
 
 // object's family tree of descendants
@@ -659,32 +607,6 @@ strtoupper (char *str)
   }
 
   return str;
-}
-
-// override and restore cursor
-void
-appSetOverrideCursor (const QWidget *wid, const QCursor & cursor)
-{
-  // ((QWidget *) wid)->setCursor (cursor);
-  Q_UNUSED (wid)
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-  QApplication::setOverrideCursor (cursor);
-#else
-  QGuiApplication::setOverrideCursor (cursor);
-#endif
-}
-
-// restore application's cursor
-void
-appRestoreOverrideCursor (const QWidget *wid)
-{
-  // ((QWidget *) wid)->setCursor (QCursor(Qt::ArrowCursor));
-  Q_UNUSED (wid)
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-  QApplication::restoreOverrideCursor ();
-#else
-  QGuiApplication::restoreOverrideCursor ();
-#endif
 }
 
 #ifdef Q_CC_MSVC

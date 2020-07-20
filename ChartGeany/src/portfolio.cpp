@@ -393,7 +393,7 @@ Portfolio::Portfolio (int pfid, QWidget * parent):
   ui->transactionTableWidget->verticalScrollBar ()->setStyleSheet ("background: transparent; background-color:lightgray;");
   ui->transactionTableWidget->horizontalScrollBar ()->setStyleSheet ("background: transparent; background-color:lightgray;");
   ui->transactionTableWidget->horizontalHeader()->setStretchLastSection(true);
-  ui->transactionTableWidget->horizontalHeader()->setResizeMode(7, QHeaderView::Stretch);
+  ui->transactionTableWidget->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
 
   ui->portfolioTableWidget->setColumnCount (PNCOLUMNS);
   ui->portfolioTableWidget->setHorizontalHeaderLabels (pcheadersList);
@@ -401,7 +401,7 @@ Portfolio::Portfolio (int pfid, QWidget * parent):
   ui->portfolioTableWidget->verticalScrollBar ()->setStyleSheet ("background: transparent; background-color:lightgray;");
   ui->portfolioTableWidget->horizontalScrollBar ()->setStyleSheet ("background: transparent; background-color:lightgray;");
   ui->portfolioTableWidget->horizontalHeader()->setStretchLastSection(true);
-  ui->portfolioTableWidget->horizontalHeader()->setResizeMode(7, QHeaderView::Stretch);
+  ui->portfolioTableWidget->horizontalHeader()->setSectionResizeMode(7, QHeaderView::Stretch);
   ui->portfolioTableWidget->setColumnHidden (13, true);
 
   ui->columnsTableWidget->setColumnCount (1);
@@ -410,7 +410,7 @@ Portfolio::Portfolio (int pfid, QWidget * parent):
   ui->columnsTableWidget->verticalScrollBar ()->setStyleSheet ("background: transparent; background-color:lightgray;");
   ui->columnsTableWidget->horizontalScrollBar ()->setStyleSheet ("background: transparent; background-color:lightgray;");
   ui->columnsTableWidget->horizontalHeader()->setStretchLastSection(true);
-  ui->columnsTableWidget->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
+  ui->columnsTableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
 
   ui->columnsTableWidget->setRowCount (pcheadersList.size ());
   for (qint32 counter = 0; counter < pcheadersList.size () - 1; counter ++)

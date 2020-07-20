@@ -49,7 +49,7 @@ QTCGraphicsItem::QTCGraphicsItem_constructor_common (int reqtype)
     rectItem = new QGraphicsRectItem ();
     break;
   case EllipseItem:
-    ellipseItem = new QTCGraphicsEllipseItem ();
+    ellipseItem = new QGraphicsEllipseItem ();
     break;
   }
 }

@@ -97,7 +97,7 @@ DataManagerDialog::DataManagerDialog (QWidget * parent):
   ui->tableWidget->setColumnHidden (12, true);
   ui->tableWidget->setColumnHidden (13, true);
   ui->tableWidget->setColumnWidth(0, 10);
-  // ui->tableWidget->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
+  // ui->tableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
   ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
   reloadSymbols ();
 
